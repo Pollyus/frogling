@@ -1,0 +1,38 @@
+/* src/components/TrainersCarousel.css */
+.trainers-carousel {
+  padding: 20px;
+  text-align: center;
+}
+
+.trainers-carousel h2 {
+  margin-bottom: 20px;
+}
+
+.trainer-slide {
+  padding: 20px;
+}
+
+.trainer-slide img {
+  width: 100%;
+  max-width: 300px; /* Ограничьте ширину изображений */
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.trainer-name {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.trainer-description {
+  font-size: 0.9em;
+  color: #666;
+}
+
+/* Дополнительные стили для адаптивности (если необходимо) */
+@media (max-width: 768px) {
+  .trainer-slide img {
+    max-width: 200px;
+  }
+}

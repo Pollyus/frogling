@@ -1,7 +1,7 @@
 @font-face {
       font-family: Sanday; /* Дайте шрифту уникальное имя */
-      src: url('./fonts/Sanday/Sunday.otf') format('otf'),
-           url('./fonts/Sanday/Sunday.ttf') format('ttf');
+      src: url('./fonts/Sanday/Sunday-Regular.otf') format('otf'),
+           url('./fonts/Sanday/Sunday-Regular.ttf') format('ttf');
       /* Добавьте другие форматы, если есть (e.g., .ttf) */
       font-weight: normal; /* Или 400, 700 и т.д. для разных начертаний */
       font-style: normal;
@@ -10,19 +10,23 @@
 
 body {
   margin: 0;
-  font-family: Sanday, Arial, sans-serif, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family: Sanday;
+  /* , Arial, sans-serif, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+    sans-serif; */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: Sanday, Arial, sans-serif;
+  font-family: Sanday;
+  /* , Arial, sans-serif; */
 }
 
 h1 {
-  font-family: Sanday, Arial, sans-serif;
+  font-family: Sanday;
+  color: #ffffff;
+  /* , Arial, sans-serif; */
 }
 
 

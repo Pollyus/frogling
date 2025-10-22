@@ -14,6 +14,7 @@ import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 // import Login from './Login';
 import Main from '../Main/Main';
+import TrainersCarousel from '../TrainersCarousel/TrainersCaroudel';
 
 // import * as auth from '../utils/auth';
 // import api from '../utils/Api';
@@ -188,7 +189,7 @@ function App() {
         //   email={userData.email}
         //   logOut={logOut}
         />
-
+        <TrainersCarousel />
         <Routes>
           <Route path='/'
             element={<ProtectedRoute

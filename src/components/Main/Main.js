@@ -1,8 +1,9 @@
 import { useContext } from 'react';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import Card from '../Card/Card';
+
 function Main({ onEditAvatar, onEditProfile, onAddPlace, onCardClick, onCardLike, onCardDelete, cards }) {
-   
+
 
 return (
         <main>

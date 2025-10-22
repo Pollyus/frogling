@@ -6,6 +6,7 @@ function Header({ email, logOut }) {
     return (
         <header className='header'>
             <img src={logo} alt="Логотип" className='header__logo' />
+            <h1>Лягушонок</h1>
             <Routes>
                 <Route
                     path="/sign-in"
