@@ -4,6 +4,7 @@ import ProtectedRoute from '../Brouse/ProtectedRoute';
 import { useEffect, useState } from 'react';
 import api from '../../utils/Api';
 
+
 // import EditProfilePopup from './EditProfilePopup';
 // import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from '../Card/AddPlacePopup';
@@ -15,7 +16,7 @@ import Footer from '../Footer/Footer';
 // import Login from './Login';
 import Main from '../Main/Main';
 import TrainersCarousel from '../TrainersCarousel/TrainersCaroudel';
-
+import ProductsList from '../Products/ProductsList'
 // import * as auth from '../utils/auth';
 // import api from '../utils/Api';
 
@@ -190,6 +191,7 @@ function App() {
         //   logOut={logOut}
         />
         <TrainersCarousel />
+        <ProductsList/>
         <Routes>
           <Route path='/'
             element={<ProtectedRoute

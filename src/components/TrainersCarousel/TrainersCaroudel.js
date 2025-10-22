@@ -6,8 +6,8 @@ import './TrainersCarousel.css'; // Создайте файл TrainersCarousel.c
 import trainer1Image from './TrainersPhoto/Vlad.png';
 import trainer2Image from './TrainersPhoto/Lidia.png';
 import trainer3Image from './TrainersPhoto/Lyubov.png';
-import NextArrowIcon from '../../images/right_arrow.svg';
-import PrevArrowIcon from '../../images/left_arrow.svg';
+import { ReactComponent as NextArrowIcon } from '../../images/right_arrow.svg';
+import { ReactComponent as PrevArrowIcon } from '../../images/left_arrow.svg';
 
 const trainers = [
   {
@@ -134,6 +134,9 @@ function TrainersCarousel() {
           </div>
         );
       }
+
+      // ... (остальной код компонента) ...
+    
 
 //   return (
 //     <div className="trainers-carousel">
