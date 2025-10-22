@@ -1,6 +1,6 @@
 import { useContext } from 'react';
-import { CurrentUserContext } from '../contexts/CurrentUserContext';
-
+import { CurrentUserContext } from '../../contexts/CurrentUserContext';
+import Card from '../Card/Card';
 function Main({ onEditAvatar, onEditProfile, onAddPlace, onCardClick, onCardLike, onCardDelete, cards }) {
    
 
@@ -26,7 +26,7 @@ return (
                     </div>
                     <button onClick={onAddPlace} type="button" className="profile__add-button" aria-label="добавить фото"></button>
                 </section>
-                {/* <section className="elements">
+                <section className="elements">
                     <ul className="elements__list">
                         {cards.map(card => {
                             return (
@@ -39,7 +39,7 @@ return (
                                 />)
                         })}
                     </ul>
-                </section> */}
+                </section>
         </main>
     );
 };

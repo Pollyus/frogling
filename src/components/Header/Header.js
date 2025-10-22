@@ -1,11 +1,11 @@
 import React from 'react';
-import logo from 'C:/Users/Админ/Documents/frogling/my-app/src/logo.svg';
+import logo from 'C:/Users/Админ/Documents/frogling/my-app/src/Circle.png';
 import { Routes, Route, Link } from 'react-router-dom';
 
 function Header({ email, logOut }) {
     return (
-        <header className="header">
-            <img src={logo} alt="Логотип" className="header__logo" />
+        <header className='header'>
+            <img src={logo} alt="Логотип" className='header__logo' />
             <Routes>
                 <Route
                     path="/sign-in"
