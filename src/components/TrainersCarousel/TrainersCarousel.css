@@ -1,7 +1,20 @@
 /* src/components/TrainersCarousel.css */
 .trainers-carousel {
-  padding: 20px;
+  padding: 40px 0; /* Отступы сверху и снизу */
   text-align: center;
+  background-color: #f0f0f0; /* Для лучшей видимости карусели */
+}
+
+.trainers-carousel__title {
+  margin-bottom: 40px;
+  font-size: 2.5em; /* Увеличим размер заголовка */
+  color: #333;
+}
+
+/* Контейнер для слайдера, чтобы центрировать его и задать максимальную ширину */
+.trainers-carousel__slider-container {
+  max-width: 1200px; /* Ограничиваем максимальную ширину карусели */
+  margin: 0 auto; /* Центрируем контейнер */
 }
 
 .trainers-carousel h2 {
@@ -9,20 +22,89 @@
 }
 
 .trainer-slide {
-  padding: 20px;
+  /* padding: 20px; */
+  padding: 10px; /* Отступ внутри каждого слайда, чтобы изображения не прилипали */
+  box-sizing: border-box; /* Важно для padding */
 }
 
+
 .trainer-slide img {
-  width: 100%;
-  max-width: 300px; /* Ограничьте ширину изображений */
+  /* width: 100%;
+  max-width: 500px; 
   height: auto;
-  border-radius: 8px;
-  margin-bottom: 10px;
+  object-fit: cover; 
+  object-position: center;
+  border-radius: 20px;
+  margin-bottom: 10px; */
+  /* height: 250px; Увеличим высоту для лучшего вида */
+  width: 100%;
+  max-width: 600px; 
+  height: auto;
+  object-fit: cover; 
+  object-position: center;
+  border-radius: 20px;
+  margin-bottom: 40px;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Анимация для увеличения */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Тень для выделения */
+}
+
+.trainer-slide__name {
+  font-weight: bold;
+  font-size: 1.2em;
+  color: #555;
+  text-transform: uppercase; /* Сделаем имя заглавными буквами */
+}
+
+/* Стили для центрального слайда */
+.slick-center .trainer-slide__image {
+  transform: scale(1.1); /* Увеличиваем центральное изображение на 10% */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4); /* Усилим тень */
+  margin-top: 30px
+}
+
+/* Стили для стрелок навигации */
+.slick-prev:before,
+.slick-next:before {
+  color: white; /* Цвет стрелок */
+  font-size: 30px; /* Размер стрелок */
+  line-height: 1; /* Чтобы центрировать символ */
+}
+
+.slick-prev, .slick-next {
+    z-index: 1; /* Чтобы стрелки были поверх слайдов */
+    width: 40px; /* Ширина области стрелки */
+    height: 40px; /* Высота области стрелки */
+    border-radius: 50%; /* Скругляем */
+    background: rgba(0, 0, 0, 0.5); /* Фон стрелки */
+}
+
+.slick-prev:hover, .slick-next:hover {
+    background: rgba(0, 0, 0, 0.7); /* Фон стрелки при наведении */
+}
+
+
+.slick-prev {
+  left: -50px; /* Сдвигаем стрелку влево */
+}
+
+.slick-next {
+  right: -50px; /* Сдвигаем стрелку вправо */
+}
+
+/* Стили для точек навигации */
+.slick-dots li button:before {
+  font-size: 12px; /* Размер точек */
+  color: #888; /* Цвет точек */
+}
+
+.slick-dots li.slick-active button:before {
+  color: #333; /* Цвет активной точки */
 }
 
 .trainer-name {
   font-weight: bold;
   margin-bottom: 5px;
+  margin-top: 15px;
 }
 
 .trainer-description {
@@ -31,8 +113,31 @@
 }
 
 /* Дополнительные стили для адаптивности (если необходимо) */
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
   .trainer-slide img {
     max-width: 200px;
+  }
+} */
+
+/* Адаптивные стили для мобильных устройств */
+@media (max-width: 768px) {
+  .trainers-carousel__title {
+    font-size: 2em;
+  }
+
+  .trainer-slide__image {
+    height: 200px; /* Немного уменьшим высоту на мобильных */
+  }
+
+  .slick-prev {
+    left: 10px; /* Сдвигаем стрелку ближе к краю */
+  }
+
+  .slick-next {
+    right: 10px; /* Сдвигаем стрелку ближе к краю */
+  }
+
+  .slick-center .trainer-slide__image {
+    transform: scale(1.05); /* Меньшее увеличение на мобильных */
   }
 }
