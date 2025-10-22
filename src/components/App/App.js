@@ -223,7 +223,7 @@ function App() {
             // element={isLoggedIn ? <Navigate to="/" /> : <Navigate to="/sign-in" />}
           />
         </Routes>
-        <Footer />
+        
         {/* {isLoggedIn && <Footer />} */}
         
         {/* <InfoTooltip
@@ -257,6 +257,7 @@ function App() {
         />
 
       </CurrentUserContext.Provider >
+      <Footer />
     </>
   );
 };
