@@ -1,5 +1,5 @@
-    # .eslintignore
-    node_modules/
-    build/
-    src/components/
+# .eslintignore
+node_modules/
+build/
+src/components/
     
