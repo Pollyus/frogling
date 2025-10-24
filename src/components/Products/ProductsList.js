@@ -26,43 +26,49 @@ function SubscriptionList() {
       description: '1 600 рублей',
     },
     {
-      name: 'Индивидуальный\n(4 занятия)',
+      name: 'Индивидуальный абонемент',
       image: One4,
+      number_of_classes: '(4 занятия)',
       description: '6 000 рублей',
     },
     {
-      name: 'Индивидуальный (8 занятий)',
+      name: 'Индивидуальный абонемент',
+      number_of_classes: '(8 занятий)',
       image: One8,
       description: '11 500 рублей',
     },
     {
-      name: 'Групповой (Разовое)',
+      name: 'Групповое посещение',
       image: Groupe1,
       description: '1 100 рублей',
     },
     {
-      name: 'Групповой (4 занятия)',
+      name: 'Групповой абонемент',
       image: Groupe4,
+      number_of_classes: '(4 занятия)',
       description: '4 100 рублей',
     },
     {
-      name: 'Групповой (8 занятий)',
+      name: 'Групповой абонемент',
       image: Groupe8,
+      number_of_classes: '(8 занятий)',
       description: '8 000 рублей',
     },
     {
-      name: 'Семейный (Разовое)',
+      name: 'Семейное посещение',
       image: Family1,
       description: '2 000 рублей',
     },
     {
-      name: 'Семейный (4 занятия)',
+      name: 'Семейный абонемент',
       image: Family4,
+      number_of_classes: '(4 занятия)',
       description: '7 400 рублей',
     },
     {
-      name: 'Семейный (8 занятий)',
+      name: 'Семейный абонемент',
       image: Family8,
+      number_of_classes: '(8 занятий)',
       description: '14 000 рублей',
     },
     
@@ -71,7 +77,7 @@ function SubscriptionList() {
   return (
     <section id="subscriptions" className="subscriptions">
       <div className="container">
-        <h2>Наши абонементы</h2>
+        <h2>Наши услуги</h2>
         <div className="subscriptions-grid">
           {subscriptions.map((subscription, index) => (
             <SubscriptionCard key={index} subscription={subscription} />

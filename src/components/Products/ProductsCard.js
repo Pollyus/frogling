@@ -7,7 +7,9 @@ function SubscriptionCard({ subscription }) {
     <div className="subscription-card">
       <img src={subscription.image} alt={subscription.name} />
       <h3>{subscription.name}</h3>
+      <h4>{subscription.number_of_classes}</h4>
       <p>{subscription.description}</p>
+      
     </div>
   );
 }
