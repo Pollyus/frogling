@@ -22,7 +22,7 @@
             'react-hooks'
           ],
           rules: {
-            'no-unused-vars': 'warn', // Измените на 'off', чтобы отключить правило
+            'no-unused-vars': 'off', // Измените на 'off', чтобы отключить правило
             'react/prop-types': 'off', // Отключает проверку prop-types в React (если вы их не используете)
             // Здесь можно добавлять другие правила ESLint
           },
