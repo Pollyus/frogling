@@ -4,6 +4,7 @@
       push:
         branches:
           - main # Запускать этот workflow при каждом push в ветку main
+          workflow_dispatch: # Add this trigger
 
     jobs:
       build-and-deploy:
