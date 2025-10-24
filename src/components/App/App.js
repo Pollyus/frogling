@@ -1,7 +1,7 @@
-import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom'; /*, Navigate, useNavigate*/
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import ProtectedRoute from '../Brouse/ProtectedRoute';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import api from '../../utils/Api';
 
 
