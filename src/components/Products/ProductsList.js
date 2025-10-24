@@ -26,8 +26,7 @@ function SubscriptionList() {
       description: '1 600 рублей',
     },
     {
-      name: 'Индивидуальный' + 
-      '(4 занятия)',
+      name: 'Индивидуальный\n(4 занятия)',
       image: One4,
       description: '6 000 рублей',
     },
