@@ -1,5 +1,5 @@
 import React from 'react';
-import logo from 'C:/Users/Админ/Documents/frogling/my-app/src/Circle.png';
+import logo from '../../Circle.png';
 import { Routes, Route, Link } from 'react-router-dom';
 
 function Header({ email, logOut }) {
