@@ -1,35 +1,26 @@
-    name: Deploy React App to GitHub Pages
-
-    on:
-      push:
-        branches:
-          - main # Запускать этот workflow при каждом push в ветку main
-          workflow_dispatch: # Add this trigger
-
-    jobs:
-      build-and-deploy:
-        runs-on: ubuntu-latest # Используем последнюю версию Ubuntu для выполнения
-        steps:
-          - name: Checkout repository
-            uses: actions/checkout@v3 # Шаг для получения кода из репозитория
-
-          - name: Set up Node.js
-            uses: actions/setup-node@v3 # Шаг для установки Node.js
-            with:
-              node-version: 18 # Укажи версию Node.js, которая нужна твоему проекту (например, 16, 18, 20)
-
-          - name: Install dependencies
-            run: npm install # Установка зависимостей проекта
-
-          - name: Build React App
-            run: npm run build # Сборка React-приложения (создается папка 'build')
-
-          - name: Deploy to GitHub Pages
-            uses: peaceiris/actions-gh-pages@v3 # Используем популярный Action для деплоя на GH Pages
-            with:
-              github_token: ${{ secrets.GITHUB_TOKEN }} # Токен для авторизации (предоставляется GitHub автоматически)
-              publish_dir: ./build # Указываем, какую папку нужно публиковать (папка 'build' после сборки)
-              # publish_branch: gh-pages # По умолчанию Action деплоит в ветку gh-pages. Если ты хочешь деплоить в main,
-                                        # то нужно будет изменить настройки Pages в репозитории на main и /root,
-                                        # а здесь указать publish_branch: main.
-                                        # Для простоты, оставим по умолчанию (gh-pages)
+---
+name: Deploy React App to GitHub Pages
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: null
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: npm install
+      - name: Build React App
+        run: npm run build
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build
