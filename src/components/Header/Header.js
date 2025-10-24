@@ -1,6 +1,9 @@
 import React from 'react';
 import logo from 'C:/Users/Админ/Documents/frogling/my-app/src/Circle.png';
 import { Routes, Route, Link } from 'react-router-dom';
+// import Header from './Header';
+// import Login from ;
+// import Register from '../RegisterPage/RegisterPage';
 
 function Header({ email, logOut }) {
     return (

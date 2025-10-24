@@ -17,6 +17,7 @@ import Footer from '../Footer/Footer';
 import Main from '../Main/Main';
 import TrainersCarousel from '../TrainersCarousel/TrainersCaroudel';
 import ProductsList from '../Products/ProductsList'
+import Register from '../RegisterPage/RegisterPage';
 // import * as auth from '../utils/auth';
 // import api from '../utils/Api';
 
@@ -30,7 +31,7 @@ function App() {
 //   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
 //   const [isSignIn, setIsSignIn] = useState(true);
-  const [cards, setCards] = useState([]);
+
 //   const navigate = useNavigate();
 //   const [status, setStatus] = useState(false);
 //   const [userData, setUserData] = useState({ email: "" });
@@ -89,37 +90,37 @@ function App() {
     setIsOpenInfoTooltip(false);
   };
 
-  function handleCardLike(card) {
-    const isLiked = card.likes.some((i) => i._id === currentUser._id);
-    api
-      .likeCardAndUnLike(card._id, isLiked)
-      .then((newCard) => {
-        setCards((state) =>
-          state.map((c) => c._id === card._id ? newCard : c)
-        );
-      })
-      .catch((err) => console.log(err));
-  };
+  // function handleCardLike(card) {
+  //   const isLiked = card.likes.some((i) => i._id === currentUser._id);
+  //   api
+  //     .likeCardAndUnLike(card._id, isLiked)
+  //     .then((newCard) => {
+  //       setCards((state) =>
+  //         state.map((c) => c._id === card._id ? newCard : c)
+  //       );
+  //     })
+  //     .catch((err) => console.log(err));
+  // };
 
-  function handleCardDelete(card) {
-    api
-      .deleteCard(card._id)
-      .then(() => {
-        setCards((state) => state.filter((item) => item._id !== card._id));
-        closeAllPopups();
-      })
-      .catch((err) => console.log(err));
-  };
+  // function handleCardDelete(card) {
+  //   api
+  //     .deleteCard(card._id)
+  //     .then(() => {
+  //       setCards((state) => state.filter((item) => item._id !== card._id));
+  //       closeAllPopups();
+  //     })
+  //     .catch((err) => console.log(err));
+  // };
 
-  function handleAddPlaceSubmit(userCard) {
-    api
-      .createNewCard(userCard)
-      .then((newCard) => {
-        setCards([newCard, ...cards]);
-        closeAllPopups();
-      })
-      .catch((err) => console.log(err));
-  };
+  // function handleAddPlaceSubmit(userCard) {
+  //   api
+  //     .createNewCard(userCard)
+  //     .then((newCard) => {
+  //       setCards([newCard, ...cards]);
+  //       closeAllPopups();
+  //     })
+  //     .catch((err) => console.log(err));
+  // };
 
 //   function handleUpdateUser(data) {
 //     api
@@ -201,9 +202,9 @@ function App() {
             //   onEditProfile={handleEditProfileClick}
               onAddPlace={handleAddPlaceClick}
               onCardClick={handleCardClick}
-              onCardLike={handleCardLike}
-              onCardDelete={handleCardDelete}
-              cards={cards}
+              // onCardLike={handleCardLike}
+              // onCardDelete={handleCardDelete}
+              // cards={cards}
               onClose={closeAllPopups}
             />} />
 
@@ -250,7 +251,7 @@ function App() {
         <AddPlacePopup
           isOpen={isAddPlacePopupOpen}
           onClose={closeAllPopups}
-          onAddPlace={handleAddPlaceSubmit}
+          // onAddPlace={handleAddPlaceSubmit}
         />
 
         <ImagePopup
