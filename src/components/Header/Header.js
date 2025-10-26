@@ -9,7 +9,7 @@ function Header({ email, logOut }) {
             <div className="header__left">
                 <img src={logo} alt="Логотип" className='header__logo' />
             </div>
-            <h1 class="centered-title">Лягушонок</h1>
+            <h1 class="centered-title">Детский аквацентр "Лягушонок"</h1>
             {/* <Routes>
                 <Route
                     path="/sign-in"

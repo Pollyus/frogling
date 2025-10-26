@@ -35,7 +35,7 @@ function App() {
 //   const [isSignIn, setIsSignIn] = useState(true);
   const [cards, setCards] = useState([]);
 
-  useEffect(() => { // useEffect и useState теперь правильно импортированы
+  useEffect(() => { 
         // Создаем скрипт
         const script = document.createElement('script');
         script.src = 'https://w1603385.yclients.com/widgetJS';

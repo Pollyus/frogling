@@ -1,5 +1,6 @@
 /* App.css (или HomePage.css) */
 #ycwidget {
+  font-family: Sanday;
   margin-top: 20px; /* Отступ сверху */
   text-align: center; /* Центрирование по горизонтали */
 }
