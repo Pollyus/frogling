@@ -24,7 +24,6 @@ const SocialLinks = () => {
         <FontAwesomeIcon icon={faTelegram} />
         <span>Telegram</span>
       </a>
-
       <a href="tel:+7 953-643-12-12"> {/* Замените на реальный номер */}
         <FontAwesomeIcon icon={faPhone} />
         <span>+7 953-643-12-12</span> {/* Замените на реальный номер */}

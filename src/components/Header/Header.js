@@ -39,7 +39,7 @@ function Header({ email, logOut }) {
                     }
                 />
             </Routes> */}
-            <div className="header__right"></div>
+            {/* <div className="header__right"></div> */}
         </header>
     )
 }
