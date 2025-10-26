@@ -1,13 +1,16 @@
 import React from 'react';
 import logo from '../../Circle.png';
 import { Routes, Route, Link } from 'react-router-dom';
+// import './Header.css';
 
 function Header({ email, logOut }) {
     return (
         <header className='header'>
-            <img src={logo} alt="Логотип" className='header__logo' />
-            <h1>Лягушонок</h1>
-            <Routes>
+            <div className="header__left">
+                <img src={logo} alt="Логотип" className='header__logo' />
+            </div>
+            <h1 class="centered-title">Лягушонок</h1>
+            {/* <Routes>
                 <Route
                     path="/sign-in"
                     element={
@@ -35,7 +38,8 @@ function Header({ email, logOut }) {
                         </div>
                     }
                 />
-            </Routes>
+            </Routes> */}
+            <div className="header__right"></div>
         </header>
     )
 }

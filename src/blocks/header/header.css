@@ -1,5 +1,7 @@
 .header {
   /* max-width: 880px; */
+  display: grid;
+  grid-template-columns: auto 1fr auto; 
   margin: 0 auto;
   padding: 45px 0 41px 0;
   background-color: rgba(44, 82, 99, 1);
@@ -14,3 +16,15 @@
     padding: 28px 0 31.6px 27px;
   }
 }
+
+h1 {
+  font-family: Sanday;
+  color: #ffffff;
+  text-align: center;
+  /* , Arial, sans-serif; */
+}
+
+.centered-title {
+      text-align: center;
+    }
+

@@ -1,8 +1,9 @@
 import { Routes, Route } from 'react-router-dom'; /*, Navigate, useNavigate*/
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import ProtectedRoute from '../Brouse/ProtectedRoute';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import api from '../../utils/Api';
+import './App.css';
 
 
 // import EditProfilePopup from './EditProfilePopup';
@@ -22,6 +23,7 @@ import SocialLinks from '../SocialLinks/SocialLinks';
 // import api from '../utils/Api';
 
 function App() {
+  
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState({ name: '', link: '' });
@@ -32,46 +34,22 @@ function App() {
   const [currentUser, setCurrentUser] = useState({});
 //   const [isSignIn, setIsSignIn] = useState(true);
   const [cards, setCards] = useState([]);
-//   const navigate = useNavigate();
-//   const [status, setStatus] = useState(false);
-//   const [userData, setUserData] = useState({ email: "" });
 
-//   useEffect(() => {
-//     Promise.all([api.getCurrentUser(), api.getCards()])
-//       .then(([user, cards]) => {
-//         setCurrentUser(user);
-//         setCards(cards);
-//       })
-//       .catch((err) => console.log(err));
-//   }, []);
+  useEffect(() => { // useEffect и useState теперь правильно импортированы
+        // Создаем скрипт
+        const script = document.createElement('script');
+        script.src = 'https://w1603385.yclients.com/widgetJS';
+        script.async = true;
+        script.charset = 'UTF-8';
 
-//   useEffect(() => {
-//     const jwt = localStorage.getItem("jwt");
-//     if (jwt) {
-//       auth
-//         .getUserData(jwt)
-//         .then((res) => {
-//           if (res) {
-//             const data = res.data;
-//             setUserData({ email: data.email });
-//             setIsLoggedIn(true);
-//             navigate("/");
-//           }
-//         })
-//         .catch((err) => {
-//           console.log(err);
-//         });
-//     }
-//   }, [navigate, isLoggedIn]);
+        // Добавляем скрипт в body
+        document.body.appendChild(script);
 
-
-//   function handleEditAvatarClick() {
-//     setIsEditAvatarPopupOpen(true)
-//   };
-
-//   function handleEditProfileClick() {
-//     setIsEditProfilePopupOpen(true)
-//   };
+        // Функция очистки, чтобы удалить скрипт при размонтировании компонента
+        return () => {
+            document.body.removeChild(script);
+        };
+    }, []);
 
   function handleAddPlaceClick() {
     setIsAddPlacePopupOpen(true)
@@ -122,65 +100,7 @@ function App() {
       .catch((err) => console.log(err));
   };
 
-//   function handleUpdateUser(data) {
-//     api
-//       .createNewUser(data)
-//       .then((res) => {
-//         setCurrentUser(res);
-//         closeAllPopups();
-//       })
-//       .catch((err) => console.log(err));
-//   };
 
-//   function handleUpdateAvatar(avatar) {
-//     api
-//       .createNewAvatar(avatar)
-//       .then((res) => {
-//         setCurrentUser(res);
-//         closeAllPopups();
-//       })
-//       .catch((err) => console.log(err));
-//   };
-
-//   function loginUser({ email, password }) {
-//     auth
-//       .login(email, password)
-//       .then((res) => {
-//         localStorage.setItem("jwt", res.token);
-//         setUserData(email);
-//         setIsLoggedIn(true);
-//       })
-//       .catch((err) => {
-//         setStatus(false);
-//         setIsOpenInfoTooltip(true);
-//         console.log(err);
-//       });
-//   };
-
-//   function registerUser({ email, password }) {
-//     auth
-//       .register(email, password)
-//       .then(() => {
-//         setStatus(true);
-//         setIsOpenInfoTooltip(true);
-//         navigate("/sign-in");
-//       })
-//       .catch((err) => {
-//         setStatus(false);
-//         setIsOpenInfoTooltip(true);
-//         console.log(err);
-//       });
-//   };
-
-//   function logOut() {
-//     localStorage.removeItem("jwt");
-//     setIsLoggedIn(false);
-//     setUserData({
-//       email: "",
-//       password: "",
-//     });
-//     navigate("/sign-in");
-//   };
 
   return (
     <>
@@ -194,72 +114,8 @@ function App() {
         <TrainersCarousel />
         <ProductsList/>
         <SocialLinks/>
-        <Routes>
-          <Route path='/'
-            element={<ProtectedRoute
-              element={Main}
-            //   isLoggedIn={isLoggedIn}
-            //   onEditAvatar={handleEditAvatarClick}
-            //   onEditProfile={handleEditProfileClick}
-              onAddPlace={handleAddPlaceClick}
-              onCardClick={handleCardClick}
-              onCardLike={handleCardLike}
-              onCardDelete={handleCardDelete}
-              cards={cards}
-              onClose={closeAllPopups}
-            />} />
-
-          {/* <Route path='/sign-up'
-            element={<Register
-            //   registerUser={registerUser}
-              title='Регистрация'
-              buttonText='Зарегистрироваться'
-            />} />
-
-          <Route path='/sign-in'
-            element={<Login
-            //   loginUser={loginUser}
-              title='Вход'
-              buttonText='Войти'
-            />} /> */}
-
-          <Route
-            path='/*'
-            // element={isLoggedIn ? <Navigate to="/" /> : <Navigate to="/sign-in" />}
-          />
-        </Routes>
+        <div id="ycwidget"></div> {/* Контейнер для виджета YClients */}
         
-        {/* {isLoggedIn && <Footer />} */}
-        
-        {/* <InfoTooltip
-          isSignIn={isSignIn}
-          isOpen={isOpenInfoTooltip}
-          onClose={closeAllPopups}
-        /> */}
-
-        {/* <EditProfilePopup
-          isOpen={isEditProfilePopupOpen}
-          onClose={closeAllPopups}
-          onUpdateUser={handleUpdateUser}
-        /> */}
-
-        {/* <EditAvatarPopup
-          isOpen={isEditAvatarPopupOpen}
-          onClose={closeAllPopups}
-          onUpdateAvatar={handleUpdateAvatar}
-        /> */}
-
-        <AddPlacePopup
-          isOpen={isAddPlacePopupOpen}
-          onClose={closeAllPopups}
-          onAddPlace={handleAddPlaceSubmit}
-        />
-
-        <ImagePopup
-          isOpen={isImagePopupOpen}
-          onClose={closeAllPopups}
-          card={selectedCard}
-        />
 
       </CurrentUserContext.Provider >
       <Footer />
