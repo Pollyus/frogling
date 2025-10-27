@@ -23,6 +23,23 @@
     border-radius: 2px;
 }
 
+.trainer-slide {
+  cursor: pointer; /* Меняем курсор на "руку" при наведении */
+  padding: 10px;
+}
+
+.trainer-slide__image {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  border-radius: 10px;
+  transition: transform 0.3s ease; /* Анимация при наведении */
+}
+
+.trainer-slide:hover .trainer-slide__image {
+  transform: scale(1.05); /* Небольшое увеличение при наведении */
+}
+
 
 /* Контейнер для слайдера, чтобы центрировать его и задать максимальную ширину */
 .trainers-carousel__slider-container {
@@ -40,6 +57,27 @@
   box-sizing: border-box; /* Важно для padding */
 }
 
+/* Стили для информации о тренере */
+.trainer-info {
+  margin-top: 30px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  text-align: left;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.trainer-info h3 {
+  font-size: 1.5em;
+  color: #2a7e4b;
+  margin-bottom: 10px;
+}
+
+.trainer-info p {
+  font-size: 1.1em;
+  line-height: 1.6;
+  color: #555;
+}
 
 .trainer-slide img {
   /* width: 100%;
@@ -66,6 +104,29 @@
   font-size: 1.2em;
   color: #346173;
   text-transform: uppercase; /* Сделаем имя заглавными буквами */
+}
+.trainer-slide__image {
+  transition: transform 0.3s ease-in-out; /* Плавная анимация */
+  transform: scale(0.9); /* Уменьшаем все изображения на 10% */
+}
+
+.trainer-slide__image.zoomed {
+  transform: scale(1.5); /* Масштабирование в 1.5 раза (можно настроить) */
+  transition: transform 0.3s ease-in-out; /* Плавная анимация */
+  z-index: 1; /* Чтобы фото было поверх других элементов */
+  position: relative; /* Чтобы z-index работал */
+  box-shadow: 0 8px 16px #7BA61F;
+}
+
+.trainer-slide {
+  position: relative; /* add relative position to parent */
+}
+
+/* Apply these styles only when the button is pressed! */
+.trainer-slide__image.slick-center {
+  transform: scale(1.1);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  margin-top: 30px;
 }
 
 /* Стили для центрального слайда */
@@ -127,6 +188,103 @@
   color:#346173;
 }
 
+.trainer-info {
+  margin-top: 1em;
+  padding: 1em;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+   
+}
+
+.trainer-info__container {
+  display: flex; /* Используем flexbox для разделения на ячейки */
+  gap: 20px;      /* Отступ между ячейками */
+  max-width: 1200px; /* Максимальная ширина контейнера */
+  margin: 0 auto; /* Центрирование контейнера */
+  
+}
+
+.trainer-info__schedule {
+  flex: 1; /* Занимает одинаковое пространство */
+  padding: 1em;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  max-width: 40%; /* Максимальная ширина ячейки расписания */
+  display: block;
+
+  /* background-color: #e0f7fa; Легкий голубой фон */
+  border-left: 5px solid #346173; /* Синяя полоса слева */
+  padding: 20px 30px;
+  margin-right: 2em; 
+  margin: 20px auto 40px;
+  border-radius: 10px;
+  max-width: 800px;
+  display: flex;
+  align-items: center;
+  text-align: left;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.trainer-description__item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5em;
+  
+}
+
+.trainer-description__label {
+  font-weight: bold;
+  margin-left: 2em; /* увеличьте значение, чтобы увеличить расстояние */
+  color: #555;
+  width: 120px; /* Задайте фиксированную ширину для меток */
+  text-align: left; /* Выровняйте текст по левому краю */
+}
+
+.trainer-description__value {
+  color: #777;
+  flex: 1; /* Занимает оставшееся место */
+}
+
+.trainer-info__description {
+  flex: 1; /* Занимает одинаковое пространство */
+  padding: 1em;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  max-width: 60%; /* Максимальная ширина ячейки описания */
+
+  border-left: 5px solid #346173; /* Синяя полоса слева */
+  padding: 20px 30px;
+  margin-right: 2em; /* увеличьте значение, чтобы увеличить расстояние */
+  margin: 20px auto 40px;
+  border-radius: 10px;
+  max-width: 800px;
+  display: flex;
+  align-items: center;
+  text-align: left;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+.trainer-description {
+  margin-top: 1em;
+}
+
+.trainer-description__item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5em;
+}
+
+.trainer-description__label {
+  font-weight: bold;
+  margin-left: 2em; /* увеличьте значение, чтобы увеличить расстояние */
+  color: #555;
+  width: 120px; /* Задайте фиксированную ширину для меток */
+  text-align: left; /* Выровняйте текст по левому краю */
+}
+
+.trainer-description__value {
+  color: #777;
+  flex: 1; /* Занимает оставшееся место */
+}
 /* Дополнительные стили для адаптивности (если необходимо) */
 /* @media (max-width: 768px) {
   .trainer-slide img {
@@ -138,6 +296,12 @@
 @media (max-width: 768px) {
   .trainers-carousel__title {
     font-size: 2em;
+  }
+
+  .trainer-info__container {
+    flex-direction: column; /* Для Flexbox */
+    /* или */
+    grid-template-columns: 1fr; /* Для Grid */
   }
 
   .trainer-slide__image {

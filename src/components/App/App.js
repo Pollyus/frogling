@@ -16,10 +16,11 @@ import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 // import Login from './Login';
 import Main from '../Main/Main';
-import TrainersCarousel from '../TrainersCarousel/TrainersCaroudel';
+import TrainersCarousel from '../TrainersCarousel/TrainersCarousel';
 import ProductsList from '../Products/ProductsList'
 import SocialLinks from '../SocialLinks/SocialLinks';
 import Promotions from '../Promotions/Promotions'
+import AboutUs from '../AboutUs/AboutUs'
 // import * as auth from '../utils/auth';
 // import api from '../utils/Api';
 
@@ -112,6 +113,7 @@ function App() {
         //   email={userData.email}
         //   logOut={logOut}
         />
+        <AboutUs/>
         <TrainersCarousel />
         <ProductsList/>
         <Promotions/>

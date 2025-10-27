@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react'; 
 // Импортируем CSS-модуль. Имя файла будет Promotions.module.css
 import styles from './Promotions.module.css';
 
@@ -7,25 +7,36 @@ import styles from './Promotions.module.css';
 // npm install react-icons --save
 // или
 // yarn add react-icons
-import { FaChild, FaUsers, FaStar, FaUserFriends, FaGift, FaInfoCircle, FaHeart, FaMap, FaSync} from 'react-icons/fa';
+import { FaChild, FaUsers, FaStar, FaUserFriends, FaGift, FaInfoCircle, FaHeart, FaMap, FaSync, FaPlayCircle} from 'react-icons/fa';
 
 const Promotions = () => {
-    // Вся JSX-разметка заменена вызовами React.createElement
+   
     return React.createElement('section', { className: styles.promotionsSection },
         React.createElement('div', { className: styles.container },
             React.createElement('h2', null, ' Акции и выгодные предложения '),
             React.createElement('p', { className: styles.sectionDescription },
-                'Приглашаем вас воспользоваться специальными бонусами, которые сделают занятия для ваших детей еще доступнее и интереснее!'
+                'Приглашаем вас воспользоваться специальными бонусами, которые сделают занятия для ваших детей еще выгоднее!'
             ),
 // 🎉
             React.createElement('div', { className: styles.promoGrid },
+                // Акция 0: Знакомство - первое пробное бесплатно
+                React.createElement('div', { className: styles.promoItem },
+                    React.createElement(FaPlayCircle, { className: styles.promoIcon }),
+                    React.createElement('h3', null, 'Знакомство: Пробное занятие бесплатно'),
+                    React.createElement('p', null,
+                        'Приглашаем на первое пробное занятие ',
+                        React.createElement('span', { className: styles.highlight }, 'абсолютно бесплатно'),
+                        '! Познакомиться с тренером, посмотреть бассейн, задать любые вопросы'
+                    )
+                ),
+
                 // Акция 1: Скидка после пробного занятия
                 React.createElement('div', { className: styles.promoItem },
                     React.createElement(FaChild, { className: styles.promoIcon }),
-                    React.createElement('h3', null, 'Первые Шаги'),
+                    React.createElement('h3', null, 'Первые шаги'),
                     React.createElement('p', null,
                         'Получите ',
-                        React.createElement('span', { className: styles.highlight }, '10% скидки'),
+                        React.createElement('span', { className: styles.highlight }, '10% скидку'),
                         ' на покупку любого абонемента сразу после успешного пробного занятия. Отличный старт для новых приключений!'
                     )
                 ),
@@ -33,7 +44,7 @@ const Promotions = () => {
                 // Акция 2: Скидка для второго ребёнка
                 React.createElement('div', { className: styles.promoItem },
                     React.createElement(FaUsers, { className: styles.promoIcon }),
-                    React.createElement('h3', null, 'Семейная Выгода'),
+                    React.createElement('h3', null, 'Семейная выгода'),
                     React.createElement('p', null,
                         'Если у вас двое и более детей, получите дополнительную ',
                         React.createElement('span', { className: styles.highlight }, 'скидку 10% '),
@@ -44,10 +55,10 @@ const Promotions = () => {
                 // Акция 3: Бонус за отзыв
                 React.createElement('div', { className: styles.promoItem },
                                     React.createElement(FaStar, { className: styles.promoIcon }),
-                    React.createElement('h3', null, 'Бонус за Отзыв'),
+                    React.createElement('h3', null, 'Бонус за отзыв'),
                     React.createElement('p', null,
                         'Поделитесь своими впечатлениями о нас в любой социальной сети и получите ',
-                        React.createElement('span', { className: styles.highlight }, '5% скидки'),
+                        React.createElement('span', { className: styles.highlight }, '5% скидку'),
                         ' на следующий абонемент.'
                     )
                 ),
@@ -55,9 +66,9 @@ const Promotions = () => {
                 // Акция 4: Приведи друга
                 React.createElement('div', { className: styles.promoItem },
                     React.createElement(FaUserFriends, { className: styles.promoIcon }),
-                    React.createElement('h3', null, 'Двойная Выгода: Приведи Друга!'),
+                    React.createElement('h3', null, 'Двойная выгода: Приведи друга!'),
                     React.createElement('p', null,
-                        'Пригласите друга в нашу студию, и после его первого оплаченного занятия вы получите ',
+                        'Пригласите друга в наш бассейн, и после его первого оплаченного занятия вы получите ',
                         React.createElement('span', { className: styles.highlight }, 'одно занятие в подарок'),
                         '!'
                     )
@@ -66,7 +77,7 @@ const Promotions = () => {
                 // Акция 5: День рождения малыша
                 React.createElement('div', { className: styles.promoItem },
                     React.createElement(FaGift, { className: styles.promoIcon }),
-                    React.createElement('h3', null, 'Подарок ко Дню Рождения Малыша'),
+                    React.createElement('h3', null, 'Подарок ко дню рождения малыша'),
                     React.createElement('p', null,
                         'Мы дарим ',
                         React.createElement('span', { className: styles.highlight }, 'бесплатное занятие'),
@@ -88,7 +99,7 @@ const Promotions = () => {
                 // Акция 7: Собери две карточки лабиринта
                 React.createElement('div', { className: styles.promoItem },
                     React.createElement(FaMap, { className: styles.promoIcon }),
-                    React.createElement('h3', null, 'Найди Сокровища: Карточки Лабиринта'),
+                    React.createElement('h3', null, 'Найди сокровища: карточки лабиринта'),
                     React.createElement('p', null,
                         'Соберите ',
                         React.createElement('span', { className: styles.highlight }, 'две'),
@@ -101,7 +112,7 @@ const Promotions = () => {
                 // Акция 8: Верность - скидка за продление
                 React.createElement('div', { className: styles.promoItem },
                     React.createElement(FaSync, { className: styles.promoIcon }),
-                    React.createElement('h3', null, 'Верность: Скидка за Продление'),
+                    React.createElement('h3', null, 'Верность: скидка за продление'),
                     React.createElement('p', null,
                         'Продлите свой абонемент сразу после окончания предыдущего и получите ',
                         React.createElement('span', { className: styles.highlight }, '10% скидку'),
@@ -119,7 +130,7 @@ const Promotions = () => {
             React.createElement('div', { className: styles.promoCombinedNote },
                 React.createElement(FaInfoCircle, null),
                 React.createElement('p', null,
-                    React.createElement('strong', null, 'Важный Бонус:'),
+                    React.createElement('strong', null, 'Важный бонус:'),
                     ' Акция "Первые Шаги" или "Верность" могут суммироваться с акцией "Бонус за Отзыв", получите скидку 15% на абонемент!'
                 )
             ),
