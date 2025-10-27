@@ -1,0 +1,174 @@
+/* Общие стили для секции акций */
+.promotionsSection {
+    padding: 60px 0; /* Отступы сверху и снизу */
+    background-color: #f8f8f8; /* Легкий фон */
+    font-family: 'Sanday'; /* Пример шрифта, используйте свой */
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+    text-align: center;
+}
+
+.promotionsSection h2 {
+    font-size: 3em; /* Большой заголовок */
+    color: #031859; 
+    margin-bottom: 20px;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.promotionsSection h2::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 4px;
+    background-color:  #D96E11; /* Акцентный цвет */
+    margin: 10px auto 0;
+    border-radius: 2px;
+}
+
+.sectionDescription {
+    font-size: 1.2em;
+    color: #555;
+    margin-bottom: 40px;
+    line-height: 1.6;
+}
+
+/* Стили для сетки акций */
+.promoGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Адаптивная сетка */
+    gap: 30px; /* Отступы между элементами */
+    margin-bottom: 40px;
+}
+
+.promoItem {
+    background-color: #fff;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08); /* Красивая тень */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.promoItem:hover {
+    transform: translateY(-8px); /* Легкий эффект при наведении */
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+}
+
+.promoIcon {
+    font-size: 3.5em; /* Размер иконки */
+    color: #D96E11; /* Цвет иконки */
+    margin-bottom: 20px;
+}
+
+.promoItem h3 {
+    font-size: 1.8em;
+    color: #346173;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.promoItem p {
+    font-size: 1.1em;
+    line-height: 1.6;
+    color: #666;
+}
+
+/* Стили для выделенного текста (скидки, бесплатно) */
+.highlight {
+    color: #D96E11; /* Акцентный цвет для выделения */
+    font-weight: bold;
+    font-size: 1.15em;
+}
+
+/* Стили для примечания о суммировании скидок */
+.promoCombinedNote {
+    background-color: #e0f7fa; /* Легкий голубой фон */
+    border-left: 5px solid #346173; /* Синяя полоса слева */
+    padding: 20px 30px;
+    margin: 20px auto 40px;
+    border-radius: 10px;
+    max-width: 800px;
+    display: flex;
+    align-items: center;
+    text-align: left;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.promoCombinedNote > svg { /* Стили для FaInfoCircle, так как это SVG */
+    font-size: 1.8em;
+    color: #346173;
+    margin-right: 20px;
+    min-width: 1.8em; /* Чтобы иконка не сжималась */
+}
+
+.promoCombinedNote p {
+    margin: 0;
+    font-size: 1.1em;
+    color: #444;
+}
+
+.promoCombinedNote p strong {
+    color: #031859;
+}
+
+/* Стили для призыва к действию (CTA) */
+.promoCta {
+    font-size: 1.3em;
+    color: #444;
+    margin-top: 50px;
+    line-height: 1.6;
+}
+
+.promoCta a {
+    color: #7BA61F;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.promoCta a:hover {
+    color: #D96E11;
+}
+
+.promoItem.supportHeroes .promoIcon { /* .supportHeroes - новый класс для promoItem */
+    color: #e91e63; /* Розовый цвет сердца */
+}
+
+/* Медиа-запросы для адаптивности */
+@media (max-width: 768px) {
+    .promotionsSection h2 {
+        font-size: 2.5em;
+    }
+    .promoGrid {
+        grid-template-columns: 1fr; /* Одна колонка на мобильных */
+    }
+    .promoItem {
+        padding: 25px;
+    }
+    .promoItem h3 {
+        font-size: 1.6em;
+    }
+    .promoIcon {
+        font-size: 3em;
+    }
+    .sectionDescription, .promoCombinedNote p, .promoCta {
+        font-size: 1em;
+    }
+    .promoCombinedNote {
+        padding: 15px 20px;
+    }
+    .promoCombinedNote > svg {
+        font-size: 1.5em;
+        margin-right: 15px;
+        min-width: 1.5em;
+    }
+}

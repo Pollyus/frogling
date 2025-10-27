@@ -16,7 +16,7 @@
   border-radius: 25px; /*Более сильное скругление, как в проекте*/
   transition: background-color 0.3s ease;
   background-color: #619F6D; /*Зеленый цвет кнопок*/
-  font-family: 'Roboto', sans-serif; /*Используем шрифт Roboto*/
+  font-family: Sanday, 'Roboto', sans-serif; /*Используем шрифт Roboto*/
 }
 
 .social-links a:hover {

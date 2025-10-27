@@ -19,6 +19,7 @@ import Main from '../Main/Main';
 import TrainersCarousel from '../TrainersCarousel/TrainersCaroudel';
 import ProductsList from '../Products/ProductsList'
 import SocialLinks from '../SocialLinks/SocialLinks';
+import Promotions from '../Promotions/Promotions'
 // import * as auth from '../utils/auth';
 // import api from '../utils/Api';
 
@@ -113,6 +114,7 @@ function App() {
         />
         <TrainersCarousel />
         <ProductsList/>
+        <Promotions/>
         <SocialLinks/>
         <div id="ycwidget"></div> {/* Контейнер для виджета YClients */}
         

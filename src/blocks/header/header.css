@@ -4,7 +4,7 @@
   grid-template-columns: auto 1fr auto;  */
   margin: 0 auto;
   padding: 45px 0 41px 0;
-  background-color: rgba(44, 82, 99, 1);
+  background-color:#346173;
   /* display: block;
   align-items: center; */
   display: grid;
@@ -40,6 +40,7 @@ h1 {
   font-family: Sanday;
   color: #ffffff;
   text-align: center;
-  font-size: 3em;
+  font-size: 3.5em;
   margin: 0 auto; /* Центрируем заголовок */
 }
+

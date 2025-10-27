@@ -6,10 +6,23 @@
 }
 
 .trainers-carousel__title {
-  margin-bottom: 40px;
-  font-size: 2.5em; /* Увеличим размер заголовка */
-  color: #333;
+  font-size: 3em; /* Большой заголовок */
+  color: #031859; 
+  margin-bottom: 20px;
+  position: relative;
+  padding-bottom: 10px;
 }
+
+.trainers-carousel__title::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 4px;
+    background-color:  #D96E11; /* Акцентный цвет */
+    margin: 10px auto 0;
+    border-radius: 2px;
+}
+
 
 /* Контейнер для слайдера, чтобы центрировать его и задать максимальную ширину */
 .trainers-carousel__slider-container {
@@ -51,7 +64,7 @@
 .trainer-slide__name {
   font-weight: bold;
   font-size: 1.2em;
-  color: #555;
+  color: #346173;
   text-transform: uppercase; /* Сделаем имя заглавными буквами */
 }
 
@@ -100,7 +113,7 @@
 }
 
 .slick-dots li.slick-active button:before {
-  color: #333; /* Цвет активной точки */
+  color: #031859; /* Цвет активной точки */
 }
 
 .trainer-name {
@@ -111,7 +124,7 @@
 
 .trainer-description {
   font-size: 0.9em;
-  color: #666;
+  color:#346173;
 }
 
 /* Дополнительные стили для адаптивности (если необходимо) */
