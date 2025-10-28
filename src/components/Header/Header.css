@@ -1,0 +1,143 @@
+.header {
+  background-color: #f0f0f0;
+  padding: 10px 0;
+  /* Другие стили хедера */
+}
+.header__nav {
+  /* Стили для навигации */
+  margin-left: auto; /*  Прижимаем навигацию к правому краю */
+}
+
+.header__container {
+  display: flex;         
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 30 auto;
+  padding: 0 20px; /* Добавляем отступы по бокам */
+  /* flex-wrap: nowrap; */
+}
+
+.header__logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: #031859;
+  text-decoration: none;
+}
+
+.header__nav-list {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  align-items: left;
+  text-align: left;
+}
+
+.header__nav-item {
+  margin-left: 20px;
+}
+
+.header__nav-item a {
+  text-decoration: none;
+  color: #031859;
+}
+
+.header__burger {
+  display: none; /* Скрываем по умолчанию */
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  position: relative;
+  margin-left: 20px;
+}
+
+.header__burger span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background-color: #031859;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: all 0.3s ease;
+}
+
+.header__burger span:first-child {
+  top: 20%;
+  transform: translateY(-50%);
+}
+
+.header__burger span:last-child {
+  top: 80%;
+  transform: translateY(-50%);
+}
+
+.header__logo-container {
+  display: flex;
+  flex-direction: column; /* Размещаем элементы вертикально */
+  align-items: center; /* Центрируем элементы по горизонтали */
+  margin-right: auto;
+}
+
+/* Стили для изображения логотипа */
+.header__logo-image {
+  width: 100px; /* Задаем ширину логотипа */
+  height: auto; /* Сохраняем пропорции */
+  margin-top: 5px; /* Добавляем небольшой отступ сверху от названия */
+}
+
+.header__logo {
+  /* Ваши стили для текста логотипа (FrogLing) */
+  font-size: 24px;
+  font-weight: bold;
+  color: #031859;
+  text-decoration: none;
+  align-items: center;
+  text-align: center;
+}
+
+/* Мобильные стили */
+@media (max-width: 768px) {
+  .header__nav {
+    display: none; /* Скрываем основное меню */
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #f0f0f0;
+    z-index: 10;
+    padding: 20px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Добавляем тень для разделения */
+  }
+
+  .header__nav--open {
+    display: block; /* Показываем меню при открытии */
+  }
+
+  .header__nav-list {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header__nav-item {
+    margin-left: 0;
+    margin-bottom: 10px;
+  }
+
+  .header__burger {
+    display: block; /* Показываем гамбургер */
+    margin-left: auto; /* прижимаем к правому краю */
+  }
+
+  .header__logo-container {
+    align-items: flex-start; /* Выравниваем по левому краю на мобильных устройствах */
+  }
+
+  .header__logo-image {
+    width: 80px; /* Уменьшаем размер логотипа на мобильных устройствах */
+  }
+}

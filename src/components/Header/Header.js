@@ -1,47 +1,53 @@
-import React from 'react';
-import logo from '../../Circle.png';
-import { Routes, Route, Link } from 'react-router-dom';
-// import './Header.css';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import './Header.css';
+import logo from '../../Circle.png'; 
+const Header = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-function Header({ email, logOut }) {
-    return (
-        <header className='header'>
-            <div className="header__left">
-                <img src={logo} alt="Логотип" className='header__logo' />
-            </div>
-            <h1 class="centered-title">Детский аквацентр "Лягушонок"</h1>
-            {/* <Routes>
-                <Route
-                    path="/sign-in"
-                    element={
-                        <Link className="header__link" to="/sign-up">
-                            Регистрация
-                        </Link>
-                    }
-                />
-                <Route
-                    path="/sign-up"
-                    element={
-                        <Link className="header__link" to="/sign-in">
-                            Войти
-                        </Link>
-                    }
-                />
-                <Route
-                    path="/"
-                    element={
-                        <div className="header__user-info">
-                            <p className="header__user-email">{email}</p>
-                            <button className="header__button" onClick={logOut}>
-                                Выйти
-                            </button>
-                        </div>
-                    }
-                />
-            </Routes> */}
-            {/* <div className="header__right"></div> */}
-        </header>
-    )
-}
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  return (
+    <header className="header">
+      <div className="header__container container">
+        <Link to="/" className="header__logo">
+          Лягушонок
+          <img src={logo} alt="Логотип FrogLing" className="header__logo-image" /> {/* Размещаем логотип под названием */}
+        </Link>
+        
+        <nav className={`header__nav ${isMenuOpen ? 'header__nav--open' : ''}`}>
+          <ul className="header__nav-list">
+            <li className="header__nav-item">
+              <Link to="/about">О нас</Link>
+            </li>
+            <li className="header__nav-item">
+              <Link to="/lessons">Виды занятий</Link>
+            </li>
+            <li className="header__nav-item">
+              <Link to="/trainers">Тренеры</Link>
+            </li>
+            <li className="header__nav-item">
+              <Link to="/first">Первое занятие</Link>
+            </li>
+            <li className="header__nav-item">
+              <Link to="/products">Услуги</Link>
+            </li>
+            <li className="header__nav-item">
+              <Link to="/contacts">Контакты</Link>
+            </li>
+          </ul>
+        </nav>
+        <button className="header__burger" onClick={toggleMenu}>
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </header>
+  );
+};
 
 export default Header;
+

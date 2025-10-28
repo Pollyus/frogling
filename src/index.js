@@ -8,10 +8,10 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <BrowserRouter>
+  // <BrowserRouter>
     <App />
-    {/* <Main /> */}
-  </BrowserRouter>
+    // {/* <Main /> */}
+  // </BrowserRouter>
 );
 
 reportWebVitals();
