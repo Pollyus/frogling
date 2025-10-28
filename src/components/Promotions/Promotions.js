@@ -48,7 +48,7 @@ const Promotions = () => {
                     React.createElement('p', null,
                         'Если у вас двое и более детей, получите дополнительную ',
                         React.createElement('span', { className: styles.highlight }, 'скидку 10% '),
-                        ' на абонемент для второго ребёнка!'
+                        ' на абонемент для второго и каждого следующего ребёнка!'
                     )
                 ),
 
@@ -69,7 +69,7 @@ const Promotions = () => {
                     React.createElement('h3', null, 'Двойная выгода: Приведи друга!'),
                     React.createElement('p', null,
                         'Пригласите друга в наш бассейн, и после его первого оплаченного занятия вы получите ',
-                        React.createElement('span', { className: styles.highlight }, 'одно занятие в подарок'),
+                        React.createElement('span', { className: styles.highlight }, 'одно занятие бесплатно'),
                         '!'
                     )
                 ),
@@ -81,7 +81,7 @@ const Promotions = () => {
                     React.createElement('p', null,
                         'Мы дарим ',
                         React.createElement('span', { className: styles.highlight }, 'бесплатное занятие'),
-                        ' вашему малышу в его День рождения, а также в течение двух дней после него! Празднуем вместе!'
+                        ' вашему малышу в его День рождения, а также в течение двух дней до или после него! Празднуем вместе!'
                     )
                 ),
 
@@ -104,7 +104,7 @@ const Promotions = () => {
                         'Соберите ',
                         React.createElement('span', { className: styles.highlight }, 'две'),
                         ' карточки лабиринта и получите ',
-                        React.createElement('span', { className: styles.highlight }, 'бесплатное занятие в подарок'),
+                        React.createElement('span', { className: styles.highlight }, 'бесплатное занятие'),
                         '! Отслеживайте прогресс и не платите за дополнительное занятие!'
                     )
                 ),

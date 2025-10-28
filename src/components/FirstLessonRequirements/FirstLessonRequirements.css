@@ -1,0 +1,64 @@
+.card {
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
+  font-family: Sanday;
+  width: 80%; /* Adjust as needed */
+  max-width: 500px;
+  margin: 0 auto;
+}
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.first-lesson-requirements {
+  padding: 20px;
+  text-align: left;
+  border: 1px solid #e1eaf2; /* Светло-серый цвет рамки, как на сайте */
+  border-radius: 10px; /* Закругленные углы */
+  margin: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); /* Небольшая тень */
+  background-color: #fff; /* Белый фон, как на сайте */
+  font-family: Sanday; /* Шрифт Montserrat */
+}
+
+.first-lesson-requirements h2 {
+    font-size: 3em; /* Большой заголовок */
+    color: #031859; 
+    margin-bottom: 20px;
+    position: relative;
+    padding-bottom: 10px;
+    text-align: center;
+}
+
+.first-lesson-requirements h2::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 4px;
+    background-color:  #D96E11; /* Акцентный цвет */
+    margin: 10px auto 0;
+    border-radius: 2px;
+}
+.requirements-list {
+  list-style: none; /* Убираем стандартные маркеры списка */
+  padding-left: 0; /* Убираем отступ слева */
+}
+
+.requirements-list li {
+  margin-bottom: 10px;
+  padding-left: 25px; /* Отступ слева для создания пространства для иконки */
+  position: relative; /* Для позиционирования псевдоэлемента */
+  color: #346173;
+}
+
+.requirements-list li::before {
+  content: '✓'; /* Символ галочки (можно заменить на иконку) */
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #7BA61F; /* Зеленый цвет галочки */
+  font-size: 1.2rem;
+}

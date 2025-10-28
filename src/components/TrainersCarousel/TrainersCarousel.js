@@ -7,8 +7,7 @@ import './TrainersCarousel.css'; // Создайте файл TrainersCarousel.c
 import trainer1Image from './TrainersPhoto/Vlad.png';
 import trainer2Image from './TrainersPhoto/Lidia.png';
 import trainer3Image from './TrainersPhoto/Lyubov.png';
-import { ReactComponent as NextArrowIcon } from '../../images/right_arrow.svg';
-import { ReactComponent as PrevArrowIcon } from '../../images/left_arrow.svg';
+
 
 const trainers = [
   {
@@ -44,7 +43,7 @@ const trainers = [
     photo: trainer3Image,
     schedule: '\tВторник: 15:00-21:00\n\tЧетверг: 15:00-21:00\n\tВоскресенье: 15:00-21:00',
     description: [
-              { label: 'Опыт', value: '1 год'},
+              { label: 'Опыт', value: '2 года'},
               { label: 'Сертификат', value: 'Специалист грудничкового и малышкового плавания. Массажист спортивного и детского массажа'},
               { label: 'Звание', value: 'Мастер спорта по плаванию'},
               { label: 'Карьера', value: '12 лет спортивной карьеры'},
@@ -88,6 +87,7 @@ function TrainersCarousel() {
     if (zoomedTrainerId !== trainer.id) {
       setZoomedTrainerId(trainer.id); // Устанавливаем ID для увеличения
       setIsButtonClicked(true);
+      
     } else {
       setZoomedTrainerId(null); // Убираем увеличение, если кликнули повторно
       setIsButtonClicked(false);
@@ -115,8 +115,6 @@ function TrainersCarousel() {
     centerMode: true, // Активируем режим центрового слайда
     centerPadding: '60px', // Отступ для частичного отображения соседних слайдов (можно настроить)
     // Добавим стрелки навигации
-    nextArrow: <SampleNextArrow />,
-    prevArrow: <SamplePrevArrow />,
     beforeChange: handleBeforeChange,
     responsive: [
       {
@@ -158,63 +156,11 @@ function TrainersCarousel() {
   };
 
 
-//   // Компоненты для пользовательских стрелок (для лучшего контроля над стилями)
-//   function SampleNextArrow(props) {
-//     const { className, style, onClick } = props;
-//     return (
-//       <div
-//         className={className}
-//         style={{ ...style, display: "block", background: "grey", borderRadius: "50%" }}
-//         onClick={onClick}
-//       />
-//     );
-//   }
-
-//    function SamplePrevArrow(props) {
-//     const { className, style, onClick } = props;
-//     return (
-//       <div
-//         className={className}
-//         style={{ ...style, display: "block", background: "grey", borderRadius: "50%" }}
-//         onClick={onClick}
-//       />
-//     );
-//   }
-
-// Компоненты для пользовательских стрелок с использованием SVG
-      function SampleNextArrow(props) {
-        const { className, style, onClick } = props;
-        return (
-          <div
-            className={className}
-            style={{ ...style, display: "block", background: "rgba(0, 0, 0, 0.5)", borderRadius: "50%" }}
-            onClick={onClick}
-          >
-            <img src={NextArrowIcon} alt="Next" />
-          </div>
-        );
-      }
-
-      function SamplePrevArrow(props) {
-        const { className, style, onClick } = props;
-        return (
-          <div
-            className={className}
-            style={{ ...style, display: "block", background: "rgba(0, 0, 0, 0.5)", borderRadius: "50%" }}
-            onClick={onClick}
-          >
-            <img src={PrevArrowIcon} alt="Previous" />
-          </div>
-        );
-      }
-      
-
-
     return (
         <section className="trainers-carousel"> {/* Изменено на section для семантики */}
         <h2 className="trainers-carousel__title">Наши Тренеры</h2>
         <div className="trainers-carousel__slider-container"> {/* Добавлен контейнер для слайдера */}
-            <Slider {...settings} ref={sliderRef}>
+            {/* <Slider {...settings} ref={sliderRef}> */}
             {trainers.map((trainer) => (
                 
                 <div key={trainer.id} className="trainer-slide" onClick={() => handleTrainerClick(trainer)}>
@@ -227,7 +173,7 @@ function TrainersCarousel() {
                 <p className="trainer-slide__name">{trainer.name}</p>
                 </div>
             ))}
-            </Slider>
+            {/* </Slider> */}
         </div>
 
          {/* Отображение информации о тренере */}

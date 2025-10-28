@@ -29,7 +29,7 @@
     display: block;
     width: 80px;
     height: 4px;
-    background-color: #f7a000;
+    background-color: #D96E11;
     margin: 10px auto 0;
     border-radius: 2px;
 }
@@ -67,8 +67,14 @@
 
 .featureIcon {
     font-size: 3em;
-    color: #f7a000;
+    color: #D96E11;
     margin-bottom: 20px;
+}
+
+.highlight {
+    color: #D96E11; /* Акцентный цвет для выделения */
+    font-weight: bold;
+    font-size: 1.15em;
 }
 
 .featureItem h3 {

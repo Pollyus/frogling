@@ -45,6 +45,9 @@
 .trainers-carousel__slider-container {
   max-width: 1200px; /* Ограничиваем максимальную ширину карусели */
   margin: 0 auto; /* Центрируем контейнер */
+  display: flex; /*  Включаем Flexbox */
+  overflow-x: auto; /*  Добавляем горизонтальную прокрутку, если элементы не помещаются */
+  scroll-snap-type: x mandatory; /* (опционально) для "прилипания" слайдов */
 }
 
 .trainers-carousel h2 {
@@ -64,7 +67,7 @@
   background-color: #f9f9f9;
   border-radius: 10px;
   text-align: left;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px #646464;
 }
 
 .trainer-info h3 {
@@ -76,7 +79,15 @@
 .trainer-info p {
   font-size: 1.1em;
   line-height: 1.6;
-  color: #555;
+  color: #346173;
+  margin-left: 10px;
+}
+
+.trainer-info h4 {
+  font-size: 1.1em;
+  line-height: 1.6;
+  color: #031859;
+ 
 }
 
 .trainer-slide img {
@@ -88,6 +99,7 @@
   border-radius: 20px;
   margin-bottom: 10px; */
   /* height: 250px; Увеличим высоту для лучшего вида */
+  
   width: 100%;
   max-width: 600px; 
   height: auto;
@@ -185,7 +197,7 @@
 
 .trainer-description {
   font-size: 0.9em;
-  color:#346173;
+  /* color:#346173; */
 }
 
 .trainer-info {
@@ -241,7 +253,7 @@
 }
 
 .trainer-description__value {
-  color: #777;
+  color: #346173;
   flex: 1; /* Занимает оставшееся место */
 }
 
@@ -254,7 +266,7 @@
 
   border-left: 5px solid #346173; /* Синяя полоса слева */
   padding: 20px 30px;
-  margin-right: 2em; /* увеличьте значение, чтобы увеличить расстояние */
+  margin-right: 10px;
   margin: 20px auto 40px;
   border-radius: 10px;
   max-width: 800px;
@@ -271,18 +283,19 @@
   display: flex;
   align-items: center;
   margin-bottom: 0.5em;
+  color: #346173;
 }
 
 .trainer-description__label {
   font-weight: bold;
-  margin-left: 2em; /* увеличьте значение, чтобы увеличить расстояние */
-  color: #555;
+  margin-left: 1em; /* увеличьте значение, чтобы увеличить расстояние */
+  color: #346173;
   width: 120px; /* Задайте фиксированную ширину для меток */
   text-align: left; /* Выровняйте текст по левому краю */
 }
 
 .trainer-description__value {
-  color: #777;
+  color: #346173;
   flex: 1; /* Занимает оставшееся место */
 }
 /* Дополнительные стили для адаптивности (если необходимо) */

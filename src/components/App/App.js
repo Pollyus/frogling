@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom'; /*, Navigate, useNavigate*/
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import ProtectedRoute from '../Brouse/ProtectedRoute';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import api from '../../utils/Api';
 import './App.css';
 
@@ -21,6 +21,8 @@ import ProductsList from '../Products/ProductsList'
 import SocialLinks from '../SocialLinks/SocialLinks';
 import Promotions from '../Promotions/Promotions'
 import AboutUs from '../AboutUs/AboutUs'
+import LessonsList from '../Lessons/LessonsList';
+import FirstLessonRequirements from '../FirstLessonRequirements/FirstLessonRequirements';
 // import * as auth from '../utils/auth';
 // import api from '../utils/Api';
 
@@ -115,8 +117,11 @@ function App() {
         />
         <AboutUs/>
         <TrainersCarousel />
+        <LessonsList id="lesson-types"/>        
+        <FirstLessonRequirements/>
         <ProductsList/>
         <Promotions/>
+
         <SocialLinks/>
         <div id="ycwidget"></div> {/* Контейнер для виджета YClients */}
         
