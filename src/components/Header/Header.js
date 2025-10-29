@@ -34,9 +34,9 @@ const Header = () => {
             <li className="header__nav-item">
               <Link to="/products">Услуги</Link>
             </li>
-            {/* <li className="header__nav-item">
-              <Link to="/contacts">Контакты</Link>
-            </li> */}
+            <li className="header__nav-item">
+              <Link to="/promotions">Акции</Link>
+            </li>
           </ul>
         </nav>
         <button className="header__burger" onClick={toggleMenu}>

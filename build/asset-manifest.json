@@ -1,0 +1,38 @@
+{
+  "files": {
+    "main.css": "/static/css/main.532b2822.css",
+    "main.js": "/static/js/main.f988c848.js",
+    "static/js/453.96453769.chunk.js": "/static/js/453.96453769.chunk.js",
+    "static/media/Индивид 4.png": "/static/media/Индивид 4.1659c2b72d3b3bacc912.png",
+    "static/media/Индивид 8.png": "/static/media/Индивид 8.bc077d1a9c78ae941e91.png",
+    "static/media/Семья 8.png": "/static/media/Семья 8.b6f34d4e89d484dc2c07.png",
+    "static/media/Группа 8.png": "/static/media/Группа 8.916c77639b8665ff0907.png",
+    "static/media/Семья 4.png": "/static/media/Семья 4.8744cbd8ec006eb7d2ed.png",
+    "static/media/Группа 4.png": "/static/media/Группа 4.1774817b1c9c784ec263.png",
+    "static/media/Семья 1.png": "/static/media/Семья 1.5248a7935ae1c5d31ad0.png",
+    "static/media/Группа 1.png": "/static/media/Группа 1.a758433011e4ab9252b4.png",
+    "static/media/Разовое посещение.png": "/static/media/Разовое посещение.624beb468cd9a9cdbb39.png",
+    "static/media/Пробное занятие.png": "/static/media/Пробное занятие.8ec078b61efd037a60a0.png",
+    "static/media/Circle.png": "/static/media/Circle.b3d64ecfcab1c4fb28b9.png",
+    "static/media/Lyubov.png": "/static/media/Lyubov.bb306a7db81102524cc5.png",
+    "static/media/Lidia.png": "/static/media/Lidia.1d0f76ae7c0ade02defa.png",
+    "static/media/Vlad.png": "/static/media/Vlad.00a67eab13a84f168f4a.png",
+    "static/media/Индивидуальное занятие.png": "/static/media/Индивидуальное занятие.18a02f7dd84b2d9dc669.png",
+    "static/media/Групповое занятие.png": "/static/media/Групповое занятие.1deca9ad797819d478d0.png",
+    "static/media/Семейное плавание.png": "/static/media/Семейное плавание.5b103b2fde16d7a0a689.png",
+    "static/media/Sunday-Regular.ttf": "/static/media/Sunday-Regular.95ff464626f46422bc95.ttf",
+    "static/media/Sunday-Regular.otf": "/static/media/Sunday-Regular.0b6fdf7d5dc94ea9ddcc.otf",
+    "static/media/slick.svg": "/static/media/slick.2630a3e3eab21c607e21.svg",
+    "static/media/slick.eot": "/static/media/slick.a4e97f5a2a64f0ab1323.eot",
+    "static/media/slick.ttf": "/static/media/slick.c94f7671dcc99dce43e2.ttf",
+    "static/media/slick.woff": "/static/media/slick.295183786cd8a1389865.woff",
+    "index.html": "/index.html",
+    "main.532b2822.css.map": "/static/css/main.532b2822.css.map",
+    "main.f988c848.js.map": "/static/js/main.f988c848.js.map",
+    "453.96453769.chunk.js.map": "/static/js/453.96453769.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.532b2822.css",
+    "static/js/main.f988c848.js"
+  ]
+}

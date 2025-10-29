@@ -17,9 +17,9 @@ const trainers = [
     photo: trainer1Image,
     schedule: [
       {label: 'Понедельник', value: '15:00-21:00'},
-      {label: 'Среда', value: '09:00-14:30'},
-      {label: 'Суббота', value: '09:00-14:30'},
-      {label: 'Воскресение', value: '09:00-14:30'},
+      {label: 'Среда', value: '09:00-21:00'},
+      {label: 'Пятница', value: '15:00-21:00'},
+      {label: 'Суббота', value: '09:00-21:00'},
     ],
     description: [
               { label: 'Опыт', value: '3 года'},
@@ -38,6 +38,7 @@ const trainers = [
       {label: 'Вторник', value: '09:00-14:30'},
       {label: 'Четверг', value: '09:00-14:30'},
       {label: 'Пятница', value: '09:00-14:30'},
+      {label: 'Воскресенье', value: '09:00-14:30'},
     ],
     description: [
               { label: 'Опыт', value: '1,5 года'},
