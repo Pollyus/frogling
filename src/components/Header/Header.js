@@ -11,7 +11,7 @@ const Header = () => {
 
   return (
     <header className="header">
-      <div className="header__container container">
+      <div className="header__container">
         <Link to="/" className="header__logo">
           Лягушонок
           <img src={logo} alt="Логотип FrogLing" className="header__logo-image" /> {/* Размещаем логотип под названием */}
@@ -34,9 +34,9 @@ const Header = () => {
             <li className="header__nav-item">
               <Link to="/products">Услуги</Link>
             </li>
-            <li className="header__nav-item">
+            {/* <li className="header__nav-item">
               <Link to="/contacts">Контакты</Link>
-            </li>
+            </li> */}
           </ul>
         </nav>
         <button className="header__burger" onClick={toggleMenu}>

@@ -28,6 +28,7 @@ function App() {
     };
   }, []);
 
+
   return (
     <div>
       <BrowserRouter>
@@ -35,13 +36,13 @@ function App() {
           <Header />
 
           <Routes>
-            <Route path="/" element={<><AboutUs /><TrainersCarousel /><LessonsList id="lesson-types" /><FirstLessonRequirements /><ProductsList /><Promotions /><SocialLinks /><div id="ycwidget"></div></>} />
+            <Route path="/" element={<><AboutUs /><TrainersCarousel /><LessonsList id="lesson-types" /><FirstLessonRequirements /><ProductsList /><Promotions /><div id="ycwidget"></div></>} />
             <Route path="/about" element={<AboutUs />} />
             <Route path="/trainers" element={<TrainersCarousel />} />
             <Route path="/lessons" element={<LessonsList id="lesson-types" />} />
             <Route path="/products" element={<ProductsList />} />
             <Route path="/promotions" element={<Promotions />} />
-            <Route path="/social" element={<SocialLinks />} />
+            {/* <Route path="/social" element={<SocialLinks />} /> */}
             <Route path="/first" element={<FirstLessonRequirements />} />
             {/* Добавьте маршруты для остальных страниц (blog, contacts и т.д.) */}
           </Routes>
@@ -50,7 +51,7 @@ function App() {
       </BrowserRouter>
       <SocialLinks />  
       <Footer />
-      <div id="ycwidget"></div> {/* Контейнер для виджета YClients */}
+      
     </div>
   );
 }

@@ -15,16 +15,23 @@
   padding: 10px 15px;
   border-radius: 25px; /*Более сильное скругление, как в проекте*/
   transition: background-color 0.3s ease;
-  background-color: #619F6D; /*Зеленый цвет кнопок*/
+  background-color: #346173; /*Зеленый цвет кнопок*/
   font-family: Sanday, 'Roboto', sans-serif; /*Используем шрифт Roboto*/
 }
 
 .social-links a:hover {
-  background-color: #90EE90; /*Более светлый оттенок зеленого при наведении*/
+  background-color: #7BA61F; /*Более светлый оттенок зеленого при наведении*/
   color: #333;
 }
 
 .social-links a svg {
   width: 20px;
   height: 20px;
+}
+
+@media (max-width: 768px) {
+
+  .social-links a span {
+    display: none;
+  }
 }
