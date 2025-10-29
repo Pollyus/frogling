@@ -5,6 +5,7 @@
   background-color: #000000;
   text-align: center;
   color: #7BA61F;
+  align-items: center;
 }
 
 @media screen and (max-width: 1023px) {

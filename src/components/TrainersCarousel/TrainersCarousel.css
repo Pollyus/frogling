@@ -334,4 +334,56 @@ flex: 1; /* Занимает одинаковое пространство */
   .slick-center .trainer-slide__image {
     transform: scale(1.05); /* Меньшее увеличение на мобильных */
   }
+
+
+
+  .coaches-grid {
+        /* На мобильных устройствах, когда выбран один тренер,
+           мы будем менять flex-direction на column через JS,
+           но по умолчанию пусть будет row, чтобы карточки выстраивались */
+        flex-direction: row;
+        align-items: stretch;
+    }
+
+    /* Класс для скрытия элементов ТОЛЬКО на мобильных */
+    .coach-card.hidden {
+        display: none !important;
+    }
+
+    /* Стиль для выбранного тренера в режиме детального просмотра ТОЛЬКО на мобильных */
+    .coach-card.selected {
+        width: 90%; /* Расширяем выбранного тренера */
+        max-width: 600px; /* Ограничиваем максимальную ширину */
+        padding: 25px;
+        transform: scale(1.02); /* Немного увеличиваем */
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        border-color: #0056b3;
+        cursor: default; /* Убираем курсор-pointer */
+        margin: 0 auto; /* Центрируем */
+        /* Убедимся, что выбранный тренер отображается как flex-контейнер для центрирования его содержимого */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .coach-card.selected img {
+        width: 150px; /* Увеличиваем фото */
+        height: 150px;
+    }
+
+    .coach-card.selected .coach-details {
+        display: block !important; /* Показываем скрытые детали ТОЛЬКО для выбранного тренера на мобильных */
+        margin-top: 15px;
+        text-align: left;
+        width: 100%;
+    }
+
+    /* Кнопка "Вернуться" изначально скрыта, но будет показана JS на мобильных */
+    #backButton.hidden {
+        display: none !important;
+    }
+    #backButton:not(.hidden) {
+        display: block; /* Показываем, если нет класса hidden */
+    }
 }
