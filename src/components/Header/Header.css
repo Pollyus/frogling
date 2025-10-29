@@ -15,7 +15,7 @@
   align-items: center;
   
   margin: 30 auto;
-  padding: 0 40px; /* Добавляем отступы по бокам */
+  padding: 0 20px; /* Добавляем отступы по бокам */
   flex-wrap: nowrap;
   text-align: right;
 }
@@ -105,13 +105,18 @@
 
 /* Мобильные стили */
 @media (max-width: 768px) {
+  .header {
+     position: relative; 
+  }
   .header__nav {
     display: none; /* Скрываем основное меню */
     position: absolute;
+    
+    transition: transform 0.3s ease; /* Добавляем анимацию */
     /* padding-right: 50px; */
     top: 100%;
     left: 0;
-    width: 100%;
+    
     background-color: #f0f0f0;
     /* z-index: 10; */
     padding: 20px;
@@ -120,6 +125,10 @@
 
   .header__nav--open {
     display: block; /* Показываем меню при открытии */
+    position: absolute;
+    top: 100%;
+    width: 100%;
+    z-index: 1000;
   }
 
   .header__nav-list {
