@@ -1,7 +1,7 @@
 /* Общие стили для секции акций */
 .promotionsSection {
     padding: 60px 0; /* Отступы сверху и снизу */
-    background-color: #f8f8f8; /* Легкий фон */
+    background-color: #ffffff; /* Легкий фон */
     font-family: 'Sanday'; /* Пример шрифта, используйте свой */
     color: #333;
 }

@@ -8,13 +8,17 @@ import trainer1Image from './TrainersPhoto/Vlad.png';
 import trainer2Image from './TrainersPhoto/Lidia.png';
 import trainer3Image from './TrainersPhoto/Lyubov.png';
 
-
 const trainers = [
   {
     id: 1,
     name: 'Владислав',
     photo: trainer1Image, // Замените на реальные пути
-    schedule: '\tПонедельник: 15:00-21:00\n\tСреда: 9:00-14:30\n\tПятница: 15:00-21:00\n\tСуббота: 9:00-14:30\nВоскресение: 9:00-14:30',
+    schedule: [
+      {label: 'Понедельник', value: '15:00-21:00'},
+      {label: 'Среда', value: '09:00-14:30'},
+      {label: 'Суббота', value: '09:00-14:30'},
+      {label: 'Воскресение', value: '09:00-14:30'},
+    ],
     description: [
               { label: 'Опыт', value: '3 года'},
               { label: 'Сертификат', value: 'Специалист грудничкового и малышкового плавания'},
@@ -28,7 +32,12 @@ const trainers = [
     id: 2,
     name: 'Лидия',
     photo: trainer2Image,
-    schedule: '\tПонедельник: 9:00-14:30\n\tВторник: 9:00-14:30\n\tЧетверг: 9:00-14:30\n\tПятница: 15:00-21:00',
+    schedule:[
+      {label: 'Понедельник', value: '09:00-14:30'},
+      {label: 'Вторник', value: '09:00-14:30'},
+      {label: 'Четверг', value: '09:00-14:30'},
+      {label: 'Пятница', value: '09:00-14:30'},
+    ],
     description: [
               { label: 'Опыт', value: '1,5 года'},
               { label: 'Сертификат', value: 'Специалист грудничкового и малышкового плавания. Детский массажист/Преподаватель детского массажа и моторного развития'},
@@ -41,7 +50,11 @@ const trainers = [
     id: 3,
     name: 'Любовь',
     photo: trainer3Image,
-    schedule: '\tВторник: 15:00-21:00\n\tЧетверг: 15:00-21:00\n\tВоскресенье: 15:00-21:00',
+    schedule:[
+      {label: 'Вторник', value: '15:00-21:00'},
+      {label: 'Четверг', value: '15:00-21:00'},
+      {label: 'Воскресенье', value: '15:00-21:00'},
+    ], 
     description: [
               { label: 'Опыт', value: '2 года'},
               { label: 'Сертификат', value: 'Специалист грудничкового и малышкового плавания. Массажист спортивного и детского массажа'},
@@ -184,14 +197,15 @@ function TrainersCarousel() {
           <div className="trainer-info__container">
             <div className="trainer-info__schedule">
               <h4>Расписание: </h4>
-              <p>
+              {/* <p>
                 {selectedTrainer.schedule.split('\n').map((item, key) => (
                   <React.Fragment key={key}>
                     {item}
                     <br />
                   </React.Fragment>
                 ))}
-              </p>
+              </p> */}
+              <TrainerDescription description={selectedTrainer.schedule} />
             </div>
             <div className="trainer-info__description">
               <h4>Информация:</h4>

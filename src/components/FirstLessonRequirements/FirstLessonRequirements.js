@@ -8,7 +8,12 @@ function FirstLessonRequirements() {
         <h2>Взять на первое занятие</h2>
         <div className="card">
             <ul className="requirements-list">
-                <li>Справка от врача (при необходимости)</li>
+                <li><strong>Справка</strong> от врача:</li>
+                  <ul className="requirements-list-second">
+                    <li><strong>До года</strong> справка от педиатора</li>
+                    <li><strong>После года</strong> справка от педиатора и анализ на энтеробиоз</li>
+                    <li><strong>Для родителя</strong> при покупке <strong>семейного абонемента</strong>: анализ на энтеробиоз, справка дерматовенеролога</li>
+                  </ul>
                 <li>Купальник или плавки</li>
                 <li>Принадлежности для душа (шампунь, гель для душа, мочалка)</li>
                 <li>Тапочки или сланцы</li>

@@ -2,7 +2,7 @@
 
 .aboutUsSection {
     padding: 60px 0;
-    background-color: #f9f9f9; /* Более светлый фон */
+    background-color: #ffffff; /* Более светлый фон */
     text-align: center;
 }
 
@@ -102,4 +102,9 @@
     .featuresGrid {
         grid-template-columns: 1fr; /* Одна колонка на мобильных */
     }
+
+    .aboutUsSection p {
+        display: none;
+    }
+    
 }

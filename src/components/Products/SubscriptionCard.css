@@ -35,3 +35,8 @@
   font-size: 1em;
 }
 
+@media (max-width: 768px) {
+    .subscription-card img {
+      display: none;
+    }
+}
