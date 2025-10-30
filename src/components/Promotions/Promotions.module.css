@@ -3,7 +3,7 @@
     padding: 60px 0; /* Отступы сверху и снизу */
     background-color: #ffffff; /* Легкий фон */
     font-family: 'Sanday'; /* Пример шрифта, используйте свой */
-    color: #333;
+    color: #346173;
 }
 
 .container {
@@ -33,7 +33,7 @@
 
 .sectionDescription {
     font-size: 1.2em;
-    color: #555;
+    color: #346173;
     margin-bottom: 40px;
     line-height: 1.6;
 }
@@ -71,7 +71,7 @@
 
 .promoItem h3 {
     font-size: 1.8em;
-    color: #346173;
+    color: #031859;
     margin-bottom: 15px;
     font-weight: bold;
 }
@@ -79,7 +79,7 @@
 .promoItem p {
     font-size: 1.1em;
     line-height: 1.6;
-    color: #666;
+    color: #346173;
 }
 
 /* Стили для выделенного текста (скидки, бесплатно) */
@@ -113,7 +113,7 @@
 .promoCombinedNote p {
     margin: 0;
     font-size: 1.1em;
-    color: #444;
+    color: #346173;
 }
 
 .promoCombinedNote p strong {
@@ -123,7 +123,7 @@
 /* Стили для призыва к действию (CTA) */
 .promoCta {
     font-size: 1.3em;
-    color: #444;
+    color: #346173;
     margin-top: 50px;
     line-height: 1.6;
 }

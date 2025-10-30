@@ -22,7 +22,7 @@ const Promotions = () => {
                 // Акция 0: Знакомство - первое пробное бесплатно
                 React.createElement('div', { className: styles.promoItem },
                     React.createElement(FaPlayCircle, { className: styles.promoIcon }),
-                    React.createElement('h3', null, 'Знакомство: Пробное занятие бесплатно'),
+                    React.createElement('h3', null, 'Знакомство: пробное занятие бесплатно'),
                     React.createElement('p', null,
                         'Приглашаем на первое пробное занятие ',
                         React.createElement('span', { className: styles.highlight }, 'абсолютно бесплатно'),
@@ -66,7 +66,7 @@ const Promotions = () => {
                 // Акция 4: Приведи друга
                 React.createElement('div', { className: styles.promoItem },
                     React.createElement(FaUserFriends, { className: styles.promoIcon }),
-                    React.createElement('h3', null, 'Двойная выгода: Приведи друга!'),
+                    React.createElement('h3', null, 'Двойная выгода: приведи друга!'),
                     React.createElement('p', null,
                         'Пригласите друга в наш бассейн, и после его первого оплаченного занятия вы получите ',
                         React.createElement('span', { className: styles.highlight }, 'одно занятие бесплатно'),
@@ -88,7 +88,7 @@ const Promotions = () => {
                 // Акция 6: Скидка для детей участников СВО
                 React.createElement('div', { className: styles.promoItem },
                     React.createElement(FaHeart, { className: styles.promoIcon }),
-                    React.createElement('h3', null, 'Поддержка Героев'),
+                    React.createElement('h3', null, 'Поддержка героев'),
                     React.createElement('p', null,
                         'Для детей участников СВО предоставляется ',
                         React.createElement('span', { className: styles.highlight }, '20% скидка'),
@@ -136,8 +136,9 @@ const Promotions = () => {
             ),
 
             React.createElement('p', { className: styles.promoCta },
-                'Подробности о каждой акции вы можете уточнить у администратора по номеру телефона' ,
-                ' или в социальных сетях. Ждем вас!'
+                'Подробности о каждой акции вы можете уточнить у ',
+                React.createElement('strong', null, 'администратора '),
+                'по номеру телефона или в социальных сетях. Ждем вас!'
             )
 
             

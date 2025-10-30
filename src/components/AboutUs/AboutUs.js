@@ -34,7 +34,7 @@ const AboutUs = () => {
                 
                     React.createElement('div', { className: styles.featureItem },
                         React.createElement(FaSwimmer, { className: styles.featureIcon }),
-                        React.createElement('h3', null, 'Разные Форматы Занятий'),
+                        React.createElement('h3', null, 'Разные форматы занятий'),
                         React.createElement('p', { className: styles.featureDescription },
                             'Выберите ',
                             React.createElement('span', { className: styles.highlight }, 'подходящий'),
@@ -64,7 +64,7 @@ const AboutUs = () => {
 
                 React.createElement('div', { className: styles.featureItem },
                     React.createElement(FaHeart, { className: styles.featureIcon }),
-                    React.createElement('h3', null, 'Любовь и Внимание к Каждому'),
+                    React.createElement('h3', null, 'Любовь и внимание к каждому'),
                     React.createElement('p', { className: styles.featureDescription },
                         'Мы верим, что каждый ребенок ',
                         React.createElement('span', { className: styles.highlight }, 'уникален'),
