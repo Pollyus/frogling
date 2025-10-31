@@ -1,0 +1,137 @@
+/* src/components/PhotoSlider.css */
+
+.photo-slider-section {
+  padding: 60px 0; /* Отступы сверху и снизу */
+  background-color: #ffffff; /* Легкий фон */
+  text-align: center;
+  overflow: hidden; /* Важно для корректного отображения слайдера */
+}
+
+.photo-slider-section h2 {
+    font-size: 3em; /* Большой заголовок */
+    color: #031859; 
+    margin-bottom: 20px;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.photo-slider-section h2::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 4px;
+    background-color:  #D96E11; /* Акцентный цвет */
+    margin: 10px auto 0;
+    border-radius: 2px;
+}
+
+.slider-wrapper {
+  max-width: 960px; /* Максимальная ширина слайдера */
+  margin: 0 auto; /* Центрирование слайдера */
+  padding: 0 20px; /* Горизонтальные отступы для маленьких экранов */
+}
+
+.slider-item {
+  display: flex !important; /* Важно для корректного центрирования img */
+  justify-content: center;
+  align-items: center;
+  padding: 10px; /* Отступы вокруг каждого слайда */
+}
+
+.slider-item img {
+  width: 100%;
+  max-width: 800px; /* Максимальная ширина изображения */
+  height: auto;
+  border-radius: 12px; /* Скругленные углы изображений */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Легкая тень */
+  object-fit: cover; /* Чтобы изображения заполняли контейнер без искажений */
+  max-height: 500px; /* Максимальная высота изображения */
+}
+
+/* Кастомизация стрелок Slick */
+.slick-prev, .slick-next {
+  background: transparent;
+  border: none;
+  outline: none;
+  width: 40px;
+  height: 40px;
+  z-index: 10;
+}
+
+.slick-prev:before, .slick-next:before {
+  font-size: 35px; /* Размер стрелок */
+  color: #031859; /* Цвет стрелок, замените на свой фирменный */
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
+.slick-prev:hover:before, .slick-next:hover:before {
+  opacity: 1;
+  color: #7BA61F; /* Цвет при наведении */
+}
+
+.slick-prev:hover,
+.slick-next:hover,
+.slick-prev:focus,
+.slick-next:focus {
+  background: transparent;
+  outline: none;
+}
+
+.slick-prev {
+  left: -50px; /* Положение левой стрелки */
+}
+.slick-next {
+  right: -50px; /* Положение правой стрелки */
+}
+
+/* Кастомизация точек-индикаторов Slick */
+.slick-dots {
+  bottom: -40px; /* Положение точек */
+}
+
+.slick-dots li button:before {
+  font-size: 14px; /* Размер точек */
+  color: #346173; /* Цвет неактивных точек */
+  opacity: 0.7;
+}
+
+.slick-dots li.slick-active button:before {
+  color: #7BA61F; /* Цвет активной точки */
+  opacity: 1;
+}
+
+/* Адаптивность для стрелок и точек на маленьких экранах */
+@media (max-width: 768px) {
+  .slick-prev {
+    left: 5px;
+  }
+  .slick-next {
+    right: 5px;
+  }
+  .slick-prev:before, .slick-next:before {
+    font-size: 28px;
+  }
+  .slick-dots {
+    bottom: -30px;
+  }
+  .photo-slider-section h2 {
+    font-size: 2.2em;
+    margin-bottom: 30px;
+  }
+  .slider-item {
+    padding: 5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .slick-prev, .slick-next {
+    display: none !important; /* Скрываем стрелки на очень маленьких экранах */
+  }
+  .photo-slider-section {
+    padding: 40px 0;
+  }
+  .photo-slider-section h2 {
+    font-size: 1.8em;
+  }
+}

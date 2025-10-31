@@ -18,58 +18,74 @@ function SubscriptionList() {
     {
       name: 'Пробное занятие',
       image: FirstTry,
-      description: 'Бесплатно!',
+      oldPrice: null,
+      currentPrice: null,
+      // oldPrice: 'Бесплатно!',
+      comment: "Первое занятие бесплатно!"
     },
     {
       name: 'Разовое посещение',
       image: OneLesson,
-      description: '1 600 рублей',
+      oldPrice: 1600,
+      
     },
     {
       name: 'Индивидуальный абонемент',
       image: One4,
       number_of_classes: '(4 занятия)',
-      description: '6 000 рублей',
+      oldPrice: 6000,
+      currentPrice: 5400,
+      comment: "При покупке абонемента после пробного занятия!"
     },
     {
       name: 'Индивидуальный абонемент',
       number_of_classes: '(8 занятий)',
       image: One8,
-      description: '11 500 рублей',
+      oldPrice: 11500,
+      currentPrice: 10350,
+      comment: "При покупке абонемента после пробного занятия!"
     },
     {
       name: 'Групповое посещение',
       image: Groupe1,
-      description: '1 100 рублей',
+      oldPrice: 1100,
     },
     {
       name: 'Групповой абонемент',
       image: Groupe4,
       number_of_classes: '(4 занятия)',
-      description: '4 100 рублей',
+      oldPrice: 4100,
+      currentPrice: 3690,
+      comment: "При покупке абонемента после пробного занятия!"
     },
     {
       name: 'Групповой абонемент',
       image: Groupe8,
       number_of_classes: '(8 занятий)',
-      description: '8 000 рублей',
+      oldPrice: 8000,
+      currentPrice: 7200,
+      comment: "При покупке абонемента после пробного занятия!"
     },
     {
       name: 'Семейное посещение',
       image: Family1,
-      description: '2 000 рублей',
+      oldPrice: 2000,
     },
     {
       name: 'Семейный абонемент',
       image: Family4,
       number_of_classes: '(4 занятия)',
-      description: '7 400 рублей',
+      oldPrice: 7400,
+      currentPrice: 6660,
+      comment: "При покупке абонемента после пробного занятия!"
     },
     {
       name: 'Семейный абонемент',
       image: Family8,
       number_of_classes: '(8 занятий)',
-      description: '14 000 рублей',
+      oldPrice: 14000,
+      currentPrice: 12600,
+      comment: "При покупке абонемента после пробного занятия!"
     },
     
   ];

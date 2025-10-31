@@ -1,8 +1,8 @@
 {
   "files": {
-    "main.css": "/static/css/main.6451bed3.css",
-    "main.js": "/static/js/main.bc9a45e9.js",
-    "static/js/453.96453769.chunk.js": "/static/js/453.96453769.chunk.js",
+    "main.css": "/static/css/main.42bcdf5d.css",
+    "main.js": "/static/js/main.b17d8982.js",
+    "static/js/453.453f2ef2.chunk.js": "/static/js/453.453f2ef2.chunk.js",
     "static/media/Индивид 4.png": "/static/media/Индивид 4.1659c2b72d3b3bacc912.png",
     "static/media/Индивид 8.png": "/static/media/Индивид 8.bc077d1a9c78ae941e91.png",
     "static/media/Семья 8.png": "/static/media/Семья 8.b6f34d4e89d484dc2c07.png",
@@ -16,23 +16,32 @@
     "static/media/Circle.png": "/static/media/Circle.b3d64ecfcab1c4fb28b9.png",
     "static/media/Lyubov.png": "/static/media/Lyubov.bb306a7db81102524cc5.png",
     "static/media/Lidia.png": "/static/media/Lidia.1d0f76ae7c0ade02defa.png",
+    "static/media/1.jpg": "/static/media/1.8c6aac49b2f46a39c1d7.jpg",
     "static/media/Vlad.png": "/static/media/Vlad.00a67eab13a84f168f4a.png",
+    "static/media/2.jpg": "/static/media/2.f417e1b550a8476c0618.jpg",
     "static/media/Индивидуальное занятие.png": "/static/media/Индивидуальное занятие.18a02f7dd84b2d9dc669.png",
     "static/media/Групповое занятие.png": "/static/media/Групповое занятие.1deca9ad797819d478d0.png",
     "static/media/Семейное плавание.png": "/static/media/Семейное плавание.5b103b2fde16d7a0a689.png",
+    "static/media/7.jpg": "/static/media/7.e0efc6c47885d3635476.jpg",
+    "static/media/5.jpg": "/static/media/5.2afb0873ba22d4194aab.jpg",
+    "static/media/3.jpg": "/static/media/3.fe9c9d8a9afe823b9c7e.jpg",
+    "static/media/4.jpg": "/static/media/4.2d440b60a05b935e288a.jpg",
     "static/media/Sunday-Regular.ttf": "/static/media/Sunday-Regular.95ff464626f46422bc95.ttf",
+    "static/media/9.jpg": "/static/media/9.215fa302ba93e57f029e.jpg",
+    "static/media/6.jpg": "/static/media/6.35b8cc8152a53d2aeb3c.jpg",
+    "static/media/8.jpg": "/static/media/8.7aae6771cc714726187c.jpg",
     "static/media/Sunday-Regular.otf": "/static/media/Sunday-Regular.0b6fdf7d5dc94ea9ddcc.otf",
     "static/media/slick.svg": "/static/media/slick.2630a3e3eab21c607e21.svg",
     "static/media/slick.eot": "/static/media/slick.a4e97f5a2a64f0ab1323.eot",
     "static/media/slick.ttf": "/static/media/slick.c94f7671dcc99dce43e2.ttf",
     "static/media/slick.woff": "/static/media/slick.295183786cd8a1389865.woff",
     "index.html": "/index.html",
-    "main.6451bed3.css.map": "/static/css/main.6451bed3.css.map",
-    "main.bc9a45e9.js.map": "/static/js/main.bc9a45e9.js.map",
-    "453.96453769.chunk.js.map": "/static/js/453.96453769.chunk.js.map"
+    "main.42bcdf5d.css.map": "/static/css/main.42bcdf5d.css.map",
+    "main.b17d8982.js.map": "/static/js/main.b17d8982.js.map",
+    "453.453f2ef2.chunk.js.map": "/static/js/453.453f2ef2.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.6451bed3.css",
-    "static/js/main.bc9a45e9.js"
+    "static/css/main.42bcdf5d.css",
+    "static/js/main.b17d8982.js"
   ]
 }

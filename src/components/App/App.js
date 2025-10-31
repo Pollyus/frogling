@@ -13,6 +13,7 @@ import FirstLessonRequirements from '../FirstLessonRequirements/FirstLessonRequi
 import ProductsList from '../Products/ProductsList';
 import Promotions from '../Promotions/Promotions';
 import SocialLinks from '../SocialLinks/SocialLinks';
+import PhotoSlider from '../PhotoSlider/PhotoSlider';
 
 function App() {
   const [currentUser, setCurrentUser] = useState({});
@@ -36,7 +37,7 @@ function App() {
           <Header />
 
           <Routes>
-            <Route path="/" element={<><AboutUs /><TrainersCarousel /><LessonsList id="lesson-types" /><FirstLessonRequirements /><ProductsList /><Promotions /><div id="ycwidget"></div></>} />
+            <Route path="/" element={<><AboutUs /><TrainersCarousel /><LessonsList id="lesson-types" /><FirstLessonRequirements /><PhotoSlider/><ProductsList /><Promotions /><div id="ycwidget"></div></>} />
             <Route path="/about" element={<AboutUs />} />
             <Route path="/trainers" element={<TrainersCarousel />} />
             <Route path="/lessons" element={<LessonsList id="lesson-types" />} />
@@ -44,6 +45,7 @@ function App() {
             <Route path="/promotions" element={<Promotions />} />
             {/* <Route path="/social" element={<SocialLinks />} /> */}
             <Route path="/first" element={<FirstLessonRequirements />} />
+            <Route path="/photo" element={<PhotoSlider />} />
             {/* Добавьте маршруты для остальных страниц (blog, contacts и т.д.) */}
           </Routes>
          
