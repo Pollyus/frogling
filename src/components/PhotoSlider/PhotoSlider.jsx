@@ -16,6 +16,14 @@ import photo6 from './images/6.jpg'
 import photo7 from './images/7.jpg'
 import photo8 from './images/8.jpg'
 import photo9 from './images/9.jpg'
+import photo10 from './images/10.jpg'
+import photo11 from './images/11.jpg'
+import photo12 from './images/12.jpg'
+import photo13 from './images/13.jpg'
+import photo14 from './images/14.jpg'
+import photo15 from './images/15.jpg'
+
+
 
 // Пример массива с фотографиями. ЗАМЕНИТЕ ЭТО СВОИМИ ФОТОГРАФИЯМИ!
 // Важно: загрузите ваши реальные фотографии в папку public/images/ (или src/assets/)
@@ -30,13 +38,13 @@ const images = [
   { id: 7, src: photo7, alt: 'Дети на занятии 7', orientation: 'vertical' },
   { id: 8, src: photo8, alt: 'Дети на занятии 8', orientation: 'horizontal' },
   { id: 9, src: photo9, alt: 'Дети на занятии 9', orientation: 'horizontal' },
-  { id: 10, src: photo9, alt: 'Дети на занятии 10', orientation: 'horizontal' },
-  { id: 11, src: photo9, alt: 'Дети на занятии 11', orientation: 'horizontal' },
-  { id: 12, src: photo9, alt: 'Дети на занятии 12', orientation: 'horizontal' },
-  { id: 13, src: photo9, alt: 'Дети на занятии 13', orientation: 'vertical' },
-  { id: 14, src: photo9, alt: 'Дети на занятии 14', orientation: 'vertical' },
-  { id: 15, src: photo9, alt: 'Дети на занятии 15', orientation: 'vertical' },
-  { id: 16, src: photo9, alt: 'Дети на занятии 16', orientation: 'horizontal' },
+  { id: 10, src: photo10, alt: 'Дети на занятии 10', orientation: 'horizontal' },
+  { id: 11, src: photo11, alt: 'Дети на занятии 11', orientation: 'horizontal' },
+  { id: 12, src: photo12, alt: 'Дети на занятии 12', orientation: 'horizontal' },
+  { id: 13, src: photo13, alt: 'Дети на занятии 13', orientation: 'vertical' },
+  { id: 14, src: photo14, alt: 'Дети на занятии 14', orientation: 'vertical' },
+  { id: 15, src: photo15, alt: 'Дети на занятии 15', orientation: 'vertical' },
+  
   // Добавьте больше фотографий по аналогии
 ];
 

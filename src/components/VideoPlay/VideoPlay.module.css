@@ -37,7 +37,7 @@
     position: relative; /* Важно, чтобы контент был над видео */
     z-index: 1; /* Контент должен быть над видео */
     padding: 20px;
-    background-color: rgba(255, 255, 255, 0.4); /* Небольшой фон для текста */
+    background-color: rgba(255, 255, 255, 0.5); /* Небольшой фон для текста */
     border-radius: 8px;
 }
 
@@ -46,7 +46,7 @@
     font-size: 1.2em;
     color: #031859;
     font-weight: bold;
-    text-shadow: 1px 1px 3px rgba(254, 253, 253, 0.7);
+    text-shadow: 1px 1px 3px rgba(254, 253, 253, 0.8);
 }
 
 
@@ -58,8 +58,8 @@
     margin-bottom: 20px;
     position: relative;
     padding-bottom: 10px;
-    margin-bottom: 30px;
-    position: relative;
+    margin-bottom: 10px;
+    
     padding-bottom: 15px;
 }
 

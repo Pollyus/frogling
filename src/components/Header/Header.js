@@ -19,7 +19,7 @@ const Header = () => {
         
         <nav className={`header__nav ${isMenuOpen ? 'header__nav--open' : ''}`}>
           <ul className="header__nav-list">
-            <li className="header__nav-item">
+            <li className="header__nav-item">   
               <Link to="/about">О нас</Link>
             </li>
             <li className="header__nav-item">
@@ -27,6 +27,9 @@ const Header = () => {
             </li>
             <li className="header__nav-item">
               <Link to="/trainers">Тренеры</Link>
+            </li>
+            <li className="header__nav-item">
+              <Link to="/photo">Фото занятий</Link>
             </li>
             <li className="header__nav-item">
               <Link to="/first">Первое занятие</Link>
