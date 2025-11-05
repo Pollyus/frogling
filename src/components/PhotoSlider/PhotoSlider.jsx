@@ -30,6 +30,13 @@ const images = [
   { id: 7, src: photo7, alt: 'Дети на занятии 7', orientation: 'vertical' },
   { id: 8, src: photo8, alt: 'Дети на занятии 8', orientation: 'horizontal' },
   { id: 9, src: photo9, alt: 'Дети на занятии 9', orientation: 'horizontal' },
+  { id: 10, src: photo9, alt: 'Дети на занятии 10', orientation: 'horizontal' },
+  { id: 11, src: photo9, alt: 'Дети на занятии 11', orientation: 'horizontal' },
+  { id: 12, src: photo9, alt: 'Дети на занятии 12', orientation: 'horizontal' },
+  { id: 13, src: photo9, alt: 'Дети на занятии 13', orientation: 'vertical' },
+  { id: 14, src: photo9, alt: 'Дети на занятии 14', orientation: 'vertical' },
+  { id: 15, src: photo9, alt: 'Дети на занятии 15', orientation: 'vertical' },
+  { id: 16, src: photo9, alt: 'Дети на занятии 16', orientation: 'horizontal' },
   // Добавьте больше фотографий по аналогии
 ];
 

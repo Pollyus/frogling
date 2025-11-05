@@ -5,12 +5,12 @@ import { FaBaby, FaSwimmer, FaUsers, FaHeart, FaCheckCircle, FaWater } from 'rea
 const AboutUs = () => {
  
     return React.createElement('section', { className: styles.aboutUsSection },
-        React.createElement('div', { className: styles.container },
-            React.createElement('h2', null, 'Aквацентр "Лягушонок"'),
-            React.createElement('p', { className: styles.mainDescription },
-                'Аквацентр "Лягушонок" – это место, где рождается любовь к воде! Мы предлагаем обучение плаванию для детей от 3 месяцев до 8 лет, создавая безопасную и комфортную среду, укрепляя здоровье вашего ребенка. '
-            ),
-
+         React.createElement('div', { className: styles.container },
+        //     React.createElement('h2', null, 'Aквацентр "Лягушонок"'),
+        //     React.createElement('p', { className: styles.mainDescription },
+        //         'Аквацентр "Лягушонок" – это место, где рождается любовь к воде! Мы предлагаем обучение плаванию для детей от 3 месяцев до 8 лет, создавая безопасную и комфортную среду, укрепляя здоровье вашего ребенка. '
+            //),
+    
             React.createElement('div', { className: styles.featuresGrid },
                 React.createElement('div', { className: styles.featureItem },
                     React.createElement(FaCheckCircle, { className: styles.featureIcon }),
@@ -72,7 +72,7 @@ const AboutUs = () => {
                     )
                 )
             )
-        )
+         )
     );
 };
 

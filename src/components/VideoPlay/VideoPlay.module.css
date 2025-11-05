@@ -1,0 +1,74 @@
+/* src/components/Header/Header.module.css */
+.headerSection {
+    position: relative;
+    width: 100%;
+    height: 60vh; /* Высота секции хедера, можно настроить */
+    overflow: hidden;
+    display: flex;
+    justify-content: center; /* Центрируем содержимое по горизонтали */
+    align-items: center; /* Центрируем содержимое по вертикали */
+    color: white;
+    text-align: center;
+}
+
+.videoBackground {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    /* Добавляем легкое затемнение для лучшей читаемости текста */
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+.backgroundVideo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Заполняет контейнер, обрезая лишнее */
+    /* opacity теперь контролируется через React-стейт инлайн-стилями */
+    transition: opacity 1s ease-in-out; /* Плавный переход между видео */
+}
+
+.headerContent {
+    position: relative; /* Важно, чтобы контент был над видео */
+    z-index: 1; /* Контент должен быть над видео */
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.4); /* Небольшой фон для текста */
+    border-radius: 8px;
+}
+
+
+.headerContent p {
+    font-size: 1.2em;
+    color: #031859;
+    font-weight: bold;
+    text-shadow: 1px 1px 3px rgba(254, 253, 253, 0.7);
+}
+
+
+.headerContent h1 {
+    font-size: 3.5em;
+    font-size: 3em; /* Большой заголовок */
+    color: #031859; 
+    text-shadow: 0 0 8px rgba(255, 255, 255); /* Белое свечение */
+    margin-bottom: 20px;
+    position: relative;
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.headerContent h1::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 4px;
+    background-color: #D96E11;
+    margin: 10px auto 0;
+    border-radius: 2px;
+}
