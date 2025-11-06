@@ -116,7 +116,8 @@
 
 .lesson-card-answer {
   margin-left: 1em;
-  color:  #346173;
+  color:  #D96E11;
+  font-weight: bold;
   margin-bottom: 0.5em;
   align-items: left;
   justify-content: space-between; /* Добавлено для размещения элементов по краям */
