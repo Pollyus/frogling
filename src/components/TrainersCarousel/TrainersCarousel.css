@@ -78,7 +78,7 @@
 .trainer-slide__name {
   font-weight: bold;
   font-size: 1.2em;
-  color: #346173;
+  color: #031859;
   text-transform: uppercase;
   margin-bottom: 0; /* Убираем лишний margin-bottom, если уже есть margin-top у след. элемента */
 }
