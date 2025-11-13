@@ -34,3 +34,39 @@
   max-width: 1200px;
   margin: 0 auto;
 }
+
+.promoCombinedNote {
+    background-color: #e0f7fa; /* Легкий голубой фон */
+    border-left: 5px solid #346173; /* Синяя полоса слева */
+    padding: 20px 30px;
+    margin: 20px auto 40px;
+    border-radius: 10px;
+    max-width: 800px;
+    display: flex;
+    align-items: center;
+    text-align: left;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.promoCombinedNote > svg { /* Стили для FaInfoCircle, так как это SVG */
+    font-size: 1.8em;
+    color: #346173;
+    margin-right: 20px;
+    min-width: 1.8em; /* Чтобы иконка не сжималась */
+}
+
+.promoCombinedNote p {
+    margin: 0;
+    font-size: 1.1em;
+    color: #346173;
+}
+
+.promoCombinedNote p strong {
+    color: #031859;
+}
+
+.promoIcon {
+    font-size: 3.5em; /* Размер иконки */
+    color: #D96E11; /* Цвет иконки */
+    margin-bottom: 20px;
+}

@@ -12,6 +12,8 @@ import Groupe1 from './ProductsImage/Группа 1.png'
 import Family1 from './ProductsImage/Семья 1.png'
 import Family4 from './ProductsImage/Семья 4.png'
 import Family8 from './ProductsImage/Семья 8.png'
+import {FaInfoCircle} from'react-icons/fa'
+
 
 function SubscriptionList() {
   const subscriptions = [
@@ -91,16 +93,25 @@ function SubscriptionList() {
   ];
 
   return (
-    <section id="subscriptions" className="subscriptions">
-      <div className="container">
-        <h2>Наши услуги</h2>
-        <div className="subscriptions-grid">
-          {subscriptions.map((subscription, index) => (
-            <SubscriptionCard key={index} subscription={subscription} />
-          ))}
+    <div>
+      <section id="subscriptions" className="subscriptions">
+        <div className="container">
+          <h2>Наши услуги</h2>
+          <div className="subscriptions-grid">
+            {subscriptions.map((subscription, index) => (
+              <SubscriptionCard key={index} subscription={subscription} />
+            ))}
+          </div>
         </div>
+      </section>
+
+      <div className='promoCombinedNote'> 
+        <span className="promoIcon">{FaInfoCircle}</span>
+        <br></br>   
+        <p>Важно:<br></br>
+        Абонемент действует месяц с момента его активации после первого занятия</p>
       </div>
-    </section>
+    </div>
   );
 }
 

@@ -4,7 +4,7 @@ import {
   faVk,
   faTelegram,
 } from '@fortawesome/free-brands-svg-icons';
-import { faMap, faPhone, faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import { faMap, faPhone, faEnvelope, faLocationDot } from '@fortawesome/free-solid-svg-icons';
 import './SocialLinks.css';
 
 const SocialLinks = () => {
@@ -13,6 +13,11 @@ const SocialLinks = () => {
       <a href="https://go.2gis.com/EZNpj" target="_blank" rel="noopener noreferrer">
         <FontAwesomeIcon icon={faMap} />
         <span>2ГИС</span>
+      </a>
+
+      <a href="https://yandex.ru/maps/-/CLClYU0V" target="_blank" rel="noopener noreferrer">
+        <FontAwesomeIcon icon={faLocationDot} />
+        <span>Яндекс</span>
       </a>
 
       <a href="https://vk.com/frogling_kzn" target="_blank" rel="noopener noreferrer">
