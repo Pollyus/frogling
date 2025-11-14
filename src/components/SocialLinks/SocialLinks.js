@@ -17,7 +17,7 @@ const SocialLinks = () => {
 
       <a href="https://yandex.ru/maps/-/CLClYU0V" target="_blank" rel="noopener noreferrer">
         <FontAwesomeIcon icon={faLocationDot} />
-        <span>Яндекс</span>
+        <span>Яндекс Карты</span>
       </a>
 
       <a href="https://vk.com/frogling_kzn" target="_blank" rel="noopener noreferrer">
