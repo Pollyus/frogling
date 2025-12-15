@@ -1,92 +1,63 @@
-import React, { useRef, useState, useEffect, useCallback } from 'react';
+import React, { useRef, useEffect } from 'react'; // Удаляем useState, useCallback
 import styles from './VideoPlay.module.css';
 
-// Импортируем видеофайлы. Предполагаем, что они теперь в форматах mp4 и webm.
-// Если у вас только mp4, уберите импорты webm.
-import video1_mp4 from './Video/1.mp4';
-// import video1_webm from './Video/1.webm'; // Опционально, для лучшей кроссбраузерности
-import video2_mp4 from './Video/2.mp4';
-// import video2_webm from './Video/2.webm'; // Опционально
+// Импортируем только то видео, которое нужно показывать
+import mainVideo from './Video/video.mp4'; // Переименовал для ясности, чтобы не путать с другими
 
 const VideoPlay = () => {
-    const video1Ref = useRef(null);
-    const video2Ref = useRef(null);
-    const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+    // Оставляем только одну ссылку на видеоэлемент
+    const videoElementRef = useRef(null);
 
-    const playNextVideo = useCallback(() => {
-        setCurrentVideoIndex(prevIndex => {
-            const currentVideoEl = prevIndex === 0 ? video1Ref.current : video2Ref.current;
-            const nextIndex = (prevIndex + 1) % 2;
-            const nextVideoEl = nextIndex === 0 ? video1Ref.current : video2Ref.current;
-
-            if (currentVideoEl) {
-                currentVideoEl.pause();
-                currentVideoEl.style.opacity = 0;
-            }
-
-            if (nextVideoEl) {
-                nextVideoEl.currentTime = 0;
-                nextVideoEl.play().catch(error => console.warn("Autoplay failed for next video:", error));
-                nextVideoEl.style.opacity = 1;
-            }
-
-            return nextIndex;
-        });
-    }, []);
+    // Логика для цикличного переключения и индексации больше не нужна
+    // const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+    // const playNextVideo = useCallback(() => { ... }, []);
 
     useEffect(() => {
-        const video1 = video1Ref.current;
-        const video2 = video2Ref.current;
+        const video = videoElementRef.current;
 
-        if (video1) {
-            video1.addEventListener('ended', playNextVideo);
-            video1.play().catch(error => console.warn("Autoplay failed for initial video 1:", error));
-        }
-        if (video2) {
-            video2.addEventListener('ended', playNextVideo);
+        if (video) {
+            // Пытаемся запустить видео при монтировании компонента.
+            // .catch() нужен, так как браузеры могут блокировать autoplay,
+            // особенно если видео не muted (хотя у нас оно muted).
+            video.play().catch(error => {
+                console.warn("Autoplay failed for main video:", error);
+                // Здесь можно добавить логику, если автовоспроизведение не удалось,
+                // например, показать кнопку "Play" пользователю.
+            });
+
+            // Для цикличного воспроизведения ОДНОГО видео достаточно атрибута loop в HTML
+            // Поэтому обработчик 'ended' больше не нужен для переключения видео.
+            // video.addEventListener('ended', playNextVideo);
         }
 
+        // Если бы мы добавляли слушатели, здесь была бы их очистка.
+        // Сейчас она не нужна, так как 'ended' больше не привязан.
         return () => {
-            if (video1) {
-                video1.removeEventListener('ended', playNextVideo);
-            }
-            if (video2) {
-                video2.removeEventListener('ended', playNextVideo);
-            }
+            // if (video) {
+            //     video.removeEventListener('ended', playNextVideo);
+            // }
         };
-    }, [playNextVideo]);
+    }, []); // Пустой массив зависимостей означает, что эффект запустится один раз при монтировании
 
     return (
         <div className={styles.headerSection}>
             <div className={styles.videoBackground}>
-                {/* Первое видео */}
+                {/* Оставляем только один тег video */}
                 <video
-                    ref={video1Ref}
-                    id="background-video-1"
+                    ref={videoElementRef} // Используем нашу единственную ссылку
+                    id="background-video" // Упрощаем ID
                     className={styles.backgroundVideo}
-                    style={{ opacity: currentVideoIndex === 0 ? 1 : 0 }}
-                    autoPlay
-                    muted
-                    playsInline
-                    preload="auto"
+                    // Удаляем логику opacity, т.к. видео всегда одно и видимо
+                    // style={{ opacity: currentVideoIndex === 0 ? 1 : 0 }}
+                    
+                    autoPlay       // Автоматическое воспроизведение
+                    loop           // <--- Ключевой атрибут для цикличного воспроизведения одного видео
+                    muted          // Без звука, чтобы autoplay работал в большинстве браузеров
+                    playsInline    // Воспроизведение встроенным на iOS
+                    preload="auto" // Предварительная загрузка для быстрой готовности
                 >
-                    <source src={video1_mp4} type="video/mp4" />
-                    {/* {video1_webm && <source src={video1_webm} type="video/webm" />} Опционально */}
-                    Ваш браузер не поддерживает тег video.
-                </video>
-
-                {/* Второе видео */}
-                <video
-                    ref={video2Ref}
-                    id="background-video-2"
-                    className={styles.backgroundVideo}
-                    style={{ opacity: currentVideoIndex === 1 ? 1 : 0 }}
-                    muted
-                    playsInline
-                    preload="auto"
-                >
-                    <source src={video2_mp4} type="video/mp4" />
-                    {/* {video2_webm && <source src={video2_webm} type="video/webm" />} Опционально */}
+                    {/* Источник для нашего единственного видео */}
+                    <source src={mainVideo} type="video/mp4" />
                     Ваш браузер не поддерживает тег video.
                 </video>
             </div>
@@ -99,4 +70,4 @@ const VideoPlay = () => {
     );
 };
 
-export default VideoPlay;
+export default VideoPlay; // Не забудьте экспортировать компонент
