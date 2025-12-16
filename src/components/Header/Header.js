@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import Garland from '../Girland/Girland';
 import './Header.css';
 import logo from '../../Circle.png'; 
 const Header = () => {
@@ -11,7 +12,9 @@ const Header = () => {
 
   return (
     <header className="header">
+      
       <div className="header__container">
+        <Garland numberOfLights={30} animationSpeed="2.5s" /> {/* Добавляем гирлянду */}
         <Link to="/" className="header__logo">
           Лягушонок
           <img src={logo} alt="Логотип FrogLing" className="header__logo-image" /> {/* Размещаем логотип под названием */}

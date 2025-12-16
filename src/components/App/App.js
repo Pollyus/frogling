@@ -15,6 +15,7 @@ import Promotions from '../Promotions/Promotions';
 import SocialLinks from '../SocialLinks/SocialLinks';
 import PhotoSlider from '../PhotoSlider/PhotoSlider';
 import VideoPlay from '../VideoPlay/VideoPlay';
+import ActionNewYear from '../ActionNewYear/ActionNewYear'
 
 function App() {
   const [currentUser, setCurrentUser] = useState({});
@@ -38,8 +39,9 @@ function App() {
           <Header />
 
           <Routes>
-            <Route path="/" element={<><VideoPlay /><AboutUs /><TrainersCarousel /><LessonsList id="lesson-types" /><FirstLessonRequirements /><PhotoSlider/><ProductsList /><Promotions /><div id="ycwidget"></div></>} />
-             <Route path="/video" element={<VideoPlay />} />
+            <Route path="/" element={<><VideoPlay /><ActionNewYear/><AboutUs /><TrainersCarousel /><LessonsList id="lesson-types" /><FirstLessonRequirements /><PhotoSlider/><ProductsList /><Promotions /><div id="ycwidget"></div></>} />
+            <Route path="/video" element={<VideoPlay />} />
+            <Route path='/action' element={<ActionNewYear/>}/>
             <Route path="/about" element={<AboutUs />} />
             <Route path="/trainers" element={<TrainersCarousel />} />
             <Route path="/lessons" element={<LessonsList id="lesson-types" />} />

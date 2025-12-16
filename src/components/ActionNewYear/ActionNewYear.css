@@ -1,0 +1,208 @@
+/* ActionNewYear.css */
+
+.first-lesson-requirements {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  /* background-color: #1a1a1a; Темный фон для секции */
+  color: #e0e0e0; /* Светлый текст */
+  font-family: Arial, sans-serif;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  font-family: Sanday;
+
+  background-image: url("./picture.jpg"); /* Укажите правильный путь к вашему изображению */
+  background-size: cover; /* Изображение будет масштабироваться так, чтобы покрыть всю область элемента, обрезая лишнее */
+  background-position: center center; /* Центрирует изображение по горизонтали и вертикали */
+  background-repeat: no-repeat; /* Предотвращает повторение изображения */
+  /* background-attachment: fixed; /* Опционально: если вы хотите, чтобы фон оставался на месте при прокрутке страницы */
+
+  /* Для улучшения читаемости текста на фоновой картинке, можно добавить наложение */
+  position: relative; /* Необходимо для позиционирования псевдоэлемента */
+  z-index: 0; /* Создает контекст наложения */
+}
+
+/* Добавление полупрозрачного слоя поверх изображения для лучшей читаемости текста */
+
+.first-lesson-requirements h2 {
+  text-align: center;
+  color: #031859;
+  margin-bottom: 20px;
+  font-size: 2.2em;
+}
+
+.first-lesson-requirements h3 {
+  text-align: center;
+  color: #ffffff;
+  font-weight: bold;
+  /* text-shadow:
+    -0.1px -0.1px 0 #fff,
+     0.1px -0.1px 0 #fff,
+    -0.1px  0.1px 0 #fff,
+     0.1px  0.1px 0 #fff; */
+  margin-bottom: 25px;
+  font-size: 1.4em;
+  font-weight: normal;
+}
+
+.card {
+  /* background: rgba(3, 24, 89, .8);  */
+  background: rgba(52, 97, 115, .85);/* Фон для карточки */
+  /* opacity: 0.3; */
+  border-radius: 8px;
+  padding: 25px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.requirements-list,
+.requirements-list-second,
+.card > ul { /* Общие стили для списков */
+  list-style-type: none;
+  padding: 0;
+  margin: 5px 0;
+}
+
+.requirements-list li,
+.requirements-list-second li,
+.card > ul li {
+  /* background-color: #3a3a3a; */
+  margin-bottom: 10px;
+  padding: 5px 15px;
+  border-radius: 5px;
+  color: #ffffff;
+  font-size: 1.05em;
+  line-height: 1.5;
+}
+
+.requirements-list li strong,
+.requirements-list-second li strong,
+.card > ul li strong {
+  color: #ffffff; /* Цвет для выделенного текста */
+  font-size: 1.25em;
+}
+
+/* Стили для FAQ аккордеона */
+.faq-container {
+  margin-top: 30px;
+  border: 1px solid  rgb(0, 0, 0);
+  border-radius: 8px;
+  overflow: hidden; /* Чтобы скругленные углы работали с бордерами внутри */
+}
+
+.faq-item {
+  border-bottom: 1px solid #ffffff; /* Разделитель между вопросами */
+}
+
+.faq-item:last-child {
+  border-bottom: none; /* У последнего элемента нет нижней границы */
+}
+
+.faq-question-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  cursor: pointer; /* Показывает, что элемент кликабельный */
+  background-color: rgba(3, 24, 89, .5);
+  transition: background-color 0.3s ease; /* Плавная смена фона при наведении */
+}
+
+.faq-question-header:hover {
+  background-color: #031859; /* Фон при наведении */
+}
+
+.faq-question-header h3 {
+  margin: 0; /* Убираем стандартные отступы у заголовка */
+  font-size: 1.15em;
+  color: #ffffff;
+  text-align: left; /* Переопределяем text-align center из родителя */
+}
+
+.card h4 {
+  margin: 0; /* Убираем стандартные отступы у заголовка */
+  /* font-size: 1.15em; */
+  color: #ffffff;
+  text-align: center; /* Переопределяем text-align center из родителя */
+}
+
+.faq-question-header svg {
+  color: #ffffff;
+  font-size: 1.1em;
+  transition: transform 0.3s ease; /* Плавное вращение стрелки */
+}
+
+
+
+
+.faq-answer {
+  padding: 10px 20px 20px;
+  background-color: rgba(123, 166, 31, 0.1); /* Фон для ответа */
+  color: #ffffff;
+  font-size: 0.98em;
+  line-height: 1.6;
+  /* Для плавной анимации раскрытия можно использовать max-height, overflow: hidden и transition */
+  /* max-height: 0; */
+  /* overflow: hidden; */
+  /* transition: max-height 0.3s ease-out, padding 0.3s ease-out; */
+}
+
+/* .faq-item.open .faq-answer {
+  max-height: 200px; /* Достаточно большое значение, чтобы вместить контент */
+  /* padding: 10px 20px 20px; */
+/* } */
+
+.faq-answer ul,
+.faq-answer p {
+  margin: 0;
+  padding: 0;
+  list-style-type: none; /* Убираем маркеры у списков в ответах, если они там есть */
+}
+
+.faq-answer li {
+  margin-bottom: 5px;
+  color: #ffffff;
+}
+
+.faq-answer li strong {
+  color: #ffffff;
+}
+
+
+.social-links {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0); /*Серый фон как в проекте*/
+  /* opacity: 0; */
+}
+
+.social-links a {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #fff; /*Белый текст*/
+  text-decoration: none;
+  padding: 10px 15px;
+  border-radius: 25px; /*Более сильное скругление, как в проекте*/
+  transition: background-color 0.3s ease;
+  background-color: #346173; /*Зеленый цвет кнопок*/
+  font-family: Sanday, 'Roboto', sans-serif; /*Используем шрифт Roboto*/
+}
+
+.social-links a:hover {
+  background-color: #7BA61F; /*Более светлый оттенок зеленого при наведении*/
+  color: #333;
+}
+
+.social-links a svg {
+  width: 20px;
+  height: 20px;
+}
+
+@media (max-width: 768px) {
+
+  .social-links a span {
+    display: none;
+  }
+}
