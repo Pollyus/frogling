@@ -72,27 +72,27 @@ function ActionNewYear() {
   };
 
   return (
-    <section className="first-lesson-requirements">
+    <section className="new_year-requirements">
       <h2>Конкурс посвященный Новому году</h2>
       
-      <div className="card">
+      <div className="new_year-card">
         <h3>Разыгрываем 3 места в честь <br></br>главного праздника года</h3>
-        <ul className="requirements-list">
+        <ul className="new_year-requirements-list">
           <li>1 место — абонемент на 8 индивидуальных занятий</li>
           <li>2 место — абонемент на 4 индивидуальных занятий </li>
           <li>3 место — бесплатное занятие</li>
         </ul>
 
         {/* Раздел с динамически раскрывающимися/сворачивающимися вопросами */}
-        <div className="faq-container">
+        <div className="new_year-faq-container">
           {faqItems.map(item => (
-            <div key={item.id} className="faq-item">
-              <div className="faq-question-header" onClick={() => toggleItem(item.id)}>
+            <div key={item.id} className="new_year-faq-item">
+              <div className="new_year-faq-question-header" onClick={() => toggleItem(item.id)}>
                 <h3>{item.question}</h3>
                 <FontAwesomeIcon icon={openItemId === item.id ? faChevronUp : faChevronDown} />
               </div>
               {openItemId === item.id && ( // Если текущий вопрос открыт, показываем ответ
-                <div className="faq-answer">
+                <div className="new_year-faq-answer">
                   {item.answer}
                 </div>
               )}

@@ -39,7 +39,7 @@ function App() {
           <Header />
 
           <Routes>
-            <Route path="/" element={<><VideoPlay /><ActionNewYear/><AboutUs /><TrainersCarousel /><LessonsList id="lesson-types" /><FirstLessonRequirements /><PhotoSlider/><ProductsList /><Promotions /><div id="ycwidget"></div></>} />
+            <Route path="/" element={<><VideoPlay /><AboutUs /><TrainersCarousel /><LessonsList id="lesson-types" /><FirstLessonRequirements /><PhotoSlider/><ProductsList /><Promotions /><div id="ycwidget"></div></>} />
             <Route path="/video" element={<VideoPlay />} />
             <Route path='/action' element={<ActionNewYear/>}/>
             <Route path="/about" element={<AboutUs />} />

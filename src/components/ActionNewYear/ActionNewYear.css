@@ -1,6 +1,6 @@
 /* ActionNewYear.css */
 
-.first-lesson-requirements {
+.new_year-requirements {
   max-width: 800px;
   margin: 40px auto;
   padding: 20px;
@@ -24,14 +24,14 @@
 
 /* Добавление полупрозрачного слоя поверх изображения для лучшей читаемости текста */
 
-.first-lesson-requirements h2 {
+.new_year-requirements h2 {
   text-align: center;
   color: #031859;
   margin-bottom: 20px;
   font-size: 2.2em;
 }
 
-.first-lesson-requirements h3 {
+.new_year-requirements h3 {
   text-align: center;
   color: #ffffff;
   font-weight: bold;
@@ -45,7 +45,7 @@
   font-weight: normal;
 }
 
-.card {
+.new_year-card {
   /* background: rgba(3, 24, 89, .8);  */
   background: rgba(52, 97, 115, .85);/* Фон для карточки */
   /* opacity: 0.3; */
@@ -54,17 +54,17 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-.requirements-list,
-.requirements-list-second,
+.new_year-requirements-list,
+.new_year-requirements-list-second,
 .card > ul { /* Общие стили для списков */
   list-style-type: none;
   padding: 0;
   margin: 5px 0;
 }
 
-.requirements-list li,
-.requirements-list-second li,
-.card > ul li {
+.new_year-requirements-list li,
+.new_year-requirements-list-second li,
+.new_year-card > ul li {
   /* background-color: #3a3a3a; */
   margin-bottom: 10px;
   padding: 5px 15px;
@@ -74,30 +74,30 @@
   line-height: 1.5;
 }
 
-.requirements-list li strong,
-.requirements-list-second li strong,
-.card > ul li strong {
+.new_year-requirements-list li strong,
+.new_year-requirements-list-second li strong,
+.new_year-card > ul li strong {
   color: #ffffff; /* Цвет для выделенного текста */
   font-size: 1.25em;
 }
 
 /* Стили для FAQ аккордеона */
-.faq-container {
+.new_year-faq-container {
   margin-top: 30px;
   border: 1px solid  rgb(0, 0, 0);
   border-radius: 8px;
   overflow: hidden; /* Чтобы скругленные углы работали с бордерами внутри */
 }
 
-.faq-item {
+.new_year-faq-item {
   border-bottom: 1px solid #ffffff; /* Разделитель между вопросами */
 }
 
-.faq-item:last-child {
+.new_year-faq-item:last-child {
   border-bottom: none; /* У последнего элемента нет нижней границы */
 }
 
-.faq-question-header {
+.new_year-faq-question-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -107,25 +107,25 @@
   transition: background-color 0.3s ease; /* Плавная смена фона при наведении */
 }
 
-.faq-question-header:hover {
+.new_year-faq-question-header:hover {
   background-color: #031859; /* Фон при наведении */
 }
 
-.faq-question-header h3 {
+.new_year-faq-question-header h3 {
   margin: 0; /* Убираем стандартные отступы у заголовка */
   font-size: 1.15em;
   color: #ffffff;
   text-align: left; /* Переопределяем text-align center из родителя */
 }
 
-.card h4 {
+.new_year-card h4 {
   margin: 0; /* Убираем стандартные отступы у заголовка */
   /* font-size: 1.15em; */
   color: #ffffff;
   text-align: center; /* Переопределяем text-align center из родителя */
 }
 
-.faq-question-header svg {
+.new_year-faq-question-header svg {
   color: #ffffff;
   font-size: 1.1em;
   transition: transform 0.3s ease; /* Плавное вращение стрелки */
@@ -134,7 +134,7 @@
 
 
 
-.faq-answer {
+.new_year-faq-answer {
   padding: 10px 20px 20px;
   background-color: rgba(123, 166, 31, 0.1); /* Фон для ответа */
   color: #ffffff;
@@ -151,19 +151,19 @@
   /* padding: 10px 20px 20px; */
 /* } */
 
-.faq-answer ul,
-.faq-answer p {
+.new_year-faq-answer ul,
+.new_year-faq-answer p {
   margin: 0;
   padding: 0;
   list-style-type: none; /* Убираем маркеры у списков в ответах, если они там есть */
 }
 
-.faq-answer li {
+.new_year-faq-answer li {
   margin-bottom: 5px;
   color: #ffffff;
 }
 
-.faq-answer li strong {
+.new_year-faq-answer li strong {
   color: #ffffff;
 }
 

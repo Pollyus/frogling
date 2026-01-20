@@ -14,7 +14,7 @@ const Header = () => {
     <header className="header">
       
       <div className="header__container">
-        <Garland numberOfLights={30} animationSpeed="2.5s" /> {/* Добавляем гирлянду */}
+        {/* <Garland numberOfLights={30} animationSpeed="2.5s" /> Добавляем гирлянду */}
         <Link to="/" className="header__logo">
           Лягушонок
           <img src={logo} alt="Логотип FrogLing" className="header__logo-image" /> {/* Размещаем логотип под названием */}
