@@ -43,6 +43,12 @@ const Header = () => {
             <li className="header__nav-item">
               <Link to="/promotions">Акции</Link>
             </li>
+             <li className="header__nav-item">
+              <Link to="/shedule">Расписание</Link>
+            </li>
+             <li className="header__nav-item">
+              <Link to="/profile">Профиль</Link>
+            </li>
           </ul>
         </nav>
         <button className="header__burger" onClick={toggleMenu}>
