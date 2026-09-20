@@ -1,0 +1,25 @@
+# ========================
+# React / Node.js
+# ========================
+client/node_modules/
+client/build/
+.npm
+.eslintcache
+
+# ========================
+# .NET / C# / Visual Studio
+# ========================
+server/**/bin/
+server/**/obj/
+server/**/.vs/
+server/**/appsettings.Development.json
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# ========================
+# Системные файлы
+# ========================
+.DS_Store
+Thumbs.db
