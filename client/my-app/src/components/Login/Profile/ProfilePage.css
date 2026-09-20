@@ -1,336 +1,467 @@
-/* src/ProfilePage.css — Frogling Style Theme */
+/* src/ProfilePage.css — Светлая тема сайта "Лягушонок" */
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
-/* Корневые переменные темы Frogling */
-:root {
-  --frog-bg: #fff;
-  --frog-card-bg: #fff;
-  --frog-border:#7BA61F;
-  --frog-border-hover:#7BA61F;
-  
-  --frog-500: #7BA61F;
-  --frog-600: #7BA61F;
-  --frog-emerald: #346173;
-  --frog-teal: #346173;
-  
-  --frog-text-main: #0D0D0D;
-  --frog-text-muted: #94a3b8;
-  --frog-text-dim: #64748b;
-
-  --frog-glow: #7BA61F;
-  --frog-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+/* Базовые цвета и фон страницы под светлый стиль сайта */
+.profile-container-light {
+  min-height: calc(100vh - 120px);
+  background-color: transparent;
+  color: #1e293b;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  padding: 24px 16px 60px;
 }
 
-/* Сброс и базовые настройки */
-body {
-  margin: 0;
-  font-family: Sanday;
-  background-color: var(--frog-bg);
-  color: var(--frog-text-main);
-  -webkit-font-smoothing: antialiased;
-}
-
-h1 {
-  font-family: Sanday;
-  color: #031859;
-}
-
-/* Главный контейнер с фоновыми эффектами свечения */
-.profile-container {
-  min-height: 100vh;
-  background-color: var(--frog-bg);
-  color: var(--frog-text-main);
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  overflow-x: hidden;
-}
-
-/* Эффекты рассеянного фонового света в стиле Frogling */
-.profile-container::before {
-  content: '';
-  position: absolute;
-  top: -120px;
-  left: -120px;
-  width: 450px;
-  height: 450px;
-  background: #fff;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.profile-container::after {
-  content: '';
-  position: absolute;
-  bottom: -120px;
-  right: -120px;
-  width: 450px;
-  height: 450px;
-  background: radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, rgba(2, 6, 23, 0) 70%);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Шапка приложения (Header) */
-.profile-header {
-  background: rgba(15, 23, 42, 0.75);
-  border-bottom: 1px solid var(--frog-border);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  position: sticky;
-  top: 0;
-  z-index: 30;
-}
-
-.header-content {
-  max-width: 1024px;
+.profile-wrapper {
+  max-width: 980px;
   margin: 0 auto;
-  padding: 14px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 }
 
-/* Логотип Frogling */
-.brand-logo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  cursor: pointer;
-  user-select: none;
-  transition: transform 0.2s ease;
-}
-
-.brand-logo:hover {
-  transform: translateY(-1px);
-}
-
-.logo-icon {
-  width: 42px;
-  height: 42px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, var(--frog-600), var(--frog-500), var(--frog-teal));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
-  box-shadow: 0 8px 20px -3px rgba(34, 197, 94, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.brand-name {
-  font-size: 22px;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  background: linear-gradient(90deg, #ffffff 0%, #dcfce7 50%, var(--frog-500) 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Кнопка выхода в шапке */
-.logout-btn-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  border-radius: 12px;
-  background: rgba(239, 68, 68, 0.1);
-  color: #f87171;
-  border: 1px solid rgba(239, 68, 68, 0.2);
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.logout-btn-header:hover {
-  background: rgba(239, 68, 68, 0.2);
-  border-color: rgba(239, 68, 68, 0.4);
-  color: #fca5a5;
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
-}
-
-/* Карточки профиля (Glassmorphism Frogling Style) */
-.profile-card {
-  background: var(--frog-card-bg);
-  border: 1px solid var(--frog-border);
+/* 1. Верхняя главная карточка пользователя */
+.user-hero-card {
+  background: #ffffff;
   border-radius: 24px;
-  padding: 28px;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  box-shadow: var(--frog-shadow);
-  position: relative;
-  overflow: hidden;
-  margin-bottom: 24px;
-  z-index: 10;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.profile-card:hover {
-  border-color: var(--frog-border-hover);
-}
-
-/* Верхняя акцентная полоса Frogling */
-.card-accent-bar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: #ffffff
-}
-
-/* Аватар профиля */
-.avatar-container {
-  width: 92px;
-  height: 92px;
-  border-radius: 22px;
-  background: linear-gradient(135deg, var(--frog-600), var(--frog-emerald));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 38px;
-  box-shadow: 0 12px 28px -4px rgba(22, 163, 74, 0.4);
-  border: 2px solid rgba(134, 239, 172, 0.3);
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.avatar-container:hover {
-  transform: scale(1.06) rotate(2deg);
-}
-
-/* Бэдж статуса аккаунта */
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 12px;
-  border-radius: 9999px;
-  font-size: 12px;
-  font-weight: 600;
-  background: rgba(34, 197, 94, 0.12);
-  color: #4ade80;
-  border: 1px solid rgba(34, 197, 94, 0.25);
-  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.1);
-}
-
-/* Формы ввода Frogling Style */
-.profile-form .form-group {
-  margin-bottom: 20px;
-}
-
-.profile-form .form-label {
-  display: block;
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--frog-text-muted);
-  margin-bottom: 8px;
-}
-
-.profile-form .input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.profile-form .input-icon {
-  position: absolute;
-  left: 14px;
-  color: var(--frog-text-dim);
-  width: 18px;
-  height: 18px;
-  transition: color 0.2s ease;
-}
-
-.profile-form .form-input {
-  width: 100%;
-  padding: 12px 16px 12px 42px;
-  background-color: rgba(2, 6, 23, 0.7);
-  border: 1px solid var(--frog-border);
-  border-radius: 14px;
-  color: var(--frog-text-main);
-  font-size: 14px;
-  outline: none;
-  transition: all 0.2s ease;
-}
-
-.profile-form .form-input:focus {
-  border-color: var(--frog-500);
-  background-color: rgba(2, 6, 23, 0.9);
-  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15);
-}
-
-.profile-form .form-input:focus + .input-icon,
-.profile-form .input-wrapper:focus-within .input-icon {
-  color: var(--frog-500);
-}
-
-/* Кнопка сохранения изменений */
-.btn-save {
-  padding: 12px 26px;
-  background: linear-gradient(135deg, var(--frog-600), var(--frog-emerald));
-  color: #ffffff;
-  font-weight: 600;
-  border-radius: 14px;
-  border: none;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 10px 20px -5px rgba(22, 163, 74, 0.4);
-}
-
-.btn-save:hover {
-  background: linear-gradient(135deg, var(--frog-500), #34d399);
-  transform: translateY(-1px);
-  box-shadow: 0 12px 24px -4px rgba(34, 197, 94, 0.5);
-}
-
-.btn-save:active {
-  transform: translateY(0);
-}
-
-/* Опасная зона (Danger Zone — Выход из сессии) */
-.danger-zone {
-  margin-top: 32px;
-  padding-top: 24px;
-  border-top: 1px solid var(--frog-border);
+  padding: 32px;
+  box-shadow: 0 10px 30px -10px rgba(0, 70, 40, 0.08);
+  border: 1px solid rgba(226, 232, 240, 0.9);
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 24px;
 }
 
 @media (min-width: 640px) {
-  .danger-zone {
+  .user-hero-card {
     flex-direction: row;
     align-items: center;
-    justify-content: space-between;
+    text-align: left;
   }
 }
 
-.danger-btn {
-  padding: 10px 22px;
-  border-radius: 14px;
-  background: rgba(239, 68, 68, 0.12);
-  color: #f87171;
-  border: 1px solid rgba(239, 68, 68, 0.25);
-  font-size: 14px;
-  font-weight: 600;
+.user-hero-avatar-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.user-hero-avatar {
+  width: 90px;
+  height: 90px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, #74b83b, #4b8b20);
   display: flex;
   align-items: center;
   justify-content: center;
+  color: #ffffff;
+  box-shadow: 0 12px 24px -6px rgba(116, 184, 59, 0.4);
+}
+
+.avatar-icon {
+  width: 44px;
+  height: 44px;
+}
+
+.user-status-pill {
+  font-size: 12px;
+  font-weight: 600;
+  color: #2d6a1b;
+  background: #eef8ea;
+  padding: 2px 10px;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.user-hero-info {
+  flex: 1;
+  text-align: center;
+}
+
+@media (min-width: 640px) {
+  .user-hero-info {
+    text-align: left;
+  }
+}
+
+.user-hero-heading {
+  display: flex;
+  flex-direction: column;
   gap: 8px;
+  align-items: center;
+}
+
+@media (min-width: 640px) {
+  .user-hero-heading {
+    flex-direction: row;
+    align-items: baseline;
+  }
+}
+
+.user-hero-name {
+  font-size: 28px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.user-level-tag {
+  font-size: 13px;
+  font-weight: 600;
+  color: #0284c7;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.user-hero-email {
+  font-size: 14px;
+  color: #64748b;
+  margin: 4px 0 14px;
+}
+
+.user-hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  font-size: 13px;
+  color: #475569;
+}
+
+@media (min-width: 640px) {
+  .user-hero-meta {
+    justify-content: flex-start;
+  }
+}
+
+.user-hero-meta span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* 2. Статистические карточки бассейна */
+.stats-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+@media (min-width: 640px) {
+  .stats-cards-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.stat-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 20px;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.04);
+}
+
+.stat-icon-wrap {
+  width: 50px;
+  height: 50px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-number {
+  font-size: 20px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* 3. Табы переключения */
+.profile-tabs-nav {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 8px;
+}
+
+.profile-tab-btn {
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #64748b;
+  background: transparent;
+  border: none;
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.danger-btn:hover {
-  background: rgba(239, 68, 68, 0.22);
-  border-color: rgba(239, 68, 68, 0.5);
-  color: #fca5a5;
-  box-shadow: 0 8px 16px -4px rgba(239, 68, 68, 0.25);
+.profile-tab-btn:hover {
+  color: #0f172a;
+  background: rgba(241, 245, 249, 0.8);
+}
+
+.profile-tab-btn.active {
+  color: #2d6a1b;
+  background: #eef8ea;
+}
+
+/* 4. Основная форма */
+.profile-main-card {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 32px;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 10px 30px -10px rgba(0, 70, 40, 0.08);
+}
+
+.profile-section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.alert-saved {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.profile-form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+@media (min-width: 640px) {
+  .profile-form-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-field label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #64748b;
+}
+
+.field-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.field-icon {
+  position: absolute;
+  left: 14px;
+  color: #94a3b8;
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+}
+
+.field-input-wrap input {
+  width: 100%;
+  padding: 12px 16px 12px 42px;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  font-size: 14px;
+  color: #0f172a;
+  outline: none;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.field-input-wrap input:focus {
+  border-color: #74b83b;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(116, 184, 59, 0.18);
+}
+
+.form-actions-row {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+  padding-top: 20px;
+  border-top: 1px solid #f1f5f9;
+}
+
+@media (min-width: 640px) {
+  .form-actions-row {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.btn-change-password {
+  background: transparent;
+  border: none;
+  color: #2d6a1b;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+}
+
+.btn-change-password:hover {
+  text-decoration: underline;
+}
+
+.btn-save-primary {
+  padding: 12px 28px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #74b83b, #559c25);
+  color: #ffffff;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 6px 16px -3px rgba(116, 184, 59, 0.35);
+  transition: all 0.2s ease;
+}
+
+.btn-save-primary:hover {
+  background: linear-gradient(135deg, #81cc42, #60ad2b);
+  transform: translateY(-1px);
+}
+
+/* 5. Стили карточки абонемента и тренировок */
+.subscription-box {
+  background: #f8fafc;
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid #e2e8f0;
+}
+
+.sub-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.sub-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0 0 4px;
+  color: #0f172a;
+}
+
+.sub-dates {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+}
+
+.sub-badge.active {
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 9999px;
+}
+
+.sub-progress-bar {
+  width: 100%;
+  height: 10px;
+  background: #e2e8f0;
+  border-radius: 9999px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.sub-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #74b83b, #3b82f6);
+  border-radius: 9999px;
+}
+
+.sub-counter {
+  font-size: 13px;
+  color: #475569;
+}
+
+.visits-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.visit-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+}
+
+.visit-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.visit-date {
+  font-weight: 600;
+  font-size: 14px;
+  color: #0f172a;
+}
+
+.visit-coach {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.visit-status.done {
+  font-size: 12px;
+  font-weight: 600;
+  color: #15803d;
+  background: #dcfce7;
+  padding: 4px 10px;
+  border-radius: 8px;
 }

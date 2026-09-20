@@ -1,39 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User, Mail, LogOut, Shield, Calendar, Bell, Check, Key } from 'lucide-react';
+import { 
+  User, Mail, Phone, Calendar, Shield, Bell, Check, 
+  Key, Award, Activity, Clock, FileText, ChevronRight, 
+  CreditCard, Droplet
+} from 'lucide-react';
 import './ProfilePage.css';
 
 export default function ProfilePage() {
   const navigate = useNavigate();
-  const [user, setUser] = useState({ fullName: '', email: '' });
+  const [user, setUser] = useState({ 
+    fullName: '', 
+    email: '', 
+    phone: '+7 (999) 000-00-00',
+    birthDate: '2018-05-14',
+    parentName: 'Алексей Иванов'
+  });
+  
+  const [activeTab, setActiveTab] = useState('info'); // info | visits | subscription
   const [isSaved, setIsSaved] = useState(false);
 
-  // Получаем данные текущего пользователя из localStorage
+  // Загружаем данные пользователя
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       try {
         const parsed = JSON.parse(storedUser);
-        setUser({
-          fullName: parsed.fullName || 'Пользователь Frogling',
+        setUser(prev => ({
+          ...prev,
+          fullName: parsed.fullName || 'Алексей',
           email: parsed.email || 'user@example.com'
-        });
+        }));
       } catch (e) {
-        setUser({ fullName: 'Пользователь Frogling', email: storedUser });
+        setUser(prev => ({ ...prev, email: storedUser }));
       }
-    } else {
-      setUser({ fullName: 'Пользователь Frogling', email: 'user@example.com' });
     }
   }, []);
 
-  // Функция выхода из аккаунта
-  const handleLogout = () => {
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('user');
-    navigate('/login', { replace: true });
-  };
-
-  // Сохранение изменений профиля
   const handleSave = (e) => {
     e.preventDefault();
     localStorage.setItem('user', JSON.stringify(user));
@@ -42,147 +45,226 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="profile-container">
-      {/* Шапка сайта (Header) */}
-      <header className="profile-header">
-        <div className="header-content">
-          <div className="brand-logo" onClick={() => navigate('/')}>
-            <div className="logo-icon">
-              🐸
+    <div className="profile-container-light">
+      <div className="profile-wrapper">
+        
+        {/* Верхняя карточка юзера */}
+        <div className="user-hero-card">
+          <div className="user-hero-avatar-wrap">
+            <div className="user-hero-avatar">
+              <User className="avatar-icon" />
             </div>
-            <span className="brand-name">
-              Frogling
+            <span className="user-status-pill">
+              <Shield className="w-3.5 h-3.5" /> Ученик
             </span>
           </div>
 
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-slate-400 hidden sm:inline">{user.email}</span>
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="logout-btn-header"
-              title="Выйти из аккаунта"
-            >
-              <LogOut className="w-4 h-4" />
-              <span>Выйти</span>
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* Основной контент профиля */}
-      <main className="flex-1 max-w-4xl w-full mx-auto p-4 sm:p-6 my-6">
-        
-        {/* Карточка профиля */}
-        <div className="profile-card">
-          <div className="card-accent-bar"></div>
-
-          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-            
-            {/* Аватар */}
-            <div className="avatar-container">
-              👤
+          <div className="user-hero-info">
+            <div className="user-hero-heading">
+              <h1 className="user-hero-name">{user.fullName}</h1>
+              <span className="user-level-tag">
+                <Droplet className="w-3 h-3" /> Уровень: «Уверенный головастик»
+              </span>
             </div>
+            <p className="user-hero-email">{user.email}</p>
 
-            {/* Имя и статус */}
-            <div className="flex-1 text-center sm:text-left">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                <h1 className="text-2xl font-bold text-white">{user.fullName}</h1>
-                <span className="status-badge w-max mx-auto sm:mx-0">
-                  <Shield className="w-3.5 h-3.5" /> Учётная запись активна
-                </span>
-              </div>
-              <p className="text-slate-400 text-sm mt-1">{user.email}</p>
-              
-              <div className="flex flex-wrap justify-center sm:justify-start gap-4 mt-4 text-xs text-slate-400">
-                <span className="flex items-center gap-1.5">
-                  <Calendar className="w-4 h-4 text-emerald-400" /> Зарегистрирован: 2026
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <Bell className="w-4 h-4 text-emerald-400" /> Уведомления включены
-                </span>
-              </div>
+            <div className="user-hero-meta">
+              <span><Calendar className="w-4 h-4 text-emerald-600" /> Зарегистрирован: 2026 г.</span>
+              <span><Bell className="w-4 h-4 text-emerald-600" /> SMS-оповещения включены</span>
+              <span><Award className="w-4 h-4 text-amber-500" /> Медосмотр: действителен</span>
             </div>
-
           </div>
         </div>
 
-        {/* Форма редактирования личных данных */}
-        <div className="profile-card">
-          <h2 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
-            <User className="w-5 h-5 text-emerald-400" /> Личная информация
-          </h2>
-
-          {isSaved && (
-            <div className="mb-6 p-4 rounded-xl bg-emerald-950/60 border border-emerald-500/40 text-emerald-200 text-sm flex items-center gap-2">
-              <Check className="w-5 h-5 text-emerald-400" /> Изменения успешно сохранены!
+        {/* Быстрые карточки для бассейна "Лягушонок" */}
+        <div className="stats-cards-grid">
+          <div className="stat-card">
+            <div className="stat-icon-wrap bg-emerald-100 text-emerald-700">
+              <Activity className="w-6 h-6" />
             </div>
-          )}
-
-          <form onSubmit={handleSave} className="profile-form space-y-5">
-            <div className="form-group">
-              <label className="form-label">Имя и Фамилия</label>
-              <div className="input-wrapper">
-                <User className="input-icon" />
-                <input
-                  type="text"
-                  value={user.fullName}
-                  onChange={(e) => setUser({ ...user, fullName: e.target.value })}
-                  className="form-input"
-                  placeholder="Ваше имя"
-                />
-              </div>
-            </div>
-
-            <div className="form-group">
-              <label className="form-label">Электронная почта</label>
-              <div className="input-wrapper">
-                <Mail className="input-icon" />
-                <input
-                  type="email"
-                  value={user.email}
-                  onChange={(e) => setUser({ ...user, email: e.target.value })}
-                  className="form-input"
-                  placeholder="name@example.com"
-                />
-              </div>
-            </div>
-
-            <div className="pt-2 flex flex-col sm:flex-row justify-between items-center gap-4">
-              <button
-                type="button"
-                onClick={() => alert('Ссылка для смены пароля отправлена на почту')}
-                className="text-xs text-emerald-400 hover:text-emerald-300 transition flex items-center gap-1.5"
-              >
-                <Key className="w-3.5 h-3.5" /> Сменить пароль
-              </button>
-
-              <button
-                type="submit"
-                className="btn-save w-full sm:w-auto"
-              >
-                Сохранить изменения
-              </button>
-            </div>
-          </form>
-
-          {/* Опасная зона (Выход из профиля) */}
-          <div className="danger-zone">
             <div>
-              <h3 className="text-sm font-semibold text-white">Сессия авторизации</h3>
-              <p className="text-xs text-slate-400">Завершите текущую сессию, чтобы выйти из системы на этом устройстве.</p>
+              <div className="stat-number">12</div>
+              <div className="stat-label">Посещённых занятий</div>
             </div>
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="danger-btn w-full sm:w-auto"
-            >
-              <LogOut className="w-4 h-4" /> Выйти из аккаунта
-            </button>
           </div>
 
+          <div className="stat-card">
+            <div className="stat-icon-wrap bg-blue-100 text-blue-700">
+              <CreditCard className="w-6 h-6" />
+            </div>
+            <div>
+              <div className="stat-number">4 из 8</div>
+              <div className="stat-label">Остаток абонемента</div>
+            </div>
+          </div>
+
+          <div className="stat-card">
+            <div className="stat-icon-wrap bg-purple-100 text-purple-700">
+              <Clock className="w-6 h-6" />
+            </div>
+            <div>
+              <div className="stat-number">Ср, 16:30</div>
+              <div className="stat-label">Ближайшее занятие</div>
+            </div>
+          </div>
         </div>
-      </main>
+
+        {/* Табы разделов */}
+        <div className="profile-tabs-nav">
+          <button 
+            type="button"
+            className={`profile-tab-btn ${activeTab === 'info' ? 'active' : ''}`}
+            onClick={() => setActiveTab('info')}
+          >
+            Личная информация
+          </button>
+          <button 
+            type="button"
+            className={`profile-tab-btn ${activeTab === 'subscription' ? 'active' : ''}`}
+            onClick={() => setActiveTab('subscription')}
+          >
+            Мой абонемент
+          </button>
+          <button 
+            type="button"
+            className={`profile-tab-btn ${activeTab === 'visits' ? 'active' : ''}`}
+            onClick={() => setActiveTab('visits')}
+          >
+            История посещений
+          </button>
+        </div>
+
+        {/* Контент активного таба */}
+        {activeTab === 'info' && (
+          <div className="profile-main-card">
+            <h2 className="profile-section-title">
+              <User className="w-5 h-5 text-emerald-600" /> Данные ученика и родителя
+            </h2>
+
+            {isSaved && (
+              <div className="alert-saved">
+                <Check className="w-5 h-5" /> Изменения успешно сохранены!
+              </div>
+            )}
+
+            <form onSubmit={handleSave} className="profile-form-grid">
+              <div className="form-field">
+                <label>ФИО ребёнка / ученика</label>
+                <div className="field-input-wrap">
+                  <User className="field-icon" />
+                  <input
+                    type="text"
+                    value={user.fullName}
+                    onChange={(e) => setUser({ ...user, fullName: e.target.value })}
+                    placeholder="Имя Фамилия"
+                  />
+                </div>
+              </div>
+
+              <div className="form-field">
+                <label>Электронная почта</label>
+                <div className="field-input-wrap">
+                  <Mail className="field-icon" />
+                  <input
+                    type="email"
+                    value={user.email}
+                    onChange={(e) => setUser({ ...user, email: e.target.value })}
+                    placeholder="you@example.com"
+                  />
+                </div>
+              </div>
+
+              <div className="form-field">
+                <label>Контактный телефон</label>
+                <div className="field-input-wrap">
+                  <Phone className="field-icon" />
+                  <input
+                    type="text"
+                    value={user.phone}
+                    onChange={(e) => setUser({ ...user, phone: e.target.value })}
+                    placeholder="+7 (999) 000-00-00"
+                  />
+                </div>
+              </div>
+
+              <div className="form-field">
+                <label>ФИО родителя (представителя)</label>
+                <div className="field-input-wrap">
+                  <FileText className="field-icon" />
+                  <input
+                    type="text"
+                    value={user.parentName}
+                    onChange={(e) => setUser({ ...user, parentName: e.target.value })}
+                    placeholder="ФИО родителя"
+                  />
+                </div>
+              </div>
+
+              <div className="form-actions-row">
+                <button
+                  type="button"
+                  onClick={() => alert('Ссылка для смены пароля отправлена на почту')}
+                  className="btn-change-password"
+                >
+                  <Key className="w-4 h-4" /> Сменить пароль
+                </button>
+
+                <button type="submit" className="btn-save-primary">
+                  Сохранить изменения
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+
+        {activeTab === 'subscription' && (
+          <div className="profile-main-card">
+            <h2 className="profile-section-title">
+              <CreditCard className="w-5 h-5 text-emerald-600" /> Текущий абонемент
+            </h2>
+            <div className="subscription-box">
+              <div className="sub-header">
+                <div>
+                  <h3 className="sub-title">Абонемент «Юный пловец» (8 занятий)</h3>
+                  <p className="sub-dates">Действует до 30 октября 2026</p>
+                </div>
+                <span className="sub-badge active">Активен</span>
+              </div>
+              <div className="sub-progress-bar">
+                <div className="sub-progress-fill" style={{ width: '50%' }}></div>
+              </div>
+              <div className="sub-counter">
+                Осталось <strong>4 занятия</strong> из 8
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'visits' && (
+          <div className="profile-main-card">
+            <h2 className="profile-section-title">
+              <Clock className="w-5 h-5 text-emerald-600" /> Журнал тренировок
+            </h2>
+            <div className="visits-list">
+              <div className="visit-item">
+                <div className="visit-info">
+                  <span className="visit-date">18 сентября 2026, 16:30</span>
+                  <span className="visit-coach">Инструктор: Любовь</span>
+                </div>
+                <span className="visit-status done">Посещено</span>
+              </div>
+              <div className="visit-item">
+                <div className="visit-info">
+                  <span className="visit-date">15 сентября 2026, 16:30</span>
+                  <span className="visit-coach">Инструктор: Любовь</span>
+                </div>
+                <span className="visit-status done">Посещено</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+      </div>
     </div>
   );
 }

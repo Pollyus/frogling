@@ -278,11 +278,11 @@ export default function AuthPage() {
             className="submit-btn w-full py-3.5 bg-gradient-to-r from-emerald-600 to-green-500 hover:from-emerald-500 hover:to-green-400 text-white font-semibold rounded-xl transition duration-200 flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/30 disabled:opacity-75"
           >
             {isLoading ? 'Загрузка...' : isLogin ? 'Войти' : 'Создать аккаунт'}
-            <ArrowRight className="w-4 h-4" />
+            {/* <ArrowRight className="w-4 h-4" /> */}
           </button>
         </form>
 
-        <div className="divider relative my-6">
+        {/* <div className="divider relative my-6">
           <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-800"></div></div>
           <div className="relative flex justify-center text-xs uppercase"><span className="bg-slate-900 px-3 text-slate-500">или</span></div>
         </div>
@@ -294,7 +294,7 @@ export default function AuthPage() {
           <button type="button" onClick={() => alert('OAuth Google')} className="social-btn flex items-center justify-center gap-2 py-2.5 bg-slate-950 border border-slate-800 rounded-xl hover:bg-slate-900 text-sm text-slate-300 hover:text-white transition">
             <Chrome className="w-4 h-4 text-emerald-500" /> Google
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );

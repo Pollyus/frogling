@@ -1,24 +1,12 @@
-.header {
-  /* background-color: #f0f0f0; */
-  background: linear-gradient(to bottom, #7BA61F, rgba(255, 255, 255, 0.2)); /*Прозрачный градиент*/
-  /* padding: 40px; */
+/* src/Header.css */
 
-  /* Другие стили хедера */
-}
-.header__nav {
-  /* Стили для навигации */
-  padding-right: 100px;  /*Прижимаем навигацию к правому краю */
-}
-
-.header__container {
-  display: flex;         
-  justify-content: space-between;
-  align-items: center;
-  
-  margin: 30 auto;
-  padding: 0 20px; /* Добавляем отступы по бокам */
-  flex-wrap: nowrap;
-  text-align: right;
+.header-container {
+  background: linear-gradient(to bottom, #7BA61F, rgba(255, 255, 255, 0.8)); /*Прозрачный градиент*/
+  /* border-bottom: 1px solid rgba(0, 0, 0, 0.05); */
+  /* box-shadow: 0 4px 15px -4px rgba(0, 0, 0, 0.08); */
+  position: sticky;
+  top: 0;
+  z-index: 50;
 }
 
 .header__logo {
@@ -28,130 +16,129 @@
   text-decoration: none;
 }
 
-.header__nav-list {
+.header-content {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 10px 20px;
   display: flex;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  align-items: left;
-  text-align: left;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.header__nav-item {
-  
-  margin-left: 20px;
-}
-
-.header__nav-item a {
+/* Логотип */
+.header-logo-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   text-decoration: none;
-  color: #031859;
 }
 
-.header__burger {
-  display: none; /* Скрываем по умолчанию */
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  width: 30px;
-  height: 30px;
-  position: relative;
-  margin-left: 20px;
+.header-logo-icon {
+  font-size: 30px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
 }
 
-.header__burger span {
-  display: block;
-  width: 100%;
-  height: 2px;
-  background-color: #031859;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  transition: all 0.3s ease;
+.header-logo-text {
+  font-size: 22px;
+  font-weight: 800;
+  color: #1a4314;
+  letter-spacing: -0.02em;
 }
 
-.header__burger span:first-child {
-  top: 20%;
-  transform: translateY(-50%);
-}
-
-.header__burger span:last-child {
-  top: 80%;
-  transform: translateY(-50%);
-}
-
-.header__logo-container {
-  display: flex;
-  flex-direction: column; /* Размещаем элементы вертикально */
-  align-items: center; /* Центрируем элементы по горизонтали */
-  margin-right: auto;
-}
-
-/* Стили для изображения логотипа */
 .header__logo-image {
   width: 100px; /* Задаем ширину логотипа */
   height: auto; /* Сохраняем пропорции */
   margin-top: 5px; /* Добавляем небольшой отступ сверху от названия */
 }
 
-.header__logo {
-  /* Ваши стили для текста логотипа (FrogLing) */
-  font-size: 24px;
-  font-weight: bold;
-  color: #031859;
-  text-decoration: none;
+/* Навигация */
+.header-nav {
+  display: flex;
   align-items: center;
-  text-align: center;
+  gap: 18px;
 }
 
-/* Мобильные стили */
-@media (max-width: 768px) {
-  .header {
-     position: relative; 
-  }
-  .header__nav {
-    display: none; /* Скрываем основное меню */
-    position: absolute;
-    
-    transition: transform 0.3s ease; /* Добавляем анимацию */
-    /* padding-right: 50px; */
-    top: 100%;
-    left: 0;
-    
-    background-color: #ffffff;
-    /* z-index: 10; */
-    padding: 20px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Добавляем тень для разделения */
-  }
+.nav-link {
+  text-decoration: none;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #1e3a17;
+  padding: 6px 4px;
+  transition: color 0.2s ease;
+}
 
-  .header__nav--open {
-    display: block; /* Показываем меню при открытии */
-    position: absolute;
-    top: 100%;
-    width: 100%;
-    z-index: 1000;
-  }
+.nav-link:hover {
+  color: #0d2309;
+}
 
-  .header__nav-list {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+.nav-link-login {
+  background: #ffffff;
+  padding: 8px 18px;
+  border-radius: 9999px;
+  color: #2b6b1d;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
 
-  .header__nav-item {
-    margin-left: 0;
-    margin-bottom: 10px;
-  }
+/* Блок пользователя в шапке */
+.user-nav-container {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-left: 8px;
+}
 
-  .header__burger {
-    display: block; /* Показываем гамбургер */
-    margin-left: auto; /* прижимаем к правому краю */
-  }
+.user-profile-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  gap: 2px;
+  transition: transform 0.2s ease;
+}
 
-  .header__logo-container {
-    align-items: flex-start; /* Выравниваем по левому краю на мобильных устройствах */
-  }
+.user-profile-badge:hover {
+  transform: translateY(-1px);
+}
 
-  .header__logo-image {
-    width: 80px; /* Уменьшаем размер логотипа на мобильных устройствах */
-  }
+.user-mini-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2d6a1b, #1e4b12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.user-mini-name {
+  font-size: 11px;
+  font-weight: 700;
+  color: #183d12;
+  max-width: 90px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Кнопка "Выйти" в шапке */
+.header-logout-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(239, 68, 68, 0.12);
+  color: #991b1b;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  padding: 6px 12px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.header-logout-button:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #7f1d1d;
+  border-color: rgba(239, 68, 68, 0.4);
 }

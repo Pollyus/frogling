@@ -20,6 +20,8 @@ import VideoPlay from '../VideoPlay/VideoPlay';
 import ActionNewYear from '../ActionNewYear/ActionNewYear';
 import Shedule from '../Admin/Shedule/Shedule';
 import ProtectedRoute from '../Login/ProtectedRoute';
+import MainLayout from '../Login/MainLayout';
+
 
 function App() {
   const [currentUser, setCurrentUser] = useState({});
@@ -40,33 +42,33 @@ function App() {
     <div>
       <BrowserRouter>
         <CurrentUserContext.Provider value={currentUser}>
-          <Header />
+          {/* <Header /> */}
           <Routes>
 
              {/* Публичный маршрут: доступен только для авторизации/регистрации */}
             <Route path="/login" element={<AuthPage />} />
 
             {/* Защищенные маршруты: внутрь нельзя попасть без авторизации */}
-            <Route element={<ProtectedRoute />}>
-              
-              <Route path="/" element={<><VideoPlay /><AboutUs /><TrainersCarousel /><LessonsList id="lesson-types" /><FirstLessonRequirements /><PhotoSlider/><ProductsList /><Promotions /><div id="ycwidget"></div></>} />
-              <Route path="/video" element={<VideoPlay />} />
-              <Route path='/action' element={<ActionNewYear/>}/>
-              <Route path="/about" element={<AboutUs />} />
-              <Route path="/trainers" element={<TrainersCarousel />} />
-              <Route path="/lessons" element={<LessonsList id="lesson-types" />} />
-              <Route path="/products" element={<ProductsList />} />
-              <Route path="/promotions" element={<Promotions />} />
-              {/* <Route path="/social" element={<SocialLinks />} /> */}
-              <Route path="/first" element={<FirstLessonRequirements />} />
-              <Route path="/photo" element={<PhotoSlider />} />
-              <Route path="/shedule" element={<Shedule />} />
-              <Route path="/profile" element={<ProfilePage />} />
-              {/* Добавьте маршруты для остальных страниц (blog, contacts и т.д.) */}
+              <Route element={<ProtectedRoute />}>
+              <Route element={<MainLayout />}>
+                <Route path="/" element={<><VideoPlay /><AboutUs /><TrainersCarousel /><LessonsList id="lesson-types" /><FirstLessonRequirements /><PhotoSlider/><ProductsList /><Promotions /><div id="ycwidget"></div></>} />
+                <Route path="/video" element={<VideoPlay />} />
+                <Route path='/action' element={<ActionNewYear/>}/>
+                <Route path="/about" element={<AboutUs />} />
+                <Route path="/trainers" element={<TrainersCarousel />} />
+                <Route path="/lessons" element={<LessonsList id="lesson-types" />} />
+                <Route path="/products" element={<ProductsList />} />
+                <Route path="/promotions" element={<Promotions />} />
+                {/* <Route path="/social" element={<SocialLinks />} /> */}
+                <Route path="/first" element={<FirstLessonRequirements />} />
+                <Route path="/photo" element={<PhotoSlider />} />
+                <Route path="/shedule" element={<Shedule />} />
+                <Route path="/profile" element={<ProfilePage />} />
+                {/* Добавьте маршруты для остальных страниц (blog, contacts и т.д.) */}
+              </Route>
+              {/* Любой неизвестный адрес перенаправляем на главную (которая проверит логин) */}
+              <Route path="*" element={<Navigate to="/" replace />} />
             </Route>
-            {/* Любой неизвестный адрес перенаправляем на главную (которая проверит логин) */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          
           </Routes>
          
         </CurrentUserContext.Provider>

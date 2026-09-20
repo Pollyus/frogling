@@ -1,65 +1,97 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import Garland from '../Girland/Girland';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { User, LogOut } from 'lucide-react';
 import './Header.css';
 import logo from '../../Circle.png'; 
-const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
+export default function Header() {
+  const navigate = useNavigate();
+  const [userName, setUserName] = useState('');
+  const [isAuth, setIsAuth] = useState(false);
+
+  // Получаем имя вошедшего пользователя из localStorage
+  useEffect(() => {
+    const checkUser = () => {
+      const token = localStorage.getItem('auth_token');
+      const storedUser = localStorage.getItem('user');
+
+      if (token && storedUser) {
+        setIsAuth(true);
+        try {
+          const parsed = JSON.parse(storedUser);
+          setUserName(parsed.fullName || 'Алексей');
+        } catch (e) {
+          setUserName(storedUser);
+        }
+      } else {
+        setIsAuth(false);
+        setUserName('');
+      }
+    };
+
+    checkUser();
+    // Слушаем изменения хранилища
+    window.addEventListener('storage', checkUser);
+    return () => window.removeEventListener('storage', checkUser);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('user');
+    setIsAuth(false);
+    navigate('/login', { replace: true });
   };
 
   return (
-    <header className="header">
-      
-      <div className="header__container">
-        {/* <Garland numberOfLights={30} animationSpeed="2.5s" /> Добавляем гирлянду */}
-        <Link to="/" className="header__logo">
-          Лягушонок
-          <img src={logo} alt="Логотип FrogLing" className="header__logo-image" /> {/* Размещаем логотип под названием */}
-        </Link>
+    <header className="header-container">
+      <div className="header-content">
         
-        <nav className={`header__nav ${isMenuOpen ? 'header__nav--open' : ''}`}>
-          <ul className="header__nav-list">
-            <li className="header__nav-item">   
-              <Link to="/about">О нас</Link>
-            </li>
-            <li className="header__nav-item">
-              <Link to="/lessons">Виды занятий</Link>
-            </li>
-            <li className="header__nav-item">
-              <Link to="/trainers">Тренеры</Link>
-            </li>
-            <li className="header__nav-item">
-              <Link to="/photo">Фото занятий</Link>
-            </li>
-            <li className="header__nav-item">
-              <Link to="/first">Первое занятие</Link>
-            </li>
-            <li className="header__nav-item">
-              <Link to="/products">Услуги</Link>
-            </li>
-            <li className="header__nav-item">
-              <Link to="/promotions">Акции</Link>
-            </li>
-             <li className="header__nav-item">
-              <Link to="/shedule">Расписание</Link>
-            </li>
-             <li className="header__nav-item">
-              <Link to="/profile">Профиль</Link>
-            </li>
-          </ul>
+        {/* Логотип с лягушонком */}
+        <Link to="/" className="header-logo-group">
+          <img src={logo} alt="Логотип FrogLing" className="header__logo-image" />
+          <span className="header-logo-text">Лягушонок</span>
+        </Link>
+
+        {/* Навигационное меню */}
+        <nav className="header-nav">
+          <Link to="/about" className="nav-link">О нас</Link>
+          <Link to="/classes" className="nav-link">Виды занятий</Link>
+          <Link to="/trainers" className="nav-link">Тренеры</Link>
+          <Link to="/gallery" className="nav-link">Фото занятий</Link>
+          <Link to="/trial" className="nav-link">Первое занятие</Link>
+          <Link to="/services" className="nav-link">Услуги</Link>
+          <Link to="/promos" className="nav-link">Акции</Link>
+          <Link to="/schedule" className="nav-link">Расписание</Link>
+
+          {/* Блок пользователя вместо слова "Профиль" */}
+          {isAuth ? (
+            <div className="user-nav-container">
+              <Link to="/profile" className="user-profile-badge" title="Перейти в личный кабинет">
+                <div className="user-mini-avatar">
+                  <User className="w-4 h-4 text-white" />
+                </div>
+                <span className="user-mini-name">{userName}</span>
+              </Link>
+
+              {/* Кнопка "Выйти" в шапке */}
+              <button 
+                type="button"
+                onClick={handleLogout} 
+                className="header-logout-button"
+                title="Выйти из аккаунта"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>Выйти</span>
+              </button>
+            </div>
+          ) : (
+            <Link to="/login" className="nav-link nav-link-login">
+              Войти
+            </Link>
+          )}
         </nav>
-        <button className="header__burger" onClick={toggleMenu}>
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
+
       </div>
     </header>
   );
-};
-
-export default Header;
-
+}
