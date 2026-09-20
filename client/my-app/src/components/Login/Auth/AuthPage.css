@@ -1,0 +1,263 @@
+/* src/AuthPage.css */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+body {
+  font-family: Sanday;
+  margin: 0;
+  background-color: #fff;
+  color: #346173;
+}
+
+p {
+  font-family: Sanday;
+  text-align: center;
+}
+
+.auth-container {
+  font-family: Sanday;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  background-color: #fff;
+}
+
+/* Эффекты свечения на фоне */
+.auth-bg-glow-1 {
+  position: absolute;
+  top: -100px;
+  left: -100px;
+  width: 400px;
+  height: 400px;
+  /* background: rgba(22, 163, 74, 0.15); */
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+}
+
+/* Карточка авторизации (Glassmorphism) */
+.auth-card {
+  font-family: Sanday;
+  width: 100%;
+  max-width: 420px;
+  background: #346173;
+  border: 1px solid #346173;
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: 0 25px 50px -12px #0D0D0D;
+  backdrop-filter: blur(16px);
+  position: relative;
+  z-index: 10;
+}
+
+/* Переключатель вкладок */
+.auth-tabs {
+  font-family: Sanday;
+  display: flex;
+  background-color: #346173;
+  padding: 4px;
+  border-radius: 16px;
+  border: 1px solid #031859;
+  margin-bottom: 24px;
+}
+
+.auth-tab-btn {
+  font-family: Sanday;
+  flex: 1;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.auth-tab-btn.active {
+  background-color: #7BA61F;
+  color: #ffffff;
+  box-shadow: 0 4px 12px #7BA61F;
+}
+
+.auth-title {
+  font-family: Sanday;
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 6px 0;
+  color: #ffffff;
+}
+
+.auth-subtitle {
+  font-family: Sanday;
+  font-size: 14px;
+  color: #94a3b8;
+  margin: 0 0 24px 0;
+}
+
+/* Поля ввода */
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-label {
+  font-family: Sanday;
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #cbd5e1;
+  margin-bottom: 8px;
+}
+
+.input-wrapper {
+  font-family: Sanday;
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  font-family: Sanday;
+  position: absolute;
+  left: 14px;
+  color: #64748b;
+  width: 18px;
+  height: 18px;
+}
+
+.auth-input {
+  font-family: Sanday;
+  width: 100%;
+  box-sizing: border-box; 
+  padding: 12px 14px 12px 42px;
+  background-color: rgba(2, 6, 23, 0.6);
+  border: 1px solid #1e293b;
+  border-radius: 12px;
+  color: #f8fafc;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.password-toggle-btn {
+  font-family: Sanday;
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  padding: 4px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #94a3b8; /* Цвет иконки глаза */
+  border-radius: 6px;
+  transition: color 0.2s ease;
+}
+
+.password-toggle-btn:hover {
+  font-family: Sanday;
+  color: #ffffff;
+  background: transparent;
+}
+
+/* Стили для кнопок GitHub / Google внизу */
+.social-btn {
+  font-family: Sanday;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #f8fafc;
+  padding: 10px 16px;
+  
+  border-radius: 12px;
+  cursor: pointer;
+  display: inline;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.auth-input:focus {
+  border-color: #7BA61F;
+  box-shadow: 0 0 0 3px #031859;
+}
+
+.auth-input.error {
+  border-color: #D96E11;
+}
+
+.error-text {
+  font-size: 12px;
+  color: #D96E11;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Кнопка отправки */
+.submit-btn {
+  width: 100%;
+  padding: 14px;
+  margin-top: 12px;
+  background:  #7BA61F;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 10px 20px -5px #7BA61F;
+}
+
+.submit-btn:hover {
+  opacity: 0.95;
+  transform: translateY(-1px);
+}
+
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Дополнительные чекбоксы и разделители */
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #94a3b8;
+  cursor: pointer;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 20px 0;
+  color: #64748b;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #031859;
+}
+
+.divider span {
+  padding: 0 10px;
+}

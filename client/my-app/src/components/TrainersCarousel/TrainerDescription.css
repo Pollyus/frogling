@@ -1,0 +1,19 @@
+.trainer-description {
+  margin-top: 1em;
+}
+
+.trainer-description__item {
+  display: flex; /* Важно для горизонтального расположения */
+  align-items: center; /* Выравнивание по вертикали */
+  margin-bottom: 0.5em;
+}
+
+.trainer-description__label {
+  font-weight: bold;
+  margin-right: 0.5em;
+  color: #555;
+}
+
+.trainer-description__value {
+  color: #777;
+}
