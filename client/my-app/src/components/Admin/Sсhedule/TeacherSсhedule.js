@@ -16,7 +16,7 @@ const employees = [
   { id: 3, name: 'Любовь', avatar: 'https://i.pravatar.cc/150?u=3' },
 ];
 
-function Teachersсhedule() {
+function TeacherSсhedule() {
 {/* ОСНОВНОЙ КОНТЕНТ */}
       <div className="sсhedule-main-content">
         
@@ -105,4 +105,4 @@ function Teachersсhedule() {
       </div>
 }
 
-export default Teachersсhedule;
+export default TeacherSсhedule;

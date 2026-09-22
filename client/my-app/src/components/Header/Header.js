@@ -61,7 +61,7 @@ export default function Header() {
           <Link to="/first" className="nav-link">Первое занятие</Link>
           <Link to="/services" className="nav-link">Услуги</Link>
           <Link to="/promotions" className="nav-link">Акции</Link>
-          <Link to="/sсhedule" className="nav-link">Расписание</Link>
+          <Link to="/schedule" className="nav-link">Расписание</Link>
 
           {/* Блок пользователя вместо слова "Профиль" */}
           {isAuth ? (

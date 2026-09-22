@@ -18,7 +18,7 @@ import SocialLinks from '../SocialLinks/SocialLinks';
 import PhotoSlider from '../PhotoSlider/PhotoSlider';
 import VideoPlay from '../VideoPlay/VideoPlay';
 import ActionNewYear from '../ActionNewYear/ActionNewYear';
-import Sсhedule from '../Admin/Sсhedule/Sсhedule';
+import SchedulePage from '../Admin/Sсhedule/SсhedulePage';
 import ProtectedRoute from '../Login/ProtectedRoute';
 import MainLayout from '../Login/MainLayout';
 import Service from '../BuyService/ServicesPage'
@@ -63,7 +63,7 @@ function App() {
                 {/* <Route path="/social" element={<SocialLinks />} /> */}
                 <Route path="/first" element={<FirstLessonRequirements />} />
                 <Route path="/photo" element={<PhotoSlider />} />
-                <Route path="/sсhedule" element={<Sсhedule />} />
+                <Route path="/schedule" element={<SchedulePage />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/services" element={<Service/>} />
                 {/* Добавьте маршруты для остальных страниц (blog, contacts и т.д.) */}

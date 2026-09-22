@@ -4,6 +4,7 @@ using Frogling.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Frogling.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260922131531_AddScheduleCatalog")]
+    partial class AddScheduleCatalog
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,32 +24,6 @@ namespace Frogling.Api.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("Frogling.Api.Models.Booking", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("BookedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ScheduleItemId")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ScheduleItemId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Bookings");
-                });
 
             modelBuilder.Entity("Frogling.Api.Models.ScheduleItem", b =>
                 {
@@ -221,7 +198,7 @@ namespace Frogling.Api.Migrations
                             Description = "Разовое занятие групповое",
                             DurationDays = 30,
                             IsActive = true,
-                            LessonsCount = 1,
+                            LessonsCount = 30,
                             Price = 1100m,
                             Title = "Групповое посещение"
                         },
@@ -439,18 +416,7 @@ namespace Frogling.Api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsMedicalExaminationValid")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ParentsName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("PasswordHash")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -460,25 +426,6 @@ namespace Frogling.Api.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("Frogling.Api.Models.Booking", b =>
-                {
-                    b.HasOne("Frogling.Api.Models.ScheduleItem", "ScheduleItem")
-                        .WithMany()
-                        .HasForeignKey("ScheduleItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Frogling.Api.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ScheduleItem");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Frogling.Api.Models.ScheduleItem", b =>

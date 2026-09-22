@@ -17,7 +17,7 @@ export default function ProfilePage() {
     fullName: '', 
     email: '', 
     phone: '+7 (999) 000-00-00',
-    parentName: 'Алексей Иванов'
+    parentName: 'Добавьте ФИО родителя'
   });
   
   // Состояния абонементов из базы данных
@@ -25,6 +25,24 @@ export default function ProfilePage() {
   const [loadingSubs, setLoadingSubs] = useState(true);
   const [activeTab, setActiveTab] = useState('info'); // info | subscription | history
   const [isSaved, setIsSaved] = useState(false);
+  const [myBookings, setMyBookings] = useState([]);
+
+  const fetchBookings = async () => {
+    const token = localStorage.getItem('auth_token');
+    if (!token) return;
+    
+    try {
+      const res = await fetch(`${API_URL}/bookings`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data)) setMyBookings(data);
+      }
+    } catch (e) {
+      console.error('Ошибка загрузки записей', e);
+    }
+  };
 
   // Загрузка данных пользователя и его абонементов из SQL Server
   useEffect(() => {
@@ -38,11 +56,15 @@ export default function ProfilePage() {
           const parsed = JSON.parse(storedUser);
           setUser(prev => ({
             ...prev,
-            fullName: parsed.fullName || 'Алексей',
-            email: parsed.email || 'user@example.com'
+            fullName: parsed.fullName || 'ФИО ребенка',
+            email: parsed.email || 'user@example.com',
+            isMedicalExaminationValid: parsed.isMedicalExaminationValid || 'Недействителен',
+            phoneNumber: parsed.phoneNumber || '+7(999)000-00-00',
+            parentName: parsed.parentName || 'ФИО родителя',
+            createdAt: parsed.createdAt || '2026 г.'
           }));
         } catch (e) {
-          setUser(prev => ({ ...prev, email: storedUser }));
+          setUser(prev => ({ ...prev, email, isMedicalExaminationValid, phoneNumber, parentName: storedUser }));
         }
       }
 
@@ -82,6 +104,7 @@ export default function ProfilePage() {
     };
 
     fetchUserDataAndSubs();
+    fetchBookings();
   }, []);
 
   // Безопасный поиск активного абонемента с проверкой на массив
@@ -122,9 +145,9 @@ export default function ProfilePage() {
             <p className="user-hero-email">{user.email}</p>
 
             <div className="user-hero-meta">
-              <span><Calendar className="w-4 h-4 text-emerald-600" /> Зарегистрирован: 2026 г.</span>
+              <span><Calendar className="w-4 h-4 text-emerald-600" /> Зарегистрирован: {user.createdAt}</span>
               <span><Bell className="w-4 h-4 text-emerald-600" /> SMS-оповещения включены</span>
-              <span><Award className="w-4 h-4 text-amber-500" /> Медосмотр: действителен</span>
+              <span><Award className="w-4 h-4 text-amber-500" /> Медосмотр: {user.isMedicalExaminationValid}</span>
             </div>
           </div>
         </div>
@@ -186,11 +209,19 @@ export default function ProfilePage() {
           </button>
           <button 
             type="button"
+            className={`profile-tab-btn ${activeTab === 'bookings' ? 'active' : ''}`}
+            onClick={() => setActiveTab('bookings')}
+          >
+            Мои записи ({myBookings.length})
+          </button>
+          <button 
+            type="button"
             className={`profile-tab-btn ${activeTab === 'history' ? 'active' : ''}`}
             onClick={() => setActiveTab('history')}
           >
             История покупок ({Array.isArray(subscriptions) ? subscriptions.length : 0})
           </button>
+          
         </div>
 
         {/* Вкладка 1: Личные данные */}
@@ -239,8 +270,8 @@ export default function ProfilePage() {
                   <Phone className="field-icon" />
                   <input
                     type="text"
-                    value={user.phone}
-                    onChange={(e) => setUser({ ...user, phone: e.target.value })}
+                    value={user.phoneNumber}
+                    onChange={(e) => setUser({ ...user, phoneNumber: e.target.value })}
                     placeholder="+7 (999) 000-00-00"
                   />
                 </div>
@@ -308,7 +339,7 @@ export default function ProfilePage() {
                 </div>
 
                 <div className="sub-counter flex justify-between items-center text-sm">
-                  <span>Осталось <strong>{activeSub.remainingLessons} занятий</strong> из {activeSub.totalLessons}</span>
+                  <span>Осталось <strong>{activeSub.remainingLessons} занятий</strong> из {activeSub.totalLessons} <br/></span>
                   <span className="text-xs text-slate-400">
                     Дата покупки: {new Date(activeSub.purchaseDate).toLocaleDateString('ru-RU')}
                   </span>
@@ -330,7 +361,51 @@ export default function ProfilePage() {
           </div>
         )}
 
-        {/* Вкладка 3: История покупок из БД SQL Server */}
+        {/* Вкладка 4: Забронированные занятия */}
+        {activeTab === 'bookings' && (
+          <div className="profile-main-card">
+            <h2 className="profile-section-title">
+              <Clock className="w-5 h-5 text-emerald-600" /> Записанные тренировки
+            </h2>
+
+            {myBookings.length > 0 ? (
+              <div className="visits-list">
+                {myBookings.map((booking) => (
+                  <div key={booking.id} className="visit-item flex justify-between items-center">
+                    <div className="visit-info">
+                      <span className="visit-date">{booking.groupName}</span>
+                      <span className="visit-coach">
+                        📅 {booking.dayOfWeek} в {booking.time} | Тренер: {booking.trainerName}
+                      </span>
+                    </div>
+                    <button 
+                      onClick={async () => {
+                        const token = localStorage.getItem('auth_token');
+                        const res = await fetch(`${API_URL}/bookings/${booking.id}`, {
+                          method: 'DELETE',
+                          headers: { 'Authorization': `Bearer ${token}` }
+                        });
+                        if (res.ok) {
+                          setMyBookings(prev => prev.filter(b => b.id !== booking.id));
+                          alert('Запись успешно отменена.');
+                        }
+                      }}
+                      className="text-xs text-red-500 bg-red-50 hover:bg-red-100 border border-red-200 px-3 py-1.5 rounded-lg font-semibold transition"
+                    >
+                      Отменить запись
+                    </button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-slate-500 text-sm">
+                У вас пока нет активных записей на занятия. Вы можете записаться на странице «Расписание».
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Вкладка 4: История покупок из БД SQL Server */}
         {activeTab === 'history' && (
           <div className="profile-main-card">
             <h2 className="profile-section-title">
