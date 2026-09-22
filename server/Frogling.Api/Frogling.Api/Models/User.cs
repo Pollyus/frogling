@@ -7,5 +7,7 @@
         public string Email { get; set; } = string.Empty;
         public string PasswordHash { get; set; } = string.Empty; // Храним только хеш, а не пароль в открытом виде
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        public List<SubscriptionPrice> Subscriptions { get; set; } = new();
     }
 }

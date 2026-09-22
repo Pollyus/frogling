@@ -1,0 +1,142 @@
+.services-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.services-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.services-header h1 {
+  font-size: 32px;
+  color: #1a4314;
+  margin-bottom: 10px;
+}
+
+.subs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.sub-card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 30px;
+  border: 2px solid #e2e8f0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.sub-card:hover {
+  transform: translateY(-5px);
+  border-color: #74b83b;
+  box-shadow: 0 20px 40px -15px rgba(116, 184, 59, 0.2);
+}
+
+.sub-card-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  margin-bottom: 20px;
+}
+
+.bg-emerald { background: #10b981; }
+.bg-blue { background: #3b82f6; }
+.bg-amber { background: #f59e0b; }
+
+.sub-card-title {
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 10px;
+  color: #0f172a;
+}
+
+.sub-card-price {
+  font-size: 24px;
+  font-weight: 800;
+  color: #16a34a;
+  margin-bottom: 15px;
+}
+
+.sub-card-text {
+  font-size: 14px;
+  color: #64748b;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.sub-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 20px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.btn-buy-small {
+  background: #74b83b;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.purchase-modal {
+  background: #fff;
+  width: 100%;
+  max-width: 400px;
+  border-radius: 30px;
+  padding: 40px;
+  position: relative;
+  text-align: center;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.price-total {
+  font-size: 28px;
+  font-weight: 800;
+  margin: 20px 0;
+  color: #0f172a;
+}
+
+.btn-confirm-purchase {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #74b83b, #4b8b20);
+  color: white;
+  border: none;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-confirm-purchase:disabled { opacity: 0.7; }

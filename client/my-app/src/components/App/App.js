@@ -21,6 +21,7 @@ import ActionNewYear from '../ActionNewYear/ActionNewYear';
 import Shedule from '../Admin/Shedule/Shedule';
 import ProtectedRoute from '../Login/ProtectedRoute';
 import MainLayout from '../Login/MainLayout';
+import Service from '../BuyService/ServicesPage'
 
 
 function App() {
@@ -64,6 +65,7 @@ function App() {
                 <Route path="/photo" element={<PhotoSlider />} />
                 <Route path="/shedule" element={<Shedule />} />
                 <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/services" element={<Service/>} />
                 {/* Добавьте маршруты для остальных страниц (blog, contacts и т.д.) */}
               </Route>
               {/* Любой неизвестный адрес перенаправляем на главную (которая проверит логин) */}
