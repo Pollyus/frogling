@@ -55,13 +55,13 @@ export default function Header() {
         {/* Навигационное меню */}
         <nav className="header-nav">
           <Link to="/about" className="nav-link">О нас</Link>
-          <Link to="/classes" className="nav-link">Виды занятий</Link>
+          <Link to="/lessons" className="nav-link">Виды занятий</Link>
           <Link to="/trainers" className="nav-link">Тренеры</Link>
-          <Link to="/gallery" className="nav-link">Фото занятий</Link>
-          <Link to="/trial" className="nav-link">Первое занятие</Link>
+          <Link to="/photo" className="nav-link">Фото занятий</Link>
+          <Link to="/first" className="nav-link">Первое занятие</Link>
           <Link to="/services" className="nav-link">Услуги</Link>
-          <Link to="/promos" className="nav-link">Акции</Link>
-          <Link to="/schedule" className="nav-link">Расписание</Link>
+          <Link to="/promotions" className="nav-link">Акции</Link>
+          <Link to="/sсhedule" className="nav-link">Расписание</Link>
 
           {/* Блок пользователя вместо слова "Профиль" */}
           {isAuth ? (

@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import './ProfilePage.css';
 
-const API_URL = 'https://localhost:7123/api';
+const API_URL = 'https://localhost:7026/api';
 
 export default function ProfilePage() {
   const navigate = useNavigate();

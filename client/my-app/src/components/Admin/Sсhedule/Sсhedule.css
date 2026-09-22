@@ -1,31 +1,31 @@
 /* Базовые настройки */
 :root {
-  --shedule-sidebar-bg: #ffffff;
-  --shedule-sidebar-text: #031859;
-  --shedule-accent-yellow: #D96E11;
-  --shedule-border-color: #e5e7eb;
-  --shedule-bg-light: #f9fafb;
-  --shedule-text-dark: #0D0D0D;
-  --shedule-appointment-teal: #7BA61F;
+  --sсhedule-sidebar-bg: #ffffff;
+  --sсhedule-sidebar-text: #031859;
+  --sсhedule-accent-yellow: #D96E11;
+  --sсhedule-border-color: #e5e7eb;
+  --sсhedule-bg-light: #f9fafb;
+  --sсhedule-text-dark: #0D0D0D;
+  --sсhedule-appointment-teal: #7BA61F;
 }
 
-.shedule-app-container {
+.sсhedule-app-container {
   display: flex;
   height: 100vh;
   overflow: hidden;
 }
 
 /* Боковая панель */
-.shedule-sidebar {
+.sсhedule-sidebar {
   width: 260px;
-  background-color: var(--shedule-sidebar-bg);
-  color: var(--shedule-sidebar-text);
+  background-color: var(--sсhedule-sidebar-bg);
+  color: var(--sсhedule-sidebar-text);
   display: flex;
   flex-direction: column;
   padding: 20px;
 }
 
-.shedule-logo-section {
+.sсhedule-logo-section {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -35,10 +35,10 @@
   margin-bottom: 30px;
 }
 
-.shedule-logo-icon {
+.sсhedule-logo-icon {
   width: 35px;
   height: 35px;
-  background-color: var(--shedule-accent-yellow);
+  background-color: var(--sсhedule-accent-yellow);
   color: black;
   border-radius: 8px;
   display: flex;
@@ -47,18 +47,18 @@
 }
 
 /* Мини-календарь */
-.shedule-mini-calendar {
+.sсhedule-mini-calendar {
   margin-bottom: 25px;
 }
 
-.shedule-calendar-header {
+.sсhedule-calendar-header {
   display: flex;
   justify-content: space-between;
   font-size: 14px;
   margin-bottom: 10px;
 }
 
-.shedule-calendar-grid {
+.sсhedule-calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr); 
   gap: 5px;
@@ -66,25 +66,25 @@
   font-size: 11px;
 }
 
-.shedule-calendar-day {
+.sсhedule-calendar-day {
   padding: 5px;
   cursor: pointer;
 }
 
-.shedule-calendar-day.active {
-  background-color: var(--shedule-accent-yellow);
+.sсhedule-calendar-day.active {
+  background-color: var(--sсhedule-accent-yellow);
   color: black;
   border-radius: 50%;
 }
 
 /* Навигация */
-.shedule-nav-menu {
+.sсhedule-nav-menu {
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
 
-.shedule-nav-item {
+.sсhedule-nav-item {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -92,12 +92,12 @@
   transition: color 0.2s;
 }
 
-.shedule-nav-item:hover {
+.sсhedule-nav-item:hover {
   color: white;
 }
 
 /* Основной контент */
-.shedule-main-content {
+.sсhedule-main-content {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -105,58 +105,58 @@
 }
 
 /* Шапка */
-.shedule-header {
+.sсhedule-header {
   height: 56px;
-  border-bottom: 1px solid var(--shedule-border-color);
+  border-bottom: 1px solid var(--sсhedule-border-color);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
 }
 
-.shedule-header-left, .shedule-header-right {
+.sсhedule-header-left, .sсhedule-header-right {
   display: flex;
   align-items: center;
   gap: 15px;
 }
 
-.shedule-btn-today {
-  background: var(--shedule-bg-light);
-  border: 1px solid var(--shedule-border-color);
+.sсhedule-btn-today {
+  background: var(--sсhedule-bg-light);
+  border: 1px solid var(--sсhedule-border-color);
   padding: 5px 12px;
   border-radius: 4px;
   cursor: pointer;
 }
 /* Сетка расписания */
-.shedule-schedule-container {
+.sсhedule-schedule-container {
   flex: 1;
   overflow-y: auto;
   position: relative;
 }
 
-.shedule-staff-row {
+.sсhedule-staff-row {
   display: flex;
-  border-bottom: 1px solid var(--shedule-border-color);
+  border-bottom: 1px solid var(--sсhedule-border-color);
   position: sticky;
   top: 0;
   background: white;
   z-index: 20;
 }
 
-.shedule-time-gutter {
+.sсhedule-time-gutter {
   width: 65px;
-  background: var(--shedule-bg-light);
-  border-right: 1px solid var(--shedule-border-color);
+  background: var(--sсhedule-bg-light);
+  border-right: 1px solid var(--sсhedule-border-color);
 }
 
-.shedule-staff-column-header {
+.sсhedule-staff-column-header {
   flex: 1;
   padding: 15px;
   text-align: center;
-  border-right: 1px solid var(--shedule-border-color);
+  border-right: 1px solid var(--sсhedule-border-color);
 }
 
-.shedule-avatar-placeholder {
+.sсhedule-avatar-placeholder {
   width: 40px;
   height: 40px;
   background: #e5e7eb;
@@ -165,21 +165,21 @@
 }
 
 /* Сетка времени */
-.shedule-grid-body {
+.sсhedule-grid-body {
   display: flex;
   position: relative;
 }
 
-.shedule-time-column {
+.sсhedule-time-column {
   width: 65px;
-  background: var(--shedule-bg-light);
+  background: var(--sсhedule-bg-light);
   font-size: 12px;
   color: #8e8e93;
   text-align: right;
   padding-right: 8px;
 }
 
-.shedule-time-slot {
+.sсhedule-time-slot {
   height: 80px; 
   border-bottom: 1px solid #f2f2f7;
   display: flex;
@@ -188,7 +188,7 @@
   padding: 5px 0;
 }
 
-.shedule-staff-grid-columns {
+.sсhedule-staff-grid-columns {
   flex: 1;
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* Исправлено: columns */
@@ -196,7 +196,7 @@
 }
 
 /* Запись */
-.shedule-appointment {
+.sсhedule-appointment {
   position: absolute;
   /* Убираем right: 4px, если он был */
   color: white;
@@ -210,22 +210,22 @@
 }
 
 /* Класс для половины ширины */
-.shedule-appointment.half-width {
+.sсhedule-appointment.half-width {
   width: calc(50% - 6px); /* 50% ширины минус небольшие отступы */
 }
 
 /* Позиция: Слева в колонке */
-.shedule-appointment.left {
+.sсhedule-appointment.left {
   left: 4px;
 }
 
 /* Позиция: Справа в колонке */
-.shedule-appointment.right {
+.sсhedule-appointment.right {
   left: 50%; /* Начинается ровно с середины колонки */
 }
 
 /* Линия текущего времени */
-.shedule-current-time-line {
+.sсhedule-current-time-line {
   position: absolute;
   left: 0;
   right: 0;
@@ -236,7 +236,7 @@
   align-items: center;
 }
 
-.shedule-time-tag {
+.sсhedule-time-tag {
   background: black;
   color: white;
   font-size: 10px;

@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ru'; // Импорт русской локализации
-import './Shedule.css';
+import './Sсhedule.css';
 import trainer1Image from '..//..//TrainersCarousel/TrainersPhoto/Vlad.png';
 import trainer2Image from '..//..//TrainersCarousel/TrainersPhoto/Lidia.png';
 import trainer3Image from '..//..//TrainersCarousel/TrainersPhoto/Lyubov.png';
 import { Menu, ChevronLeft, ChevronRight, Star, User, MessageSquare, Users, Search, Filter, Clock, LayoutGrid, Calendar as CalendarIcon,
   ChevronDown, MoreHorizontal, Bell, Plus } from 'lucide-react';
-import TeacherShedule from './TeacherShedule';
+import Teachersсhedule from './TeacherSсhedule';
 
 // Устанавливаем русский язык глобально
 dayjs.locale('ru');
@@ -18,7 +18,7 @@ const employees = [
   { id: 3, name: 'Любовь', avatar: trainer3Image },
 ];
 
-function Shedule() {
+function Sсhedule() {
   const [viewType, setViewType] = useState('day'); // 'day' или 'coach-week'
   // 1. Состояние для ВЫБРАННОЙ даты (на какой день смотрим расписание)
   const [selectedDate, setSelectedDate] = useState(dayjs());
@@ -75,16 +75,16 @@ function Shedule() {
 
 
   return (
-    <div className="shedule-app-container">
-      <aside className="shedule-sidebar">
-        <div className="shedule-logo-section">
-          <div className="shedule-logo-icon">Л</div>
+    <div className="sсhedule-app-container">
+      <aside className="sсhedule-sidebar">
+        <div className="sсhedule-logo-section">
+          <div className="sсhedule-logo-icon">Л</div>
           <span>Лягушонок</span>
         </div>
 
         {/* МИНИ-КАЛЕНДАРЬ */}
-        <div className="shedule-mini-calendar">
-          <div className="shedule-calendar-header">
+        <div className="sсhedule-mini-calendar">
+          <div className="sсhedule-calendar-header">
             {/* Форматируем: Январь 2026 */}
             <span className="capitalize">{viewDate.format('MMMM YYYY')}</span>
             <div className="flex gap-2">
@@ -93,13 +93,13 @@ function Shedule() {
             </div>
           </div>
 
-          <div className="shedule-calendar-grid">
+          <div className="sсhedule-calendar-grid">
             {['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс'].map(d => (
-              <div key={d} className="shedule-calendar-weekday">{d}</div>
+              <div key={d} className="sсhedule-calendar-weekday">{d}</div>
             ))}
             
             {/* Пустые ячейки */}
-            {[...Array(shift)].map((_, i) => <div key={i} className="shedule-calendar-empty" />)}
+            {[...Array(shift)].map((_, i) => <div key={i} className="sсhedule-calendar-empty" />)}
 
             {/* Числа месяца */}
             {[...Array(daysInMonth)].map((_, i) => {
@@ -110,7 +110,7 @@ function Shedule() {
               return (
                 <div 
                   key={day} 
-                  className={`shedule-calendar-day ${isSelected ? 'active' : ''}`}
+                  className={`sсhedule-calendar-day ${isSelected ? 'active' : ''}`}
                   // onClick={() => setSelectedDate(dateObj)}
                   onClick={() => handleDateClick(date)}
                 >
@@ -148,7 +148,7 @@ function Shedule() {
         </div>
       </aside>
 
-      <main className="shedule-main-content">
+      <main className="sсhedule-main-content">
         {/* НОВАЯ ПЛАШКА С ТРЕНЕРОМ */}
         <div className="coach-bar">
             <div className="coach-content">
@@ -168,10 +168,10 @@ function Shedule() {
                 </button>
             </div>
         </div>
-        <header className="shedule-header">
-          <div className="shedule-header-left">
+        <header className="sсhedule-header">
+          <div className="sсhedule-header-left">
             <Menu className="pointer" />
-            <button className="shedule-btn-today" onClick={() => {
+            <button className="sсhedule-btn-today" onClick={() => {
               setSelectedDate(dayjs());
               setViewDate(dayjs().startOf('month'));
             }}>
@@ -181,40 +181,40 @@ function Shedule() {
             <ChevronRight className="pointer" onClick={() => setSelectedDate(selectedDate.add(1, 'day'))} />
             
             {/* Автоматически: 20 января 2026, вторник */}
-            <span className="shedule-current-date">
+            <span className="sсhedule-current-date">
               {selectedDate.format('D MMMM YYYY, dddd')}
             </span>
           </div>
         </header>
 
-        <section className="shedule-schedule-container">
-          <div className="shedule-grid-body">
+        <section className="sсhedule-schedule-container">
+          <div className="sсhedule-grid-body">
             {/* Линия времени */}
             {isToday && calculateLineTop() !== null && (
-              <div className="shedule-current-time-line" style={{ top: `${calculateLineTop()}px` }}>
-                <span className="shedule-time-tag">{now.format('HH:mm')}</span>
+              <div className="sсhedule-current-time-line" style={{ top: `${calculateLineTop()}px` }}>
+                <span className="sсhedule-time-tag">{now.format('HH:mm')}</span>
               </div>
             )}
 
             {/* Левая колонка с часами */}
-            <div className="shedule-time-column">
+            <div className="sсhedule-time-column">
                 {[9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20].map(h => (
-                <div key={h} className="shedule-time-slot">
+                <div key={h} className="sсhedule-time-slot">
                     <span>{h}:00</span>
                     <span style={{ borderBottom: '40px solid #e5e7eb', fontSize: '10px' }}>30</span>
                 </div>
                 ))}
             </div>
 
-            <div className="shedule-staff-grid-columns">
+            <div className="sсhedule-staff-grid-columns">
   
                 {/* КОЛОНКА 1: Лидия */}
-                <div className="shedule-column-divider" style={{ borderRight: '1px solid #e5e7eb', position: 'relative' }}>
+                <div className="sсhedule-column-divider" style={{ borderRight: '1px solid #e5e7eb', position: 'relative' }}>
                     
                 </div>
 
                 {/* КОЛОНКА 2: Любовь */}
-                <div className="shedule-column-divider" style={{ position: 'relative' }}>
+                <div className="sсhedule-column-divider" style={{ position: 'relative' }}>
                     
 
                 </div>
@@ -230,4 +230,4 @@ function Shedule() {
   );
 }
 
-export default Shedule;
+export default sсhedule;

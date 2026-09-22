@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ru';
-import './Shedule.css';
+import './Sсhedule.css';
 import { 
   ChevronLeft, ChevronRight, MessageSquare, 
   Users, Search, Filter, Clock, LayoutGrid, Calendar as CalendarIcon,
@@ -16,9 +16,9 @@ const employees = [
   { id: 3, name: 'Любовь', avatar: 'https://i.pravatar.cc/150?u=3' },
 ];
 
-function TeacherShedule() {
+function Teachersсhedule() {
 {/* ОСНОВНОЙ КОНТЕНТ */}
-      <div className="shedule-main-content">
+      <div className="sсhedule-main-content">
         
         {/* ВЕРХНЯЯ ПАНЕЛЬ (COACH + TOOLS) */}
         <div className="top-toolbar">
@@ -69,7 +69,7 @@ function TeacherShedule() {
         </div>
 
         {/* СЕТКА РАСПИСАНИЯ */}
-        <div className="shedule-grid-scroll-area">
+        <div className="sсhedule-grid-scroll-area">
           <div className="week-grid">
             {/* Колонка времени (слева) */}
             <div className="time-column">
@@ -105,4 +105,4 @@ function TeacherShedule() {
       </div>
 }
 
-export default TeacherShedule;
+export default Teachersсhedule;
