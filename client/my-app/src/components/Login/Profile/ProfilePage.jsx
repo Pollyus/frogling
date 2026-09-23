@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { 
   User, Mail, Phone, Calendar, Shield, Bell, Check, 
   Key, Award, Activity, Clock, FileText, CreditCard, 
-  Droplet, ShoppingBag, AlertCircle, Loader2
+  ShoppingBag, AlertCircle, Loader2, Droplet
 } from 'lucide-react';
 import './ProfilePage.css';
 
@@ -12,149 +12,123 @@ const API_URL = 'https://localhost:7026/api';
 export default function ProfilePage() {
   const navigate = useNavigate();
   
-  // Данные профиля
+  // 1. Состояния профиля (ФИО, Email, Телефон, Родитель)
   const [user, setUser] = useState({ 
     fullName: '', 
     email: '', 
-    phone: '+7 (999) 000-00-00',
-    parentName: 'Добавьте ФИО родителя'
+    phone: '',
+    parentName: ''
   });
   
-  // Состояния абонементов из базы данных
-  const [subscriptions, setSubscriptions] = useState([]);
-  const [loadingSubs, setLoadingSubs] = useState(true);
-  const [activeTab, setActiveTab] = useState('info'); // info | subscription | history
-  const [isSaved, setIsSaved] = useState(false);
-  const [myBookings, setMyBookings] = useState([]);
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [profileError, setProfileError] = useState('');
+  const [isSaved, setIsSaved] = useState(false);
 
+  // 2. Состояния абонементов
+  const [subscriptions, setSubscriptions] = useState([]);
+  const [loadingSubs, setLoadingSubs] = useState(true);
 
-  const fetchBookings = async () => {
-    const token = localStorage.getItem('auth_token');
-    if (!token) return;
-    
-    try {
-      const res = await fetch(`${API_URL}/bookings`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (Array.isArray(data)) setMyBookings(data);
-      }
-    } catch (e) {
-      console.error('Ошибка загрузки записей', e);
-    }
-  };
+  // 3. Состояния бронирований/записей
+  const [myBookings, setMyBookings] = useState([]);
+  const [loadingBookings, setLoadingBookings] = useState(true);
+  const [bookingsError, setBookingsError] = useState(null);
 
+  // 4. Активный таб
+  const [activeTab, setActiveTab] = useState('info'); // info | subscription | bookings | history
+
+  // Загрузка всех данных при монтировании
   useEffect(() => {
-    const loadProfile = async () => {
-      const token = localStorage.getItem('auth_token');
-
-      if (!token) {
-        setLoadingProfile(false);
-        return;
-      }
-
-      try {
-        const response = await fetch(`${API_URL}/profile`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-
-        if (!response.ok) {
-          throw new Error(`Ошибка загрузки профиля: ${response.status}`);
-        }
-
-        const data = await response.json();
-        setUser(prev => ({ ...prev, ...data }));
-      } catch (error) {
-        console.error(error);
-        setProfileError('Не удалось загрузить профиль с сервера.');
-      } finally {
-        setLoadingProfile(false);
-      }
-    };
-
-    loadProfile();
-  }, []);
-
-  // Загрузка данных пользователя и его абонементов из SQL Server
-  useEffect(() => {
-    const fetchUserDataAndSubs = async () => {
+    const fetchAllData = async () => {
       const token = localStorage.getItem('auth_token');
       const storedUser = localStorage.getItem('user');
 
-      // 1. Извлекаем локальные данные пользователя
+      // Шаг A. Первичная загрузка пользователя из localStorage (чтобы UI не моргал)
       if (storedUser) {
         try {
           const parsed = JSON.parse(storedUser);
           setUser(prev => ({
             ...prev,
-            fullName: parsed.fullName || 'ФИО ребенка',
-            email: parsed.email || 'user@example.com',
-            isMedicalExaminationValid: parsed.isMedicalExaminationValid || 'Недействителен',
-            phone: parsed.phone || '+7(999)000-00-00',
-            parentName: parsed.parentName || 'ФИО родителя',
-            createdAt: parsed.createdAt || '2026 г.'
+            fullName: parsed.fullName || '',
+            email: parsed.email || '',
+            phone: parsed.phone || '',
+            parentName: parsed.parentName || ''
           }));
         } catch (e) {
-          setUser(prev => ({ ...prev, email, isMedicalExaminationValid, phoneNumber, parentName: storedUser }));
+          setUser(prev => ({ ...prev, email: storedUser }));
         }
       }
 
-      // 2. Если пользователь не залогинен, не делаем запрос к API
       if (!token) {
-        setSubscriptions([]);
+        setLoadingProfile(false);
         setLoadingSubs(false);
+        setLoadingBookings(false);
         return;
       }
 
-      // 3. Запрос к бэкенду C# для получения покупок из таблицы Subscriptions
+      // Шаг B. Загрузка профиля из базы данных (SQL Server)
       try {
-        const res = await fetch(`${API_URL}/subscriptions`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
+        const profileRes = await fetch(`${API_URL}/profile`, {
+          headers: { 'Authorization': `Bearer ${token}` }
         });
-
-        if (res.ok) {
-          const data = await res.json();
-          // ВАЖНО: проверка на массив для исключения ошибки .find()
-          if (Array.isArray(data)) {
-            setSubscriptions(data);
-          } else {
-            setSubscriptions([]);
-          }
-        } else {
-          console.warn('Сервер вернул статус:', res.status);
-          setSubscriptions([]);
+        if (profileRes.ok) {
+          const profileData = await profileRes.json();
+          setUser(profileData);
+          localStorage.setItem('user', JSON.stringify(profileData));
         }
       } catch (err) {
-        console.error('Ошибка сети при загрузке абонементов:', err);
-        setSubscriptions([]);
+        console.error('Ошибка загрузки профиля из БД:', err);
+      } finally {
+        setLoadingProfile(false);
+      }
+
+      // Шаг C. Загрузка абонементов
+      try {
+        const subsRes = await fetch(`${API_URL}/subscriptions`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (subsRes.ok) {
+          const subsData = await subsRes.json();
+          setSubscriptions(Array.isArray(subsData) ? subsData : []);
+        }
+      } catch (err) {
+        console.error('Ошибка загрузки абонементов из БД:', err);
       } finally {
         setLoadingSubs(false);
       }
+
+      // Шаг D. Загрузка записей на занятия
+      try {
+        const bookingsRes = await fetch(`${API_URL}/bookings`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (bookingsRes.ok) {
+          const bookingsData = await bookingsRes.json();
+          setMyBookings(Array.isArray(bookingsData) ? bookingsData : []);
+        }
+      } catch (err) {
+        console.error('Ошибка загрузки записей из БД:', err);
+        setBookingsError('Не удалось загрузить записи.');
+      } finally {
+        setLoadingBookings(false);
+      }
     };
 
-    fetchUserDataAndSubs();
-    fetchBookings();
+    fetchAllData();
   }, []);
 
-  // Безопасный поиск активного абонемента с проверкой на массив
+  // Вычисляем активный абонемент
   const activeSub = Array.isArray(subscriptions)
     ? subscriptions.find(s => s.isActive && new Date(s.expiryDate) > new Date())
     : null;
 
-  // Сохранение изменений в профиле
+  // Сохранение изменений в профиле (PUT запрос на бэкенд)
   const handleSave = async (e) => {
     e.preventDefault();
-
     const token = localStorage.getItem('auth_token');
     if (!token) {
-      setProfileError('Нужно войти в аккаунт заново.');
+      setProfileError('Нужно заново войти в аккаунт.');
       return;
-      }
+    }
 
     setProfileError('');
 
@@ -163,40 +137,74 @@ export default function ProfilePage() {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
           fullName: user.fullName,
           email: user.email,
-          phone: user.phone,
-          parentName: user.parentName
-        })
-      });
-
-      await fetch(`${API_URL}/bookings/${item.id}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          scheduledAt: selectedDateTime
+          phone: user.phone || '',
+          parentName: user.parentName || ''
         })
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || `Ошибка сохранения: ${response.status}`);
+        throw new Error(data.message || 'Ошибка сохранения профиля');
       }
 
-      setUser(prev => ({ ...prev, ...data }));
+      setUser(data);
       localStorage.setItem('user', JSON.stringify(data));
       setIsSaved(true);
       setTimeout(() => setIsSaved(false), 2500);
     } catch (error) {
-      setProfileError(error.message || 'Не удалось сохранить профиль.');
-      {profileError && <p role="alert" className="profile-error">{profileError}</p>}
+      setProfileError(error.message || 'Не удалось сохранить изменения.');
+    }
+  };
+
+  // Отмена записи
+  const cancelBooking = async (bookingId) => {
+    if (!window.confirm('Вы действительно хотите отменить эту запись на занятие?')) return;
+
+    const token = localStorage.getItem('auth_token');
+    if (!token) return;
+
+    try {
+      const res = await fetch(`${API_URL}/bookings/${bookingId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      const text = await res.text();
+      let data = {};
+      try { data = text ? JSON.parse(text) : {}; } catch {}
+
+      if (!res.ok) {
+        throw new Error(data.message || 'Ошибка при отмене записи');
+      }
+
+      alert(data.message || 'Запись успешно отменена!');
+
+      // Удаляем из списка в UI
+      setMyBookings(prev => prev.filter(b => b.id !== bookingId));
+
+      // Если занятие было возвращено на абонемент, обновляем абонементы в UI
+      if (data.lessonReturned) {
+        setSubscriptions(prev => {
+          return prev.map(sub => {
+            // Если у абонемента есть место для возврата, пополняем
+            if (sub.remainingLessons < sub.totalLessons) {
+              return { ...sub, remainingLessons: sub.remainingLessons + 1 };
+            }
+            return sub;
+          });
+        });
+      }
+
+    } catch (err) {
+      alert(err.message || 'Не удалось отменить запись.');
     }
   };
 
@@ -217,7 +225,7 @@ export default function ProfilePage() {
 
           <div className="user-hero-info">
             <div className="user-hero-heading">
-              <h1 className="user-hero-name">{user.fullName}</h1>
+              <h1 className="user-hero-name">{user.fullName || 'Загрузка...'}</h1>
               <span className="user-level-tag">
                 <Droplet className="w-3 h-3" /> Уровень: «Уверенный головастик»
               </span>
@@ -225,9 +233,9 @@ export default function ProfilePage() {
             <p className="user-hero-email">{user.email}</p>
 
             <div className="user-hero-meta">
-              <span><Calendar className="w-4 h-4 text-emerald-600" /> Зарегистрирован: {user.createdAt}</span>
+              <span><Calendar className="w-4 h-4 text-emerald-600" /> Зарегистрирован: 2026 г.</span>
               <span><Bell className="w-4 h-4 text-emerald-600" /> SMS-оповещения включены</span>
-              <span><Award className="w-4 h-4 text-amber-500" /> Медосмотр: {user.isMedicalExaminationValid}</span>
+              <span><Award className="w-4 h-4 text-amber-500" /> Медосмотр: действителен</span>
             </div>
           </div>
         </div>
@@ -264,7 +272,7 @@ export default function ProfilePage() {
             </div>
             <div>
               <div className="stat-number">
-                {activeSub ? 'Ср, 16:30' : 'Занятий нет'}
+                {myBookings.length > 0 ? 'Есть запись' : 'Записей нет'}
               </div>
               <div className="stat-label">Ближайшая тренировка</div>
             </div>
@@ -299,9 +307,8 @@ export default function ProfilePage() {
             className={`profile-tab-btn ${activeTab === 'history' ? 'active' : ''}`}
             onClick={() => setActiveTab('history')}
           >
-            История покупок ({Array.isArray(subscriptions) ? subscriptions.length : 0})
+            История покупок ({subscriptions.length})
           </button>
-          
         </div>
 
         {/* Вкладка 1: Личные данные */}
@@ -317,6 +324,12 @@ export default function ProfilePage() {
               </div>
             )}
 
+            {profileError && (
+              <div className="alert-error flex items-center gap-2 text-red-600 bg-red-50 p-3 rounded-lg border border-red-200 text-sm mb-4">
+                <AlertCircle className="w-4 h-4" /> {profileError}
+              </div>
+            )}
+
             <form onSubmit={handleSave} className="profile-form-grid">
               <div className="form-field">
                 <label>ФИО ребёнка / ученика</label>
@@ -324,9 +337,10 @@ export default function ProfilePage() {
                   <User className="field-icon" />
                   <input
                     type="text"
-                    value={user.fullName}
+                    value={user.fullName || ''}
                     onChange={(e) => setUser({ ...user, fullName: e.target.value })}
                     placeholder="Имя Фамилия"
+                    required
                   />
                 </div>
               </div>
@@ -337,9 +351,10 @@ export default function ProfilePage() {
                   <Mail className="field-icon" />
                   <input
                     type="email"
-                    value={user.email}
+                    value={user.email || ''}
                     onChange={(e) => setUser({ ...user, email: e.target.value })}
                     placeholder="you@example.com"
+                    required
                   />
                 </div>
               </div>
@@ -419,7 +434,8 @@ export default function ProfilePage() {
                 </div>
 
                 <div className="sub-counter flex justify-between items-center text-sm">
-                  <span>Осталось <strong>{activeSub.remainingLessons} занятий</strong> из {activeSub.totalLessons} <br/></span>
+                  <span>Осталось <strong>{activeSub.remainingLessons} занятий</strong> из {activeSub.totalLessons}</span>
+                  <br/>
                   <span className="text-xs text-slate-400">
                     Дата покупки: {new Date(activeSub.purchaseDate).toLocaleDateString('ru-RU')}
                   </span>
@@ -441,36 +457,34 @@ export default function ProfilePage() {
           </div>
         )}
 
-        {/* Вкладка 4: Забронированные занятия */}
+        {/* Вкладка 3: Мои записи */}
         {activeTab === 'bookings' && (
           <div className="profile-main-card">
             <h2 className="profile-section-title">
-              <Clock className="w-5 h-5 text-emerald-600" /> Записанные тренировки
+              <Clock className="w-5 h-5 text-emerald-600" /> Записанные тренировки в расписании
             </h2>
 
-            {myBookings.length > 0 ? (
+            {loadingBookings ? (
+              <div className="flex items-center gap-2 text-slate-500 py-6 justify-center">
+                <Loader2 className="w-5 h-5 animate-spin text-emerald-600" />
+                <span>Загрузка списка записей...</span>
+              </div>
+            ) : bookingsError ? (
+              <div className="text-red-500 text-center py-6">{bookingsError}</div>
+            ) : myBookings.length > 0 ? (
               <div className="visits-list">
                 {myBookings.map((booking) => (
                   <div key={booking.id} className="visit-item flex justify-between items-center">
                     <div className="visit-info">
                       <span className="visit-date">{booking.groupName}</span>
                       <span className="visit-coach">
-                        📅 {booking.dayOfWeek} в {booking.time} | Тренер: {booking.trainerName}
+                        📅 {booking.dayOfWeek}, {booking.time} | Инструктор: {booking.trainerName}
                       </span>
                     </div>
                     <button 
-                      onClick={async () => {
-                        const token = localStorage.getItem('auth_token');
-                        const res = await fetch(`${API_URL}/bookings/${booking.id}`, {
-                          method: 'DELETE',
-                          headers: { 'Authorization': `Bearer ${token}` }
-                        });
-                        if (res.ok) {
-                          setMyBookings(prev => prev.filter(b => b.id !== booking.id));
-                          alert('Запись успешно отменена.');
-                        }
-                      }}
-                      className="text-xs text-red-500 bg-red-50 hover:bg-red-100 border border-red-200 px-3 py-1.5 rounded-lg font-semibold transition"
+                      type="button"
+                      onClick={() => cancelBooking(booking.id)}
+                      className="btn-cancel-booking"
                     >
                       Отменить запись
                     </button>

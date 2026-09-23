@@ -2,7 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, User, Users, MapPin, Loader2, CheckCircle } from 'lucide-react';
 import './SchedulePage.css';
 
-const DAYS = ['Все', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье'];
+const DAYS = [
+  'Все',
+  'Понедельник',
+  'Вторник',
+  'Среда',
+  'Четверг',
+  'Пятница',
+  'Суббота',
+  'Воскресенье'
+];
 
 export default function SchedulePage() {
   const [schedule, setSchedule] = useState([]);
@@ -23,9 +32,13 @@ export default function SchedulePage() {
       });
   }, []);
 
-  const filteredSchedule = selectedDay === 'Все' 
-    ? schedule 
-    : schedule.filter(item => item.dayOfWeek === selectedDay);
+  const filteredSchedule =
+    selectedDay === 'Все'
+      ? schedule
+      : schedule.filter(
+          item =>
+            item.dayOfWeek.toLowerCase() === selectedDay.toLowerCase()
+        );
 
   const handleBooking = async (item) => {
     const token = localStorage.getItem('auth_token');
@@ -38,8 +51,12 @@ export default function SchedulePage() {
       const response = await fetch(`https://localhost:7026/api/bookings/${item.id}`, {
         method: 'POST',
         headers: {
+          'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
-        }
+        },
+         body: JSON.stringify({
+          scheduledAt: item.startAt
+        })
       });
 
       const data = await response.json();
@@ -50,9 +67,16 @@ export default function SchedulePage() {
 
       alert(data.message);
        // Обновляем количество свободных мест в стейте без перезагрузки страницы
-      setSchedule(prev => prev.map(s => 
-        s.id === item.id ? { ...s, availableSlots: data.remainingSlots } : s
-      ));
+      setSchedule(prev =>
+        prev.map(scheduleItem =>
+          scheduleItem.id === item.id
+            ? {
+                ...scheduleItem,
+                availableSlots: data.remainingSlots
+              }
+            : scheduleItem
+        )
+      );
 
       } catch (err) {
         alert(err.message || 'Не удалось записаться на занятие.');
@@ -66,6 +90,7 @@ export default function SchedulePage() {
       </div>
     );
   }
+  
 
   
 
@@ -81,10 +106,13 @@ export default function SchedulePage() {
         {DAYS.map(day => (
           <button
             key={day}
+            type="button"
             className={`day-btn ${selectedDay === day ? 'active' : ''}`}
             onClick={() => setSelectedDay(day)}
           >
-            {day}
+            {day === 'Все'
+              ? 'Все дни'
+              : day.charAt(0).toUpperCase() + day.slice(1)}
           </button>
         ))}
       </div>
@@ -95,10 +123,14 @@ export default function SchedulePage() {
           filteredSchedule.map(item => (
             <div key={item.id} className="schedule-card">
               <div className="schedule-card-top">
-                <span className="day-pill"><Calendar className="w-3.5 h-3.5" /> 
-                  {new Date(item.date).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })},
-                   {item.dayOfWeek}</span>
-                <span className="time-pill"><Clock className="w-3.5 h-3.5" /> {item.time}</span>
+                <span className="day-pill">
+                  <Calendar className="w-3.5 h-3.5" /> 
+                  {new Date(item.date).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })}, {item.dayOfWeek}
+                </span>
+                <span className="time-pill">
+                  <Clock className="w-3.5 h-3.5" />
+                  {item.startTime} – {item.endTime}
+                </span>
               </div>
 
               <h3 className="group-title">{item.groupName}</h3>

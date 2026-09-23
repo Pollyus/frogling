@@ -13,6 +13,7 @@ namespace Frogling.Api.Data
         public DbSet<Trainer> Trainers { get; set; } = null!;
         public DbSet<ScheduleItem> ScheduleItems { get; set; } = null!;
         public DbSet<Booking> Bookings { get; set; } = null!;
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -22,14 +23,14 @@ namespace Frogling.Api.Data
                 .HasOne(b => b.Subscription)
                 .WithMany()
                 .HasForeignKey(b => b.SubscriptionId)
-                .OnDelete(DeleteBehavior.NoAction); // <--- ВОТ ЭТО КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ
+                .OnDelete(DeleteBehavior.NoAction);
 
             // Связь Booking -> ScheduleItem
             modelBuilder.Entity<Booking>()
                 .HasOne(b => b.ScheduleItem)
                 .WithMany()
                 .HasForeignKey(b => b.ScheduleItemId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
             // Связь Booking -> User
             modelBuilder.Entity<Booking>()
@@ -61,6 +62,8 @@ namespace Frogling.Api.Data
                 modelBuilder.Entity<User>()
                     .HasIndex(u => u.Email)
                     .IsUnique();
+
+                
 
                 // 2. Начальные карточки услуг (каталог бассейна "Лягушонок")
                 modelBuilder.Entity<ServicePlan>().HasData(
@@ -199,20 +202,69 @@ namespace Frogling.Api.Data
                 );
 
                 modelBuilder.Entity<ScheduleItem>().HasData(
-                    // Понедельник
-                    new ScheduleItem { Id = 1, ClassDate = new DateTime(2026, 9, 21, 10, 0, 0), GroupName = "Груднички", AvailableSlots = 5, TrainerId = 1 },
-                    // Вторник
-                    new ScheduleItem { Id = 2, ClassDate = new DateTime(2026, 9, 22, 11, 30, 0), GroupName = "Малыши 1-3 года", AvailableSlots = 4, TrainerId = 2 },
-                    // Среда
-                    new ScheduleItem { Id = 3, ClassDate = new DateTime(2026, 9, 23, 15, 0, 0), GroupName = "Головастики 4-6 лет", AvailableSlots = 6, TrainerId = 1 },
-                    // Четверг
-                    new ScheduleItem { Id = 4, ClassDate = new DateTime(2026, 9, 24, 17, 15, 0), GroupName = "Пловцы 7-10 лет", AvailableSlots = 3, TrainerId = 3 },
-                    // Пятница
-                    new ScheduleItem { Id = 5, ClassDate = new DateTime(2026, 9, 25, 16, 0, 0), GroupName = "Интенсив", AvailableSlots = 2, TrainerId = 2 },
-                    // Суббота
-                    new ScheduleItem { Id = 6, ClassDate = new DateTime(2026, 9, 26, 10, 0, 0), GroupName = "Семейное плавание", AvailableSlots = 8, TrainerId = 1 },
-                    // Воскресенье
-                    new ScheduleItem { Id = 7, ClassDate = new DateTime(2026, 9, 27, 12, 0, 0), GroupName = "Свободное плавание", AvailableSlots = 10, TrainerId = 3 }
+                    new ScheduleItem
+                    {
+                        Id = 1,
+                        StartAt = new DateTime(2026, 10, 5, 10, 0, 0, DateTimeKind.Utc),
+                        DurationMinutes = 45, // Длительность 45 минут
+                        GroupName = "Грудничковое плавание",
+                        AvailableSlots = 6,
+                        TrainerId = 1
+                    },
+                    new ScheduleItem
+                    {
+                        Id = 2,
+                        StartAt = new DateTime(2026, 10, 6, 16, 30, 0, DateTimeKind.Utc),
+                        DurationMinutes = 45,
+                        GroupName = "Малыши 1–3 года",
+                        AvailableSlots = 5,
+                        TrainerId = 2
+                    },
+                    new ScheduleItem
+                    {
+                        Id = 3,
+                        StartAt = new DateTime(2026, 10, 7, 15, 0, 0, DateTimeKind.Utc),
+                        DurationMinutes = 45,
+                        GroupName = "Головастики 4–6 лет",
+                        AvailableSlots = 6,
+                        TrainerId = 1
+                    },
+                    new ScheduleItem
+                    {
+                        Id = 4,
+                        StartAt = new DateTime(2026, 10, 8, 17, 15, 0, DateTimeKind.Utc),
+                        DurationMinutes = 45,
+                        GroupName = "Пловцы 7–10 лет",
+                        AvailableSlots = 4,
+                        TrainerId = 3
+                    },
+                    new ScheduleItem
+                    {
+                        Id = 5,
+                        StartAt = new DateTime(2026, 10, 9, 16, 0, 0, DateTimeKind.Utc),
+                        DurationMinutes = 45,
+                        GroupName = "Интенсив",
+                        AvailableSlots = 5,
+                        TrainerId = 2
+                    },
+                    new ScheduleItem
+                    {
+                        Id = 6,
+                        StartAt = new DateTime(2026, 10, 10, 10, 0, 0, DateTimeKind.Utc),
+                        DurationMinutes = 45,
+                        GroupName = "Семейное плавание",
+                        AvailableSlots = 8,
+                        TrainerId = 1
+                    },
+                    new ScheduleItem
+                    {
+                        Id = 7,
+                        StartAt = new DateTime(2026, 10, 11, 12, 0, 0, DateTimeKind.Utc),
+                        DurationMinutes = 45,
+                        GroupName = "Свободное плавание",
+                        AvailableSlots = 10,
+                        TrainerId = 3
+                    }
                 );
 
                 modelBuilder.Entity<Booking>()

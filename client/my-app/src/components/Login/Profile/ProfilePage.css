@@ -465,3 +465,36 @@
   padding: 4px 10px;
   border-radius: 8px;
 }
+/* Кнопка отмены записи */
+.btn-cancel-booking {
+  flex: 0 0 auto;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  background: #fff1f2;
+  color: #dc2626;
+  padding: 9px 13px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-cancel-booking:hover {
+  background: #dc2626;
+  border-color: #dc2626;
+  color: #ffffff;
+  box-shadow: 0 6px 14px rgba(220, 38, 38, 0.22);
+  transform: translateY(-1px);
+}
+
+.btn-cancel-booking:active {
+  transform: translateY(0);
+}
+
+.btn-cancel-booking:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}

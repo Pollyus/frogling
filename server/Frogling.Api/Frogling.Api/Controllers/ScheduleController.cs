@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Frogling.Api.Data;
+using System.Globalization;
 
 namespace Frogling.Api.Controllers
 {
@@ -21,22 +22,32 @@ namespace Frogling.Api.Controllers
         {
             var schedule = await _context.ScheduleItems
                 .Include(s => s.Trainer)
-                .OrderBy(s => s.ClassDate)
-                .Select(s => new
-                {
-                    s.Id,
-                    // Передаем дату в ISO формате для React
-                    Date = s.ClassDate,
-                    DayOfWeek = s.ClassDate.ToString("dddd", new System.Globalization.CultureInfo("ru-RU")),
-                    Time = s.ClassDate.ToString("HH:mm"),
-                    s.GroupName,
-                    s.AvailableSlots,
-                    TrainerName = s.Trainer != null ? s.Trainer.Name : "Инструктор",
-                    TrainerPhoto = s.Trainer != null ? s.Trainer.PhotoUrl : "🐸"
-                })
+                .OrderBy(s => s.StartAt)
                 .ToListAsync();
 
-            return Ok(schedule);
+            var culture = new CultureInfo("ru-RU");
+
+            var result = schedule.Select(s => new
+            {
+                s.Id,
+                date = s.StartAt.ToString("yyyy-MM-dd"),
+                startAt = s.StartAt,
+                durationMinutes = s.DurationMinutes, // можно дополнительно передавать длительность
+
+                dayOfWeek = s.StartAt.ToString("dddd", culture),
+
+                startTime = s.StartAt.ToString("HH:mm"),
+                endTime = s.EndAt.ToString("HH:mm"), // Автоматически: 10:00 + 45 мин = 10:45
+
+                s.GroupName,
+                s.AvailableSlots,
+
+                trainerName = s.Trainer?.Name ?? "Инструктор",
+                trainerSpecialization = s.Trainer?.Specialization ?? "",
+                trainerPhoto = s.Trainer?.PhotoUrl ?? "🐸"
+            });
+
+            return Ok(result);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Frogling.Api.Models
 {
-    public class CreateBookingDTO
+    public class CreateBookingDto
     {
         public DateTime ScheduledAt { get; set; }
     }
