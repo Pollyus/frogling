@@ -12,6 +12,7 @@ namespace Frogling.Api.Models
         public Guid UserId { get; set; }
         [JsonIgnore]
         public User? User { get; set; }
+        public DateTime ScheduledAt { get; set; }
 
         // Связь с занятием в расписании
         public int ScheduleItemId { get; set; }

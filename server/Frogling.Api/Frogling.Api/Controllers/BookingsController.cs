@@ -133,16 +133,41 @@ namespace Frogling.Api.Controllers
             if (booking == null)
                 return NotFound(new { message = "Запись не найдена." });
 
-            // Возвращаем свободное место обратно в расписание
+            var now = DateTime.UtcNow;
+            var canRefundLesson = booking.ScheduledAt.ToUniversalTime() - now > TimeSpan.FromHours(1);
+
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+
+            // Место освобождается при любой отмене.
             if (booking.ScheduleItem != null)
-            {
                 booking.ScheduleItem.AvailableSlots++;
+
+            // Возвращаем занятие, только если отмена сделана более чем за час.
+            if (canRefundLesson)
+            {
+                var subscription = await _context.Subscriptions
+                    .Where(s => s.UserId == userId.Value)
+                    .Where(s => s.RemainingLessons < s.TotalLessons)
+                    .OrderByDescending(s => s.PurchaseDate)
+                    .FirstOrDefaultAsync();
+
+                if (subscription != null)
+                {
+                    subscription.RemainingLessons++;
+                }
             }
 
             _context.Bookings.Remove(booking);
             await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
 
-            return Ok(new { message = "Запись отменена." });
+            return Ok(new
+            {
+                message = canRefundLesson
+                    ? "Запись отменена. Занятие возвращено на абонемент."
+                    : "Запись отменена, но до занятия оставался час или меньше — занятие списано.",
+                lessonRefunded = canRefundLesson
+            });
         }
     }
 }

@@ -26,6 +26,9 @@ export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState('info'); // info | subscription | history
   const [isSaved, setIsSaved] = useState(false);
   const [myBookings, setMyBookings] = useState([]);
+  const [loadingProfile, setLoadingProfile] = useState(true);
+  const [profileError, setProfileError] = useState('');
+
 
   const fetchBookings = async () => {
     const token = localStorage.getItem('auth_token');
@@ -44,6 +47,37 @@ export default function ProfilePage() {
     }
   };
 
+  useEffect(() => {
+    const loadProfile = async () => {
+      const token = localStorage.getItem('auth_token');
+
+      if (!token) {
+        setLoadingProfile(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_URL}/profile`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (!response.ok) {
+          throw new Error(`Ошибка загрузки профиля: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setUser(prev => ({ ...prev, ...data }));
+      } catch (error) {
+        console.error(error);
+        setProfileError('Не удалось загрузить профиль с сервера.');
+      } finally {
+        setLoadingProfile(false);
+      }
+    };
+
+    loadProfile();
+  }, []);
+
   // Загрузка данных пользователя и его абонементов из SQL Server
   useEffect(() => {
     const fetchUserDataAndSubs = async () => {
@@ -59,7 +93,7 @@ export default function ProfilePage() {
             fullName: parsed.fullName || 'ФИО ребенка',
             email: parsed.email || 'user@example.com',
             isMedicalExaminationValid: parsed.isMedicalExaminationValid || 'Недействителен',
-            phoneNumber: parsed.phoneNumber || '+7(999)000-00-00',
+            phone: parsed.phone || '+7(999)000-00-00',
             parentName: parsed.parentName || 'ФИО родителя',
             createdAt: parsed.createdAt || '2026 г.'
           }));
@@ -113,11 +147,57 @@ export default function ProfilePage() {
     : null;
 
   // Сохранение изменений в профиле
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
-    localStorage.setItem('user', JSON.stringify(user));
-    setIsSaved(true);
-    setTimeout(() => setIsSaved(false), 2500);
+
+    const token = localStorage.getItem('auth_token');
+    if (!token) {
+      setProfileError('Нужно войти в аккаунт заново.');
+      return;
+      }
+
+    setProfileError('');
+
+    try {
+      const response = await fetch(`${API_URL}/profile`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          fullName: user.fullName,
+          email: user.email,
+          phone: user.phone,
+          parentName: user.parentName
+        })
+      });
+
+      await fetch(`${API_URL}/bookings/${item.id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          scheduledAt: selectedDateTime
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || `Ошибка сохранения: ${response.status}`);
+      }
+
+      setUser(prev => ({ ...prev, ...data }));
+      localStorage.setItem('user', JSON.stringify(data));
+      setIsSaved(true);
+      setTimeout(() => setIsSaved(false), 2500);
+    } catch (error) {
+      setProfileError(error.message || 'Не удалось сохранить профиль.');
+      {profileError && <p role="alert" className="profile-error">{profileError}</p>}
+    }
   };
 
   return (
@@ -269,9 +349,9 @@ export default function ProfilePage() {
                 <div className="field-input-wrap">
                   <Phone className="field-icon" />
                   <input
-                    type="text"
-                    value={user.phoneNumber}
-                    onChange={(e) => setUser({ ...user, phoneNumber: e.target.value })}
+                    type="tel"
+                    value={user.phone || ''}
+                    onChange={(e) => setUser({ ...user, phone: e.target.value })}
                     placeholder="+7 (999) 000-00-00"
                   />
                 </div>
@@ -283,7 +363,7 @@ export default function ProfilePage() {
                   <FileText className="field-icon" />
                   <input
                     type="text"
-                    value={user.parentName}
+                    value={user.parentName || ''}
                     onChange={(e) => setUser({ ...user, parentName: e.target.value })}
                     placeholder="ФИО родителя"
                   />
