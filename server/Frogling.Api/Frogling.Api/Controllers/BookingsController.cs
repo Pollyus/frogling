@@ -39,41 +39,32 @@ namespace Frogling.Api.Controllers
 
             var culture = new System.Globalization.CultureInfo("ru-RU");
 
+            // КРИТИЧЕСКИ ВАЖНО: .Include подгружает занятие и тренера из базы данных!
             var bookings = await _context.Bookings
                 .Where(b => b.UserId == userId.Value)
                 .Include(b => b.ScheduleItem)
-                .ThenInclude(s => s!.Trainer)
-                .OrderByDescending(b => b.BookedAt)
+                    .ThenInclude(s => s!.Trainer)
+                .OrderBy(b => b.ScheduleItem != null ? b.ScheduleItem.StartAt : DateTime.MaxValue) // Сортируем: ближайшие занятия будут первыми
                 .ToListAsync();
 
             var result = bookings.Select(b => new
             {
                 b.Id,
                 b.BookedAt,
-
-                Date = b.ScheduleItem != null
-                ? b.ScheduleItem.StartAt.ToString("dd.MM.yyyy")
-                : "",
-
+                Date = b.ScheduleItem != null ? b.ScheduleItem.StartAt.ToString("dd.MM.yyyy") : "",
                 DayOfWeek = b.ScheduleItem != null
-                ? b.ScheduleItem.StartAt.ToString(
-                    "dddd",
-                    new System.Globalization.CultureInfo("ru-RU"))
-                : "",
-
+                    ? culture.TextInfo.ToTitleCase(b.ScheduleItem.StartAt.ToString("dddd", culture))
+                    : "",
                 Time = b.ScheduleItem != null
-                ? $"{b.ScheduleItem.StartAt:HH:mm} - {b.ScheduleItem.EndAt:HH:mm}"
-                : "",
-
-                GroupName = b.ScheduleItem != null
-                ? b.ScheduleItem.GroupName
-                : "",
-
-                TrainerName = b.ScheduleItem?.Trainer?.Name ?? "Инструктор"
+                    ? $"{b.ScheduleItem.StartAt:HH:mm} - {b.ScheduleItem.EndAt:HH:mm}"
+                    : "",
+                GroupName = b.ScheduleItem != null ? b.ScheduleItem.GroupName : "Занятие по плаванию",
+                TrainerName = b.ScheduleItem != null && b.ScheduleItem.Trainer != null ? b.ScheduleItem.Trainer.Name : "Инструктор"
             });
 
-            return Ok(bookings);
+            return Ok(result);
         }
+
 
         // 2. Записаться на занятие
         [HttpPost("{scheduleItemId}")]

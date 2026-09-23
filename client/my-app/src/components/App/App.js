@@ -27,16 +27,16 @@ import Service from '../BuyService/ServicesPage'
 function App() {
   const [currentUser, setCurrentUser] = useState({});
 
-  useEffect(() => {
-    const script = document.createElement('script');
-    script.src = 'https://w1603385.yclients.com/widgetJS';
-    script.async = true;
-    script.charset = 'UTF-8';
-    document.body.appendChild(script);
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
+  // useEffect(() => {
+  //   const script = document.createElement('script');
+  //   script.src = 'https://w1603385.yclients.com/widgetJS';
+  //   script.async = true;
+  //   script.charset = 'UTF-8';
+  //   document.body.appendChild(script);
+  //   return () => {
+  //     document.body.removeChild(script);
+  //   };
+  // }, []);
 
 
   return (

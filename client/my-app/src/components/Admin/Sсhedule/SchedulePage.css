@@ -176,6 +176,28 @@
   background: #059669;
 }
 
+.btn-book-slot:disabled,
+.btn-book-slot.disabled {
+  background: #cbd5e1 !important;
+  color: #64748b !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+  opacity: 0.7;
+}
+
+.btn-book-slot:disabled:hover {
+  transform: none !important;
+  background: #cbd5e1 !important;
+}
+
+.select-bar{
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+}
+
 .no-schedule {
   grid-column: 1 / -1;
   text-align: center;

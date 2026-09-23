@@ -18,6 +18,8 @@ export default function SchedulePage() {
   const [loading, setLoading] = useState(true);
   const [selectedDay, setSelectedDay] = useState('Все');
   const [bookedItem, setBookedItem] = useState(null);
+  const [trainers, setTrainers] = useState([]);
+  const [selectedTrainer, setSelectedTrainer] = useState(null);
 
   useEffect(() => {
     fetch('https://localhost:7026/api/schedule')
@@ -31,6 +33,24 @@ export default function SchedulePage() {
         setLoading(false);
       });
   }, []);
+
+  useEffect(() => {
+    fetch('https://localhost:7026/api/trainer')
+      .then(trainers => trainers.json())
+      .then(t_info => {
+        if (Array.isArray(t_info)) setTrainers(t_info);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Ошибка загрузки расписания:', err);
+        setLoading(false);
+      });
+  }, []);
+
+  // Обработчик изменения выбора
+  const handleTrainerChange = (event) => {
+    setSelectedTrainer(event.target.value); 
+  };
 
   const filteredSchedule =
     selectedDay === 'Все'
@@ -91,7 +111,20 @@ export default function SchedulePage() {
     );
   }
   
-
+  const getShortDay = (dayStr) => {
+    if (!dayStr) return '';
+    const map = {
+      'понедельник': 'Пн',
+      'вторник': 'Вт',
+      'среда': 'Ср',
+      'четверг': 'Чт',
+      'пятница': 'Пт',
+      'суббота': 'Сб',
+      'воскресенье': 'Вс'
+    };
+    const lower = dayStr.trim().toLowerCase();
+    return map[lower] || dayStr; // Если не найдено, вернет исходный текст
+  };
   
 
   return (
@@ -117,6 +150,15 @@ export default function SchedulePage() {
         ))}
       </div>
 
+      {/* Фильтры по тренерам */}
+      <select className = "select-bar" value={selectedTrainer} onChange={handleTrainerChange}>
+        <option>Выберите тренера</option>
+        {trainers.map (t => (
+          <option value={t.Id}>{t.name}</option>
+        ))}
+          
+      </select>
+
       {/* Список занятий */}
       <div className="schedule-grid">
         {filteredSchedule.length > 0 ? (
@@ -125,7 +167,8 @@ export default function SchedulePage() {
               <div className="schedule-card-top">
                 <span className="day-pill">
                   <Calendar className="w-3.5 h-3.5" /> 
-                  {new Date(item.date).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })}, {item.dayOfWeek}
+                  {getShortDay(item.dayOfWeek)}, 
+                  {new Date(item.date).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })}
                 </span>
                 <span className="time-pill">
                   <Clock className="w-3.5 h-3.5" />
@@ -148,10 +191,12 @@ export default function SchedulePage() {
                   <Users className="w-4 h-4 text-emerald-600" /> Свободно мест: <strong>{item.availableSlots}</strong>
                 </span>
                 <button 
+                  type="button"
                   onClick={() => handleBooking(item)}
-                  className="btn-book-slot"
+                  disabled={item.availableSlots <= 0} // <--- Блокируем, если 0 или меньше
+                  className={`btn-book-slot ${item.availableSlots <= 0 ? 'disabled' : ''}`}
                 >
-                  Записаться
+                  {item.availableSlots > 0 ? 'Записаться' : 'Мест нет'}
                 </button>
               </div>
             </div>

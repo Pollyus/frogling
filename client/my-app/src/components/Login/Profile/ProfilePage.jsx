@@ -116,10 +116,39 @@ export default function ProfilePage() {
     fetchAllData();
   }, []);
 
+  // Функция для сокращения дня недели
+  const getShortDay = (dayStr) => {
+    if (!dayStr) return '';
+    const map = {
+      'понедельник': 'Пн',
+      'вторник': 'Вт',
+      'среда': 'Ср',
+      'четверг': 'Чт',
+      'пятница': 'Пт',
+      'суббота': 'Сб',
+      'воскресенье': 'Вс'
+    };
+    const lower = dayStr.trim().toLowerCase();
+    return map[lower] || dayStr; // Если не найдено, вернет исходный текст
+  };
+
+
   // Вычисляем активный абонемент
   const activeSub = Array.isArray(subscriptions)
     ? subscriptions.find(s => s.isActive && new Date(s.expiryDate) > new Date())
     : null;
+
+  // ВЫЧИСЛЯЕМ БЛИЖАЙШУЮ ТРЕНИРОВКУ:
+  // Берем первую запись из списка (сервер сортирует их по дате)
+  const nextBooking = Array.isArray(myBookings) && myBookings.length > 0 
+    ? myBookings[0] 
+    : null;
+
+  // Форматируем текст для плашки (например, "Пн, 10:00" или "10.10 в 16:30")
+  const nextBookingText = nextBooking 
+    ? `${getShortDay(nextBooking.dayOfWeek) || ''} ${nextBooking.time ? nextBooking.time.split(' - ')[0] : ''}`.trim()
+    : 'Записей нет';
+
 
   // Сохранение изменений в профиле (PUT запрос на бэкенд)
   const handleSave = async (e) => {
@@ -271,10 +300,12 @@ export default function ProfilePage() {
               <Clock className="w-6 h-6" />
             </div>
             <div>
-              <div className="stat-number">
-                {myBookings.length > 0 ? 'Есть запись' : 'Записей нет'}
+              <div className="stat-number" style={{ fontSize: nextBooking ? '17px' : '20px' }}>
+                {nextBookingText}
               </div>
-              <div className="stat-label">Ближайшая тренировка</div>
+              <div className="stat-label">
+                {nextBooking ? (nextBooking.groupName || 'Ближайшая тренировка') : 'Ближайшая тренировка'}
+              </div>
             </div>
           </div>
         </div>

@@ -465,6 +465,15 @@
   padding: 4px 10px;
   border-radius: 8px;
 }
+
+.visit-status.expired {
+  font-size: 12px;
+  font-weight: 600;
+  color: #8da3d0;
+  background: #e2e5ed;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
 /* Кнопка отмены записи */
 .btn-cancel-booking {
   flex: 0 0 auto;
