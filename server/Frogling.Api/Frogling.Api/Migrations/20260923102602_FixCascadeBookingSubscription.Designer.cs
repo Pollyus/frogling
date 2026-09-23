@@ -4,6 +4,7 @@ using Frogling.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Frogling.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260923102602_FixCascadeBookingSubscription")]
+    partial class FixCascadeBookingSubscription
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -70,10 +73,15 @@ namespace Frogling.Api.Migrations
                     b.Property<int>("AvailableSlots")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("ClassDate")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("DayOfWeek")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("GroupName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Time")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -91,64 +99,51 @@ namespace Frogling.Api.Migrations
                         {
                             Id = 1,
                             AgeCategory = 3,
-                            AvailableSlots = 5,
-                            ClassDate = new DateTime(2026, 9, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            GroupName = "Груднички",
+                            AvailableSlots = 3,
+                            DayOfWeek = "Понедельник",
+                            GroupName = "Малыши (1-3 года)",
+                            Time = "15:00 - 15:45",
                             TrainerId = 1
                         },
                         new
                         {
                             Id = 2,
                             AgeCategory = 3,
-                            AvailableSlots = 4,
-                            ClassDate = new DateTime(2026, 9, 22, 11, 30, 0, 0, DateTimeKind.Unspecified),
-                            GroupName = "Малыши 1-3 года",
+                            AvailableSlots = 2,
+                            DayOfWeek = "Понедельник",
+                            GroupName = "Головастики (4-6 лет)",
+                            Time = "16:00 - 16:45",
                             TrainerId = 2
                         },
                         new
                         {
                             Id = 3,
                             AgeCategory = 3,
-                            AvailableSlots = 6,
-                            ClassDate = new DateTime(2026, 9, 23, 15, 0, 0, 0, DateTimeKind.Unspecified),
-                            GroupName = "Головастики 4-6 лет",
+                            AvailableSlots = 4,
+                            DayOfWeek = "Среда",
+                            GroupName = "Малыши (1-3 года)",
+                            Time = "15:00 - 15:45",
                             TrainerId = 1
                         },
                         new
                         {
                             Id = 4,
                             AgeCategory = 3,
-                            AvailableSlots = 3,
-                            ClassDate = new DateTime(2026, 9, 24, 17, 15, 0, 0, DateTimeKind.Unspecified),
-                            GroupName = "Пловцы 7-10 лет",
+                            AvailableSlots = 1,
+                            DayOfWeek = "Среда",
+                            GroupName = "Пловцы (7-10 лет)",
+                            Time = "17:00 - 17:45",
                             TrainerId = 3
                         },
                         new
                         {
                             Id = 5,
                             AgeCategory = 3,
-                            AvailableSlots = 2,
-                            ClassDate = new DateTime(2026, 9, 25, 16, 0, 0, 0, DateTimeKind.Unspecified),
-                            GroupName = "Интенсив",
+                            AvailableSlots = 5,
+                            DayOfWeek = "Пятница",
+                            GroupName = "Головастики (4-6 лет)",
+                            Time = "16:00 - 16:45",
                             TrainerId = 2
-                        },
-                        new
-                        {
-                            Id = 6,
-                            AgeCategory = 3,
-                            AvailableSlots = 8,
-                            ClassDate = new DateTime(2026, 9, 26, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            GroupName = "Семейное плавание",
-                            TrainerId = 1
-                        },
-                        new
-                        {
-                            Id = 7,
-                            AgeCategory = 3,
-                            AvailableSlots = 10,
-                            ClassDate = new DateTime(2026, 9, 27, 12, 0, 0, 0, DateTimeKind.Unspecified),
-                            GroupName = "Свободное плавание",
-                            TrainerId = 3
                         });
                 });
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, User, Users, MapPin, Loader2, CheckCircle } from 'lucide-react';
 import './SchedulePage.css';
 
-const DAYS = ['Все', 'Понедельник', 'Среда', 'Пятница', 'Суббота'];
+const DAYS = ['Все', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье'];
 
 export default function SchedulePage() {
   const [schedule, setSchedule] = useState([]);
@@ -95,7 +95,9 @@ export default function SchedulePage() {
           filteredSchedule.map(item => (
             <div key={item.id} className="schedule-card">
               <div className="schedule-card-top">
-                <span className="day-pill"><Calendar className="w-3.5 h-3.5" /> {item.dayOfWeek}</span>
+                <span className="day-pill"><Calendar className="w-3.5 h-3.5" /> 
+                  {new Date(item.date).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })},
+                   {item.dayOfWeek}</span>
                 <span className="time-pill"><Clock className="w-3.5 h-3.5" /> {item.time}</span>
               </div>
 

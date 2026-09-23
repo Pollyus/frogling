@@ -105,11 +105,12 @@ namespace Frogling.Api.Controllers
             //6. Уменьшаем количество свободных мест
             scheduleItem.AvailableSlots--;
 
-            //7. Создаем бронирование
+            //7. Создаем запись с привязкой к конкретному абонементу
             var booking = new Booking
             {
                 UserId = userId.Value,
                 ScheduleItemId = scheduleItemId,
+                SubscriptionId = activeSubscription.Id,
                 BookedAt = DateTime.UtcNow
             };
 
@@ -128,46 +129,37 @@ namespace Frogling.Api.Controllers
 
             var booking = await _context.Bookings
                 .Include(b => b.ScheduleItem)
-                .FirstOrDefaultAsync(b => b.Id == id && b.UserId == userId.Value);
+                .Include(b => b.Subscription)
+                .FirstOrDefaultAsync(b => b.Id == id && b.UserId == userId);
 
             if (booking == null)
                 return NotFound(new { message = "Запись не найдена." });
-
-            var now = DateTime.UtcNow;
-            var canRefundLesson = booking.ScheduledAt.ToUniversalTime() - now > TimeSpan.FromHours(1);
-
-            await using var transaction = await _context.Database.BeginTransactionAsync();
 
             // Место освобождается при любой отмене.
             if (booking.ScheduleItem != null)
                 booking.ScheduleItem.AvailableSlots++;
 
-            // Возвращаем занятие, только если отмена сделана более чем за час.
-            if (canRefundLesson)
-            {
-                var subscription = await _context.Subscriptions
-                    .Where(s => s.UserId == userId.Value)
-                    .Where(s => s.RemainingLessons < s.TotalLessons)
-                    .OrderByDescending(s => s.PurchaseDate)
-                    .FirstOrDefaultAsync();
+            // ВЫЧИСЛЯЕМ: осталось ли до занятия больше 1 часа?
+            var timeUntilClass = booking.ScheduleItem.ClassDate - DateTime.Now;
+            bool isEarlyCancellation = timeUntilClass.TotalHours > 1;
 
-                if (subscription != null)
-                {
-                    subscription.RemainingLessons++;
-                }
+            if (isEarlyCancellation)
+            {
+                // Если отмена ранняя — возвращаем занятие на абонемент
+                if (booking.Subscription != null)
+                    booking.Subscription.RemainingLessons++;
+
+                _context.Bookings.Remove(booking);
+                await _context.SaveChangesAsync();
+                return Ok(new { message = "Запись отменена, занятие возвращено." });
             }
-
-            _context.Bookings.Remove(booking);
-            await _context.SaveChangesAsync();
-            await transaction.CommitAsync();
-
-            return Ok(new
+            else
             {
-                message = canRefundLesson
-                    ? "Запись отменена. Занятие возвращено на абонемент."
-                    : "Запись отменена, но до занятия оставался час или меньше — занятие списано.",
-                lessonRefunded = canRefundLesson
-            });
+                // Если осталось меньше часа — просто удаляем запись, НЕ возвращая занятие
+                _context.Bookings.Remove(booking);
+                await _context.SaveChangesAsync();
+                return Ok(new { message = "До занятия меньше часа. Запись удалена, но занятие списано." });
+            }
         }
     }
 }

@@ -17,5 +17,9 @@ namespace Frogling.Api.Models
         // Связь с занятием в расписании
         public int ScheduleItemId { get; set; }
         public ScheduleItem? ScheduleItem { get; set; }
+        // Привязываем запись к конкретному абонементу, с которого списалось занятие
+        public int SubscriptionId { get; set; }
+        public SubscriptionPrice? Subscription { get; set; }
     }
 }
+
