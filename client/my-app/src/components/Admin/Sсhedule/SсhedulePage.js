@@ -19,7 +19,7 @@ export default function SchedulePage() {
   const [selectedDay, setSelectedDay] = useState('Все');
   const [bookedItem, setBookedItem] = useState(null);
   const [trainers, setTrainers] = useState([]);
-  const [selectedTrainer, setSelectedTrainer] = useState(null);
+  const [selectedTrainer, setSelectedTrainer] = useState('');
 
   useEffect(() => {
     fetch('https://localhost:7026/api/schedule')
@@ -52,13 +52,17 @@ export default function SchedulePage() {
     setSelectedTrainer(event.target.value); 
   };
 
-  const filteredSchedule =
-    selectedDay === 'Все'
-      ? schedule
-      : schedule.filter(
-          item =>
-            item.dayOfWeek.toLowerCase() === selectedDay.toLowerCase()
-        );
+  const filteredSchedule = schedule.filter(item => {
+    const dayMatch =
+      selectedDay === 'Все' ||
+      item.dayOfWeek.toLowerCase() === selectedDay.toLowerCase();
+
+    // selectedTrainer хранит имя тренера (значение <option>)
+    const trainerMatch =
+      !selectedTrainer || item.trainerName === selectedTrainer;
+
+    return dayMatch && trainerMatch;
+  });
 
   const handleBooking = async (item) => {
     const token = localStorage.getItem('auth_token');
@@ -152,9 +156,9 @@ export default function SchedulePage() {
 
       {/* Фильтры по тренерам */}
       <select className = "select-bar" value={selectedTrainer} onChange={handleTrainerChange}>
-        <option>Выберите тренера</option>
+        <option value=''>Все тренеры</option>
         {trainers.map (t => (
-          <option value={t.Id}>{t.name}</option>
+          <option key={t.Id} value={t.name}>{t.photoUrl}{t.name}</option>
         ))}
           
       </select>
