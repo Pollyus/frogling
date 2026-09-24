@@ -31,6 +31,7 @@ namespace Frogling.Api.Controllers
                     u.Email,
                     u.Phone,
                     u.ParentName,
+                    u.MedicalCheckDate,
                     u.IsMedicalCheckValid,
                     ActiveSubscription = u.Subscriptions
                         .Where(s => s.IsActive && s.RemainingLessons > 0)
@@ -56,9 +57,18 @@ namespace Frogling.Api.Controllers
             {
                 user.MedicalCheckDate = dto.MedicalCheckDate.Value.ToUniversalTime();
             }
+            else
+            {
+                user.MedicalCheckDate = null;
+            }
 
             await _context.SaveChangesAsync();
-            return Ok(new { message = "Данные клиента успешно обновлены!" });
+            return Ok(new
+            {
+                message = "Данные успешно обновлены",
+                user.MedicalCheckDate,
+                user.IsMedicalCheckValid
+            });
         }
 
         // 3. Записать клиента на занятие от имени админа
@@ -120,6 +130,40 @@ namespace Frogling.Api.Controllers
 
             return Ok(new { message = "Запись отменена администратором." });
         }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("schedule/{id}")]
+        public async Task<IActionResult> UpdateScheduleItem(int id, [FromBody] UpdateScheduleDto dto)
+        {
+            var scheduleItem = await _context.ScheduleItems.FindAsync(id);
+            if (scheduleItem == null)
+                return NotFound(new { message = "Занятие в расписании не найдено." });
+
+            // Обновляем данные
+            if (!string.IsNullOrWhiteSpace(dto.GroupName))
+                scheduleItem.GroupName = dto.GroupName.Trim();
+            if (dto.StartAt.HasValue)
+            {
+                var dt = dto.StartAt.Value;
+                // Записываем ровно то время, которое ввел пользователь
+                scheduleItem.StartAt = new DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, 0, DateTimeKind.Utc);
+            }
+            if (dto.DurationMinutes > 0)
+                scheduleItem.DurationMinutes = dto.DurationMinutes;
+            if (dto.TrainerId > 0)
+            {
+                bool trainerExists = await _context.Trainers.AnyAsync(t => t.Id == dto.TrainerId);
+                if (trainerExists)
+                    scheduleItem.TrainerId = dto.TrainerId;
+            }
+            if (dto.AvailableSlots >= 0)
+                scheduleItem.AvailableSlots = dto.AvailableSlots;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Расписание успешно обновлено!" });
+        }
+
     }
 
     public class UpdateUserAdminDto
@@ -134,5 +178,13 @@ namespace Frogling.Api.Controllers
     {
         public Guid UserId { get; set; }
         public int ScheduleItemId { get; set; }
+    }
+    public class UpdateScheduleDto
+    {
+        public string GroupName { get; set; } = string.Empty;
+        public int DurationMinutes { get; set; } = 45;
+        public int TrainerId { get; set; }
+        public int AvailableSlots { get; set; }
+        public DateTime? StartAt { get; set; }
     }
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Clock, User, Users, MapPin, Loader2, CheckCircle } from 'lucide-react';
+import { Calendar, Clock, User, Users, MapPin, Loader2, CheckCircle, Edit, X } from 'lucide-react';
 import './SchedulePage.css';
 
 const DAYS = [
@@ -12,6 +12,7 @@ const DAYS = [
   'Суббота',
   'Воскресенье'
 ];
+const API_URL = 'https://localhost:7026/api';
 
 export default function SchedulePage() {
   const [schedule, setSchedule] = useState([]);
@@ -20,6 +21,93 @@ export default function SchedulePage() {
   const [bookedItem, setBookedItem] = useState(null);
   const [trainers, setTrainers] = useState([]);
   const [selectedTrainer, setSelectedTrainer] = useState('');
+
+  // Состояние для редактирования занятия
+  const [editingItem, setEditingItem] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  // Проверяем, админ ли текущий пользователь
+  useEffect(() => {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      try {
+        const user = JSON.parse(userStr);
+        setIsAdmin(user.role === 'Admin' || user.Role === 'Admin');
+      } catch (e) {}
+    }
+  }, []);
+
+  const formatDateTimeForInput = (dateStr) => {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return dateStr.slice(0, 16);
+
+  const pad = (n) => String(n).padStart(2, '0');
+  const year = d.getFullYear();
+  const month = pad(d.getMonth() + 1);
+  const day = pad(d.getDate());
+  const hours = pad(d.getHours());
+  const minutes = pad(d.getMinutes());
+
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+};
+
+  // Загрузка расписания и списка тренеров
+  const fetchData = async () => {
+    try {
+      const resSchedule = await fetch(`${API_URL}/schedule`);
+      const scheduleData = await resSchedule.json();
+      if (Array.isArray(scheduleData)) setSchedule(scheduleData);
+
+      // Загружаем список тренеров (если у вас есть такой эндпоинт, либо создадим список вручную)
+      // Для примера зафиксируем список или подтянем с бэкенда:
+      
+      setTrainers([
+        { id: 1, name: 'Любовь' },
+        { id: 2, name: 'Владислав' },
+        { id: 3, name: 'Лидия' }
+      ]);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  // Сохранение изменений занятия (Админ)
+  const handleSaveSchedule = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('auth_token');
+
+    try {
+      const res = await fetch(`${API_URL}/admin/schedule/${editingItem.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          groupName: editingItem.groupName,
+          startAt: editingItem.startAt,
+          durationMinutes: parseInt(editingItem.durationMinutes) || 45,
+          trainerId: parseInt(editingItem.trainerId),
+          availableSlots: parseInt(editingItem.availableSlots) || 6
+        })
+      });
+
+      if (!res.ok) throw new Error('Не удалось обновить расписание');
+
+      alert('Расписание успешно обновлено!');
+      setEditingItem(null);
+      fetchData(); // Перезагружаем расписание
+    } catch (err) {
+      alert(err.message);
+    }
+  };
 
   useEffect(() => {
     fetch('https://localhost:7026/api/schedule')
@@ -194,14 +282,31 @@ export default function SchedulePage() {
                 <span className="slots-info">
                   <Users className="w-4 h-4 text-emerald-600" /> Свободно мест: <strong>{item.availableSlots}</strong>
                 </span>
-                <button 
-                  type="button"
-                  onClick={() => handleBooking(item)}
-                  disabled={item.availableSlots <= 0} // <--- Блокируем, если 0 или меньше
-                  className={`btn-book-slot ${item.availableSlots <= 0 ? 'disabled' : ''}`}
-                >
-                  {item.availableSlots > 0 ? 'Записаться' : 'Мест нет'}
-                </button>
+
+                <div className="flex gap-2">
+                  {/* Кнопка Редактировать для Админа */}
+                  {isAdmin && (
+                    <button 
+                      type="button"
+                      onClick={() => setEditingItem({
+                        ...item,
+                        startAt: formatDateTimeForInput(item.startAt || item.date)
+                      })}
+                      className="btn-edit-slot bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 cursor-pointer border-0"
+                    >
+                      <Edit className="w-3.5 h-3.5" /> Изменить
+                    </button>
+                  )}
+                
+                  <button 
+                    type="button"
+                    onClick={() => handleBooking(item)}
+                    disabled={item.availableSlots <= 0} // <--- Блокируем, если 0 или меньше
+                    className={`btn-book-slot ${item.availableSlots <= 0 ? 'disabled' : ''}`}
+                  >
+                    {item.availableSlots > 0 ? 'Записаться' : 'Мест нет'}
+                  </button>
+                </div>
               </div>
             </div>
           ))
@@ -211,6 +316,78 @@ export default function SchedulePage() {
           </div>
         )}
       </div>
+      {/* Модальное окно редактирования расписания для Админа */}
+        {editingItem && (
+          <div className="modal-admin-overlay" onClick={() => setEditingItem(null)}>
+            <div className="modal-admin-card" onClick={e => e.stopPropagation()}>
+              <button className="absolute top-6 right-6 text-slate-400 bg-transparent border-0 cursor-pointer" onClick={() => setEditingItem(null)}>
+                <X className="w-5 h-5" />
+              </button>
+              <h2>Редактирование занятия</h2>
+              
+              <form onSubmit={handleSaveSchedule}>
+                <div className="form-group-admin">
+                  <label>Название группы / занятия</label>
+                  <input 
+                    type="text" 
+                    value={editingItem.groupName || ''} 
+                    onChange={e => setEditingItem({ ...editingItem, groupName: e.target.value })}
+                    required 
+                  />
+                </div>
+
+                <div className="form-group-admin">
+                  <label>Дата и время начала</label>
+                  <input 
+                    type="datetime-local" 
+                    value={editingItem.startAt || ''} 
+                    onChange={e => setEditingItem({ ...editingItem, startAt: e.target.value })}
+                    required 
+                  />
+                </div>
+
+                <div className="form-group-admin">
+                  <label>Длительность (минут)</label>
+                  <input 
+                    type="number" 
+                    value={editingItem.durationMinutes || 45} 
+                    onChange={e => setEditingItem({ ...editingItem, durationMinutes: e.target.value })}
+                    required 
+                  />
+                </div>
+
+                <div className="form-group-admin">
+                  <label>Тренер</label>
+                  <select 
+                    value={editingItem.trainerId || 1} 
+                    onChange={e => setEditingItem({ ...editingItem, trainerId: e.target.value })}
+                    className="w-full p-3 border border-slate-300 rounded-xl bg-white"
+                  >
+                    {trainers.map(t => (
+                      <option key={t.id} value={t.id}>{t.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="form-group-admin">
+                  <label>Всего мест (свободных)</label>
+                  <input 
+                    type="number" 
+                    value={editingItem.availableSlots || 6} 
+                    onChange={e => setEditingItem({ ...editingItem, availableSlots: e.target.value })}
+                    required 
+                  />
+                </div>
+
+                <div className="modal-actions">
+                  <button type="button" className="btn-cancel-admin" onClick={() => setEditingItem(null)}>Отмена</button>
+                  <button type="submit" className="btn-save-admin">Сохранить</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
     </div>
   );
 }

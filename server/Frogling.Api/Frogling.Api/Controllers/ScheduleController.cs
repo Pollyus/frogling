@@ -42,6 +42,7 @@ namespace Frogling.Api.Controllers
                 s.GroupName,
                 s.AvailableSlots,
 
+                trainerId = s.TrainerId,
                 trainerName = s.Trainer?.Name ?? "Инструктор",
                 trainerSpecialization = s.Trainer?.Specialization ?? "",
                 trainerPhoto = s.Trainer?.PhotoUrl ?? "🐸"

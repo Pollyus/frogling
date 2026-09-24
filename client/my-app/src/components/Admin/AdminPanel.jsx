@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Shield, CheckCircle, XCircle, Edit, Calendar, User, Phone, X } from 'lucide-react';
+import { Shield, CheckCircle, XCircle, Edit, X } from 'lucide-react';
 import './AdminPanel.css';
 
 const API_URL = 'https://localhost:7026/api';
@@ -9,9 +9,9 @@ export default function AdminPanel() {
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [editingUser, setEditingUser] = useState(null); // Клиент, которого сейчас редактируют
+  const [editingUser, setEditingUser] = useState(null);
 
-  // Загрузка клиентов
+  // 1. Загрузка списка всех клиентов
   const fetchUsers = () => {
     const token = localStorage.getItem('auth_token');
     if (!token) {
@@ -23,15 +23,16 @@ export default function AdminPanel() {
       headers: { 'Authorization': `Bearer ${token}` }
     })
     .then(res => {
-      if (!res.ok) throw new Error('Нет доступа');
+      if (!res.ok) throw new Error('Ошибка доступа');
       return res.json();
     })
     .then(data => {
-      setUsers(data);
+      setUsers(Array.isArray(data) ? data : []);
       setLoading(false);
     })
     .catch(err => {
-      alert('Доступ запрещен.');
+      console.error(err);
+      alert('Доступ запрещен. Войдите с правами Администратора.');
       navigate('/');
     });
   };
@@ -40,22 +41,27 @@ export default function AdminPanel() {
     fetchUsers();
   }, [navigate]);
 
-  // Сохранение отредактированного клиента
+  // 2. Функция сохранения изменений клиента
   const handleSaveUser = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem('auth_token');
+
     try {
-    const response = await fetch(`${API_URL}/admin/users/${editingUser.id}`, {
+      let formattedDate = null;
+      if (editingUser.medicalCheckDate) {
+        // Добавляем время, чтобы бэкенд точно понял UTC полночь
+        formattedDate = new Date(editingUser.medicalCheckDate).toISOString();
+      }
+      const response = await fetch(`${API_URL}/admin/users/${editingUser.id}`, {
         method: 'PUT',
         headers: { 
           'Content-Type': 'application/json', 
           'Authorization': `Bearer ${token}` 
         },
         body: JSON.stringify({
-          fullName: editingUser.fullName,
+          fullName: editingUser.fullName || '',
           phone: editingUser.phone || '',
           parentName: editingUser.parentName || '',
-          // Если дата выбрана, отправляем её, иначе null
           medicalCheckDate: editingUser.medicalCheckDate ? new Date(editingUser.medicalCheckDate).toISOString() : null
         })
       });
@@ -63,18 +69,43 @@ export default function AdminPanel() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Ошибка при сохранении');
+        throw new Error(data.message || 'Ошибка сохранения');
       }
-      alert('Данные клиента успешно обновлены!');
+
+      alert('Данные клиента успешно сохранены!');
       setEditingUser(null);
-      fetchUsers(); // Перезагружаем список в таблице
-      } catch (err) {
-        console.error(err);
-        alert(err.message || 'Не удалось сохранить изменения.');
-      }
+      fetchUsers(); // Перезагружаем список
+    } catch (err) {
+      console.error(err);
+      alert(err.message || 'Не удалось сохранить изменения.');
+    }
   };
 
-  if (loading) return <div className="p-8 text-center">Загрузка панели администратора...</div>;
+  if (loading) return <div className="p-8 text-center text-slate-500">Загрузка данных админ-панели...</div>;
+
+  const formatDateForInput = (dateStr) => {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return '';
+    return d.toISOString().split('T')[0];
+  };
+
+  // Вычисляет статус и дату окончания (+6 месяцев)
+  const getMedicalInfo = (dateStr) => {
+    if (!dateStr) return { isValid: false, expiryText: '' };
+    
+    const checkDate = new Date(dateStr);
+    if (isNaN(checkDate.getTime())) return { isValid: false, expiryText: '' };
+
+    // Добавляем 6 месяцев к дате выдачи
+    const expiryDate = new Date(checkDate);
+    expiryDate.setMonth(expiryDate.getMonth() + 6);
+
+    const isValid = expiryDate > new Date();
+    const expiryText = expiryDate.toLocaleDateString('ru-RU');
+
+    return { isValid, expiryText };
+  };
 
   return (
     <div className="admin-container">
@@ -83,43 +114,43 @@ export default function AdminPanel() {
           <Shield className="w-7 h-7 text-emerald-600" /> Управление клиентами
         </h1>
         <span className="admin-badge">
-          Режим Администратора
+          Панель Администратора
         </span>
       </div>
 
       <div className="admin-card">
         <div className="admin-card-header">
-          Список зарегистрированных учеников ({users.length})
+          Зарегистрированные клиенты ({users.length})
         </div>
         
         <div className="divide-y divide-slate-100">
           {users.map(u => {
-            // Расчет окончания медосмотра (+6 месяцев)
-            const checkDate = u.medicalCheckDate ? new Date(u.medicalCheckDate) : null;
-            const expiryDate = checkDate ? new Date(new Date(checkDate).setMonth(checkDate.getMonth() + 6)) : null;
-            const isValid = expiryDate ? expiryDate > new Date() : false;
+            const { isValid, expiryText } = getMedicalInfo(u.medicalCheckDate);
 
             return (
               <div key={u.id} className="admin-user-row">
+                {/* Информация о клиенте строго по левому краю */}
                 <div className="user-info-block">
                   <h3>{u.fullName}</h3>
-                  <p>📧 {u.email} | 📞 {u.phone || 'Телефон не указан'}</p>
+                  <p>📧 Email: {u.email}</p>
+                  <p>📞 Телефон: {u.phone || 'Не указан'}</p>
                   <p>👤 Родитель: {u.parentName || 'Не указан'}</p>
                   <p className="text-emerald-700 font-semibold mt-1">🏊‍♂️ Абонемент: {u.activeSubscription || 'Нет активных'}</p>
                 </div>
 
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                  {/* Статус медосмотра (Автоматический расчет) */}
+                {/* Статус медосмотра и кнопка действий */}
+                <div className="admin-actions-block">
+                  {/* Зелёный или красный статус медосмотра */}
                   <div className={`medical-status-badge ${isValid ? 'valid' : 'expired'}`}>
                     {isValid ? <CheckCircle className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
-                    <span>
-                      Медосмотр: {isValid ? 'Действителен' : 'Истек'} 
-                      {expiryDate && <small className="block text-[10px] opacity-80">до {expiryDate.toLocaleDateString('ru-RU')}</small>}
-                    </span>
+                    <div>
+                      <span>Медосмотр: {isValid ? 'Действителен' : 'Истек'}</span>
+                      {expiryText && <small className="block text-[10px] opacity-80"><br/>до {expiryText}</small>}
+                    </div>
                   </div>
 
-                  {/* Кнопка ручного редактирования */}
                   <button 
+                    type="button"
                     onClick={() => setEditingUser(u)}
                     className="btn-edit-admin"
                   >
@@ -132,13 +163,18 @@ export default function AdminPanel() {
         </div>
       </div>
 
-      {/* Модальное окно редактирования клиента */}
+      {/* Модальное окно редактирования */}
       {editingUser && (
         <div className="modal-admin-overlay" onClick={() => setEditingUser(null)}>
           <div className="modal-admin-card" onClick={e => e.stopPropagation()}>
-            <button className="absolute top-6 right-6 text-slate-400 hover:text-slate-600 bg-transparent border-0 cursor-pointer" onClick={() => setEditingUser(null)}>
+            <button 
+              type="button" 
+              className="absolute top-6 right-6 text-slate-400 hover:text-slate-600 bg-transparent border-0 cursor-pointer" 
+              onClick={() => setEditingUser(null)}
+            >
               <X className="w-5 h-5" />
             </button>
+            
             <h2>Редактирование клиента</h2>
             
             <form onSubmit={handleSaveUser}>
@@ -171,10 +207,10 @@ export default function AdminPanel() {
               </div>
 
               <div className="form-group-admin">
-                <label>Дата выдачи медосмотра (срок: 6 месяцев)</label>
+                <label>Дата выдачи медосмотра (действует 6 месяцев)</label>
                 <input 
                   type="date" 
-                  value={editingUser.medicalCheckDate ? editingUser.medicalCheckDate.split('T')[0] : ''} 
+                  value={formatDateForInput(editingUser.medicalCheckDate)} 
                   onChange={e => setEditingUser({ ...editingUser, medicalCheckDate: e.target.value })} 
                 />
               </div>

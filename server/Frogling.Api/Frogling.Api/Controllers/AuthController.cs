@@ -113,7 +113,7 @@ namespace Frogling.Api.Controllers
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim("FullName", user.FullName),
-                new Claim(ClaimTypes.Role, user.Role)
+                new Claim(ClaimTypes.Role, string.IsNullOrEmpty(user.Role) ? "User" : user.Role)
             };
 
             var token = new JwtSecurityToken(
