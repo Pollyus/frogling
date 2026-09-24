@@ -96,7 +96,8 @@ namespace Frogling.Api.Controllers
                 {
                     Id = user.Id,
                     FullName = user.FullName,
-                    Email = user.Email
+                    Email = user.Email,
+                    Role = user.Role
                 }
             });
         }

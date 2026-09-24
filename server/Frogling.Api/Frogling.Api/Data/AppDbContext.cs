@@ -290,7 +290,7 @@ namespace Frogling.Api.Data
                     Email = "admin@frogling.ru",
                     PasswordHash = adminPasswordHash,
                     Role = "Admin",
-                    IsMedicalCheckValid = true
+                    MedicalCheckDate = DateTime.UtcNow
                 }
             );
 

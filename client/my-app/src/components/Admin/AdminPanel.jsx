@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Users, Shield, Calendar, CheckCircle, XCircle, Edit, Trash2 } from 'lucide-react';
+import { Shield, CheckCircle, XCircle, Edit, Calendar, User, Phone, X } from 'lucide-react';
+import './AdminPanel.css';
 
 const API_URL = 'https://localhost:7026/api';
 
@@ -8,13 +9,11 @@ export default function AdminPanel() {
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [editingUser, setEditingUser] = useState(null); // Клиент, которого сейчас редактируют
 
-  // Проверка прав администратора при загрузке
-  useEffect(() => {
+  // Загрузка клиентов
+  const fetchUsers = () => {
     const token = localStorage.getItem('auth_token');
-    const userStr = localStorage.getItem('user');
-    
-    // Здесь можно дополнительно проверить роль из localStorage или декодировать JWT
     if (!token) {
       navigate('/login');
       return;
@@ -32,77 +31,162 @@ export default function AdminPanel() {
       setLoading(false);
     })
     .catch(err => {
-      alert('Доступ запрещен. Вы не администратор.');
+      alert('Доступ запрещен.');
       navigate('/');
     });
+  };
+
+  useEffect(() => {
+    fetchUsers();
   }, [navigate]);
 
-  // Функция изменения статуса медосмотра
-  const toggleMedicalCheck = async (userId, currentStatus) => {
+  // Сохранение отредактированного клиента
+  const handleSaveUser = async (e) => {
+    e.preventDefault();
     const token = localStorage.getItem('auth_token');
-    const targetUser = users.find(u => u.id === userId);
-    
-    const updated = {
-      fullName: targetUser.fullName,
-      phone: targetUser.phone || '',
-      parentName: targetUser.parentName || '',
-      isMedicalCheckValid: !currentStatus
-    };
+    try {
+    const response = await fetch(`${API_URL}/admin/users/${editingUser.id}`, {
+        method: 'PUT',
+        headers: { 
+          'Content-Type': 'application/json', 
+          'Authorization': `Bearer ${token}` 
+        },
+        body: JSON.stringify({
+          fullName: editingUser.fullName,
+          phone: editingUser.phone || '',
+          parentName: editingUser.parentName || '',
+          // Если дата выбрана, отправляем её, иначе null
+          medicalCheckDate: editingUser.medicalCheckDate ? new Date(editingUser.medicalCheckDate).toISOString() : null
+        })
+      });
 
-    const res = await fetch(`${API_URL}/admin/users/${userId}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-      body: JSON.stringify(updated)
-    });
+      const data = await response.json();
 
-    if (res.ok) {
-      setUsers(prev => prev.map(u => u.id === userId ? { ...u, isMedicalCheckValid: !currentStatus } : u));
-    }
+      if (!response.ok) {
+        throw new Error(data.message || 'Ошибка при сохранении');
+      }
+      alert('Данные клиента успешно обновлены!');
+      setEditingUser(null);
+      fetchUsers(); // Перезагружаем список в таблице
+      } catch (err) {
+        console.error(err);
+        alert(err.message || 'Не удалось сохранить изменения.');
+      }
   };
 
   if (loading) return <div className="p-8 text-center">Загрузка панели администратора...</div>;
 
   return (
-    <div className="max-w-6xl mx-auto p-6 font-sans">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
-          <Shield className="text-emerald-600" /> Панель администратора бассейном
+    <div className="admin-container">
+      <div className="admin-header">
+        <h1 className="admin-title">
+          <Shield className="w-7 h-7 text-emerald-600" /> Управление клиентами
         </h1>
-        <span className="bg-emerald-100 text-emerald-800 text-xs font-semibold px-3 py-1 rounded-full">
-          Администратор
+        <span className="admin-badge">
+          Режим Администратора
         </span>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-        <div className="p-4 bg-slate-50 border-b border-slate-200 font-bold text-sm text-slate-700">
-          Управление учетными записями клиентов ({users.length})
+      <div className="admin-card">
+        <div className="admin-card-header">
+          Список зарегистрированных учеников ({users.length})
         </div>
         
         <div className="divide-y divide-slate-100">
-          {users.map(u => (
-            <div key={u.id} className="p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:bg-slate-50/50">
-              <div>
-                <h3 className="font-bold text-slate-900">{u.fullName}</h3>
-                <p className="text-xs text-slate-500">{u.email} | Телефон: {u.phone || 'Не указан'}</p>
-                <p className="text-xs text-emerald-600 font-medium mt-1">Абонемент: {u.activeSubscription || 'Нет активных'}</p>
-              </div>
+          {users.map(u => {
+            // Расчет окончания медосмотра (+6 месяцев)
+            const checkDate = u.medicalCheckDate ? new Date(u.medicalCheckDate) : null;
+            const expiryDate = checkDate ? new Date(new Date(checkDate).setMonth(checkDate.getMonth() + 6)) : null;
+            const isValid = expiryDate ? expiryDate > new Date() : false;
 
-              <div className="flex items-center gap-4">
-                {/* Статус медосмотра */}
-                <button 
-                  onClick={() => toggleMedicalCheck(u.id, u.isMedicalCheckValid)}
-                  className={`text-xs px-3 py-1.5 rounded-lg font-semibold flex items-center gap-1 ${
-                    u.isMedicalCheckValid ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-red-50 text-red-700 border border-red-200'
-                  }`}
-                >
-                  {u.isMedicalCheckValid ? <CheckCircle className="w-3.5 h-3.5" /> : <XCircle className="w-3.5 h-3.5" />}
-                  Медосмотр: {u.isMedicalCheckValid ? 'Действителен' : 'Просрочен'}
-                </button>
+            return (
+              <div key={u.id} className="admin-user-row">
+                <div className="user-info-block">
+                  <h3>{u.fullName}</h3>
+                  <p>📧 {u.email} | 📞 {u.phone || 'Телефон не указан'}</p>
+                  <p>👤 Родитель: {u.parentName || 'Не указан'}</p>
+                  <p className="text-emerald-700 font-semibold mt-1">🏊‍♂️ Абонемент: {u.activeSubscription || 'Нет активных'}</p>
+                </div>
+
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                  {/* Статус медосмотра (Автоматический расчет) */}
+                  <div className={`medical-status-badge ${isValid ? 'valid' : 'expired'}`}>
+                    {isValid ? <CheckCircle className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
+                    <span>
+                      Медосмотр: {isValid ? 'Действителен' : 'Истек'} 
+                      {expiryDate && <small className="block text-[10px] opacity-80">до {expiryDate.toLocaleDateString('ru-RU')}</small>}
+                    </span>
+                  </div>
+
+                  {/* Кнопка ручного редактирования */}
+                  <button 
+                    onClick={() => setEditingUser(u)}
+                    className="btn-edit-admin"
+                  >
+                    <Edit className="w-4 h-4" /> Редактировать
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
+
+      {/* Модальное окно редактирования клиента */}
+      {editingUser && (
+        <div className="modal-admin-overlay" onClick={() => setEditingUser(null)}>
+          <div className="modal-admin-card" onClick={e => e.stopPropagation()}>
+            <button className="absolute top-6 right-6 text-slate-400 hover:text-slate-600 bg-transparent border-0 cursor-pointer" onClick={() => setEditingUser(null)}>
+              <X className="w-5 h-5" />
+            </button>
+            <h2>Редактирование клиента</h2>
+            
+            <form onSubmit={handleSaveUser}>
+              <div className="form-group-admin">
+                <label>ФИО ученика</label>
+                <input 
+                  type="text" 
+                  value={editingUser.fullName || ''} 
+                  onChange={e => setEditingUser({ ...editingUser, fullName: e.target.value })}
+                  required 
+                />
+              </div>
+
+              <div className="form-group-admin">
+                <label>Телефон</label>
+                <input 
+                  type="text" 
+                  value={editingUser.phone || ''} 
+                  onChange={e => setEditingUser({ ...editingUser, phone: e.target.value })} 
+                />
+              </div>
+
+              <div className="form-group-admin">
+                <label>ФИО родителя</label>
+                <input 
+                  type="text" 
+                  value={editingUser.parentName || ''} 
+                  onChange={e => setEditingUser({ ...editingUser, parentName: e.target.value })} 
+                />
+              </div>
+
+              <div className="form-group-admin">
+                <label>Дата выдачи медосмотра (срок: 6 месяцев)</label>
+                <input 
+                  type="date" 
+                  value={editingUser.medicalCheckDate ? editingUser.medicalCheckDate.split('T')[0] : ''} 
+                  onChange={e => setEditingUser({ ...editingUser, medicalCheckDate: e.target.value })} 
+                />
+              </div>
+
+              <div className="modal-actions">
+                <button type="button" className="btn-cancel-admin" onClick={() => setEditingUser(null)}>Отмена</button>
+                <button type="submit" className="btn-save-admin">Сохранить</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

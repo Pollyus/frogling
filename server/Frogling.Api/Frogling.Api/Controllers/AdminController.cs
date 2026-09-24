@@ -49,10 +49,13 @@ namespace Frogling.Api.Controllers
             var user = await _context.Users.FindAsync(userId);
             if (user == null) return NotFound(new { message = "Пользователь не найден." });
 
-            user.FullName = dto.FullName;
-            user.Phone = dto.Phone;
-            user.ParentName = dto.ParentName;
-            user.IsMedicalCheckValid = dto.IsMedicalCheckValid;
+            user.FullName = dto.FullName?.Trim() ?? string.Empty;
+            user.Phone = dto.Phone?.Trim() ?? string.Empty;
+            user.ParentName = dto.ParentName?.Trim() ?? string.Empty;
+            if (dto.MedicalCheckDate.HasValue)
+            {
+                user.MedicalCheckDate = dto.MedicalCheckDate.Value.ToUniversalTime();
+            }
 
             await _context.SaveChangesAsync();
             return Ok(new { message = "Данные клиента успешно обновлены!" });
@@ -124,7 +127,7 @@ namespace Frogling.Api.Controllers
         public string FullName { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
         public string ParentName { get; set; } = string.Empty;
-        public bool IsMedicalCheckValid { get; set; }
+        public DateTime? MedicalCheckDate { get; set; }
     }
 
     public class AdminBookDto

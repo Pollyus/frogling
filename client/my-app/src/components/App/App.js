@@ -1,4 +1,4 @@
-import { Routes, Route, BrowserRouter, Navigate } from 'react-router-dom';
+import { Routes, Route, BrowserRouter, Navigate, Outlet } from 'react-router-dom';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import React, { useState, useEffect } from 'react';
 import api from '../../utils/Api';
@@ -28,6 +28,7 @@ import AdminPanel from '../Admin/AdminPanel'
 function App() {
   const [currentUser, setCurrentUser] = useState({});
 
+  // YClients
   // useEffect(() => {
   //   const script = document.createElement('script');
   //   script.src = 'https://w1603385.yclients.com/widgetJS';
@@ -38,6 +39,7 @@ function App() {
   //     document.body.removeChild(script);
   //   };
   // }, []);
+
   const AdminRoute = () => {
     const token = localStorage.getItem('auth_token');
     const userStr = localStorage.getItem('user');
@@ -47,7 +49,9 @@ function App() {
       try {
         const user = JSON.parse(userStr);
         isAdmin = (user.role === 'Admin' || user.Role === 'Admin');
-      } catch (e) {}
+      } catch (e) {
+        isAdmin = false;
+      }
     }
      // Если админ — показываем панель, иначе перенаправляем на главную
     return isAdmin ? <Outlet /> : <Navigate to="/" replace />;
@@ -74,6 +78,9 @@ function App() {
                 {/* <Route path="/social" element={<SocialLinks />} /> */}
                 <Route path="/first" element={<FirstLessonRequirements />} />
                 <Route path="/photo" element={<PhotoSlider />} />
+                <Route element={<AdminRoute />}>
+                  <Route path="/admin" element={<AdminPanel />} />
+                </Route>
             {/* Защищенные маршруты: внутрь нельзя попасть без авторизации */}
               <Route element={<ProtectedRoute />}>
               
@@ -81,9 +88,7 @@ function App() {
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/services" element={<Service/>} />
 
-                <Route element={<AdminRoute />}>
-                  <Route path="/admin" element={<AdminPanel />} />
-                </Route>
+                
                 {/* Добавьте маршруты для остальных страниц (blog, contacts и т.д.) */}
               </Route>
               {/* Любой неизвестный адрес перенаправляем на главную (которая проверит логин) */}
