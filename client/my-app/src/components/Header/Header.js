@@ -8,6 +8,7 @@ export default function Header() {
   const navigate = useNavigate();
   const [userName, setUserName] = useState('');
   const [isAuth, setIsAuth] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   // Получаем имя вошедшего пользователя из localStorage
   useEffect(() => {
@@ -19,12 +20,16 @@ export default function Header() {
         setIsAuth(true);
         try {
           const parsed = JSON.parse(storedUser);
-          setUserName(parsed.fullName || 'Алексей');
+          setUserName(parsed.fullName || 'Пользователь');
+          const userRole = parsed.role || parsed.Role;
+          setIsAdmin(userRole === 'Admin');
         } catch (e) {
           setUserName(storedUser);
+          setIsAdmin(false);
         }
       } else {
         setIsAuth(false);
+        setIsAdmin(false);
         setUserName('');
       }
     };
@@ -39,6 +44,7 @@ export default function Header() {
     localStorage.removeItem('auth_token');
     localStorage.removeItem('user');
     setIsAuth(false);
+    setIsAdmin(false);
     navigate('/login', { replace: true });
   };
 
@@ -62,6 +68,13 @@ export default function Header() {
           <Link to="/services" className="nav-link">Услуги</Link>
           <Link to="/promotions" className="nav-link">Акции</Link>
           <Link to="/schedule" className="nav-link">Расписание</Link>
+
+          {/* ВСПЛЫВАЕТ ТОЛЬКО ДЛЯ АДМИНИСТРАТОРА! */}
+          {isAdmin && (
+            <Link to="/admin" className="nav-link nav-link-admin flex items-center gap-1">
+              <Shield className="w-3.5 h-3.5" /> Админка
+            </Link>
+          )}
 
           {/* Блок пользователя вместо слова "Профиль" */}
           {isAuth ? (

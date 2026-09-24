@@ -121,6 +121,20 @@
   text-overflow: ellipsis;
 }
 
+.nav-link-admin {
+  background: #fef2f2 !important;
+  color: #dc2626 !important;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 4px 10px !important;
+  font-weight: 700 !important;
+}
+
+.nav-link-admin:hover {
+  background: #fee2e2 !important;
+}
+
+
 /* Кнопка "Выйти" в шапке */
 .header-logout-button {
   display: inline-flex;

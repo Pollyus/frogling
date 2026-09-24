@@ -278,6 +278,22 @@ namespace Frogling.Api.Data
                     .WithMany()
                     .HasForeignKey(b => b.ScheduleItemId)
                     .OnDelete(DeleteBehavior.Cascade);
-            }
+
+            // Хеш пароля "admin123" для примера
+            string adminPasswordHash = BCrypt.Net.BCrypt.HashPassword("admin123");
+
+            modelBuilder.Entity<User>().HasData(
+                new User
+                {
+                    Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
+                    FullName = "Главный Администратор",
+                    Email = "admin@frogling.ru",
+                    PasswordHash = adminPasswordHash,
+                    Role = "Admin",
+                    IsMedicalCheckValid = true
+                }
+            );
+
+        }
     }
 }

@@ -22,6 +22,7 @@ import SchedulePage from '../Admin/Sсhedule/SсhedulePage';
 import ProtectedRoute from '../Login/ProtectedRoute';
 import MainLayout from '../Login/MainLayout';
 import Service from '../BuyService/ServicesPage'
+import AdminPanel from '../Admin/AdminPanel'
 
 
 function App() {
@@ -37,7 +38,20 @@ function App() {
   //     document.body.removeChild(script);
   //   };
   // }, []);
+  const AdminRoute = () => {
+    const token = localStorage.getItem('auth_token');
+    const userStr = localStorage.getItem('user');
+    let isAdmin = false;
 
+    if (token && userStr) {
+      try {
+        const user = JSON.parse(userStr);
+        isAdmin = (user.role === 'Admin' || user.Role === 'Admin');
+      } catch (e) {}
+    }
+     // Если админ — показываем панель, иначе перенаправляем на главную
+    return isAdmin ? <Outlet /> : <Navigate to="/" replace />;
+  };
 
   return (
     <div>
@@ -48,10 +62,7 @@ function App() {
 
              {/* Публичный маршрут: доступен только для авторизации/регистрации */}
             <Route path="/login" element={<AuthPage />} />
-
-            {/* Защищенные маршруты: внутрь нельзя попасть без авторизации */}
-              <Route element={<ProtectedRoute />}>
-              <Route element={<MainLayout />}>
+                <Route element={<MainLayout />}>
                 <Route path="/" element={<><VideoPlay /><AboutUs /><TrainersCarousel /><LessonsList id="lesson-types" /><FirstLessonRequirements /><PhotoSlider/><ProductsList /><Promotions /><div id="ycwidget"></div></>} />
                 <Route path="/video" element={<VideoPlay />} />
                 <Route path='/action' element={<ActionNewYear/>}/>
@@ -63,14 +74,22 @@ function App() {
                 {/* <Route path="/social" element={<SocialLinks />} /> */}
                 <Route path="/first" element={<FirstLessonRequirements />} />
                 <Route path="/photo" element={<PhotoSlider />} />
+            {/* Защищенные маршруты: внутрь нельзя попасть без авторизации */}
+              <Route element={<ProtectedRoute />}>
+              
                 <Route path="/schedule" element={<SchedulePage />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/services" element={<Service/>} />
+
+                <Route element={<AdminRoute />}>
+                  <Route path="/admin" element={<AdminPanel />} />
+                </Route>
                 {/* Добавьте маршруты для остальных страниц (blog, contacts и т.д.) */}
               </Route>
               {/* Любой неизвестный адрес перенаправляем на главную (которая проверит логин) */}
               <Route path="*" element={<Navigate to="/" replace />} />
             </Route>
+            
           </Routes>
          
         </CurrentUserContext.Provider>

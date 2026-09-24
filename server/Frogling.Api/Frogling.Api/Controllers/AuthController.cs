@@ -63,7 +63,8 @@ namespace Frogling.Api.Controllers
                 {
                     Id = newUser.Id,
                     FullName = newUser.FullName,
-                    Email = newUser.Email
+                    Email = newUser.Email,
+                    Role = newUser.Role
                 }
             });
         }
@@ -110,7 +111,8 @@ namespace Frogling.Api.Controllers
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim("FullName", user.FullName)
+                new Claim("FullName", user.FullName),
+                new Claim(ClaimTypes.Role, user.Role)
             };
 
             var token = new JwtSecurityToken(
