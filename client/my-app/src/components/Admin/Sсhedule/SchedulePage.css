@@ -357,3 +357,279 @@
   cursor: pointer;
 }
 
+/* Модальное окно участников */
+.schedule-details-card {
+  position: relative;
+  max-width: 520px;
+  width: 100%;
+  padding: 28px;
+}
+
+/* Красивая кнопка-крестик в правом верхнем углу */
+.modal-close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.modal-close-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+  transform: rotate(90deg);
+}
+
+.modal-title-custom {
+  font-size: 20px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-top: 0;
+  margin-bottom: 20px;
+  padding-right: 40px; /* Отступ чтобы заголовок не налезал на крестик */
+}
+
+/* Блок описания занятия */
+.schedule-info-preview {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.group-name-badge {
+  font-size: 16px;
+  font-weight: 800;
+  color: #1a4314;
+}
+
+.group-time-pill {
+  font-size: 13px;
+  color: #475569;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.attendees-header-count {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #64748b;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Список участников */
+.attendees-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 320px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.attendee-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 14px 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  transition: border-color 0.2s ease;
+}
+
+.attendee-card:hover {
+  border-color: #cbd5e1;
+}
+
+.attendee-name {
+  font-size: 14px;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.attendee-parent {
+  font-size: 12px;
+  color: #64748b;
+  margin-bottom: 8px;
+}
+
+.attendee-contacts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Кнопки контактов (телефон, email) */
+.contact-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #334155;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  padding: 4px 10px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.contact-pill:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+/* Кнопка отмены записи (мусорка) */
+.btn-remove-attendee {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+
+.btn-remove-attendee:hover {
+  background: #dc2626;
+  color: #ffffff;
+  border-color: #dc2626;
+}
+
+.no-attendees-box {
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 14px;
+  padding: 24px;
+  text-align: center;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.loading-spinner-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 32px 0;
+}
+
+/* Единые стили для форм модальных окон админки */
+.form-group-admin {
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.form-group-admin label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #64748b;
+  margin-bottom: 6px;
+}
+
+.form-group-admin input,
+.select-admin-custom {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  font-size: 14px;
+  font-family: inherit;
+  color: #0f172a;
+  background: #f8fafc;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.form-group-admin input:hover,
+.select-admin-custom:hover {
+  border-color: #94a3b8;
+  background: #ffffff;
+}
+
+.form-group-admin input:focus,
+.select-admin-custom:focus {
+  border-color: #74b83b;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(116, 184, 59, 0.15);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.btn-save-admin {
+  flex: 1;
+  padding: 12px;
+  background: linear-gradient(135deg, #74b83b, #4b8b20);
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(116, 184, 59, 0.25);
+  transition: all 0.2s ease;
+}
+
+.btn-save-admin:hover {
+  background: linear-gradient(135deg, #81cc42, #559c25);
+  transform: translateY(-1px);
+}
+
+.btn-cancel-admin {
+  flex: 1;
+  padding: 12px;
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-cancel-admin:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}

@@ -14,6 +14,8 @@ namespace Frogling.Api.Data
         public DbSet<ChatMessage> ChatMessages { get; set; } = null!;
         public DbSet<ScheduleItem> ScheduleItems { get; set; } = null!;
         public DbSet<Booking> Bookings { get; set; } = null!;
+        public DbSet<Promotion> Promotions { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -164,6 +166,89 @@ namespace Frogling.Api.Data
                     SportsСareer = "Специалист физической терапии детей и взрослых",
                     Experience = "2 года",
                     UserId = trainerUserId3
+                }
+            );
+            // Добавляем начальные акции
+            modelBuilder.Entity<Promotion>().HasData(
+                new Promotion
+                {
+                    Id = 1,
+                    Title = "Первые шаги",
+                    Description = "Получите 10% скидку на покупку любого абонемента сразу после успешного пробного занятия. Отличный старт для новых приключений!",
+                    DiscountAmount = 0,
+                    DiscountPercentage = 10,
+                    ExpiryDate = DateTime.UtcNow.AddDays(30),
+                    IsActive = true
+                },
+                new Promotion
+                {
+                    Id = 2,
+                    Title = "Семейная выгода",
+                    Description = "Если у вас двое и более детей, получите дополнительную скидку 10% на абонемент для второго и каждого следующего ребёнка!",
+                    DiscountAmount = 0,
+                    DiscountPercentage = 10,
+                    ExpiryDate = DateTime.UtcNow.AddYears(1),
+                    IsActive = true
+                },
+                new Promotion
+                {
+                    Id = 3,
+                    Title = "Бонус за отзыв",
+                    Description = "Поделитесь своими впечатлениями о нас в любой социальной сети и получите 5% скидку на следующий абонемент.",
+                    DiscountAmount = 0,
+                    DiscountPercentage = 5,
+                    ExpiryDate = DateTime.UtcNow.AddDays(30),
+                    IsActive = true
+                },
+                new Promotion
+                {
+                    Id = 4,
+                    Title = "Двойная выгода: приведи друга!",
+                    Description = "Пригласите друга в наш бассейн, и после его первого оплаченного занятия вы получите одно занятие бесплатно!",
+                    DiscountAmount = 1600,
+                    DiscountPercentage = 0,
+                    ExpiryDate = DateTime.UtcNow.AddYears(1),
+                    IsActive = true
+                },
+                new Promotion
+                {
+                    Id = 5,
+                    Title = "Подарок ко дню рождения малыша",
+                    Description = "Мы дарим бесплатное занятие вашему малышу в его День рождения, а также в течение двух дней до или после него! Празднуем вместе!",
+                    DiscountAmount = 1600,
+                    DiscountPercentage = 0,
+                    ExpiryDate = DateTime.UtcNow.AddDays(7),
+                    IsActive = true
+                },
+                new Promotion
+                {
+                    Id = 6,
+                    Title = "Поддержка героев",
+                    Description = "Для детей участников СВО предоставляется 20% скидка на любой вид абонементов. Мы ценим ваш вклад!",
+                    DiscountAmount = 0,
+                    DiscountPercentage = 20,
+                    ExpiryDate = DateTime.UtcNow.AddDays(30),
+                    IsActive = true
+                },
+                new Promotion
+                {
+                    Id =7,
+                    Title = "Найди сокровища: карточки лабиринта",
+                    Description = "Соберите две карточки лабиринта и получите бесплатное занятие! Отслеживайте прогресс и не платите за дополнительное занятие!",
+                    DiscountAmount = 1600,
+                    DiscountPercentage = 0,
+                    ExpiryDate = DateTime.UtcNow.AddDays(30),
+                    IsActive = true
+                },
+                new Promotion
+                {
+                    Id = 8,
+                    Title = "Верность: скидка за продление",
+                    Description = "Продлите свой абонемент сразу после окончания предыдущего и получите 10% скидку на следующий абонемент! Ценим вашу лояльность!",
+                    DiscountAmount = 0,
+                    DiscountPercentage = 10,
+                    ExpiryDate = DateTime.UtcNow.AddDays(30),
+                    IsActive = true
                 }
             );
         }

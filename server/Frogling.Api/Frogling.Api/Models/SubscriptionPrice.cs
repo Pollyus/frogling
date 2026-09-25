@@ -38,5 +38,6 @@ namespace Frogling.Api.Models
         public decimal Price { get; set; }
         public int TotalLessons { get; set; }
         public int DaysValid { get; set; } = 30;
+        public int PromotionId { get; set; }
     }
 }

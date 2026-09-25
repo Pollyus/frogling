@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, User, Users, MapPin, Loader2, CheckCircle, Edit, X, Trash2, Plus } from 'lucide-react';
 import './SchedulePage.css';
-import ScheduleDetailsModal from './ScheduleDetailsModal';
+import ScheduleDetailsModal from './ModalWindows/ScheduleDetailsModal';
+import ScheduleEditModal from './ModalWindows/ScheduleEditModal';
+import ScheduleAddModal from './ModalWindows/ScheduleAddModal';
 
 const DAYS = [
   'Все',
@@ -393,75 +395,17 @@ export default function SchedulePage() {
 
       {/* Модальное окно редактирования */}
       {editingItem && (
-        <div className="modal-admin-overlay" onClick={() => setEditingItem(null)}>
-          <div className="modal-admin-card" onClick={e => e.stopPropagation()}>
-            <button className="absolute top-6 right-6 text-slate-400 bg-transparent border-0 cursor-pointer" onClick={() => setEditingItem(null)}>
-              <X className="w-5 h-5" />
-            </button>
-            <h2>Редактирование занятия</h2>
-            
-            <form onSubmit={handleSaveSchedule}>
-              <div className="form-group-admin">
-                <label>Название группы / занятия</label>
-                <input 
-                  type="text" 
-                  value={editingItem.groupName || ''} 
-                  onChange={e => setEditingItem({ ...editingItem, groupName: e.target.value })}
-                  required 
-                />
-              </div>
-
-              <div className="form-group-admin">
-                <label>Дата и время начала</label>
-                <input 
-                  type="datetime-local" 
-                  value={editingItem.startAt || ''} 
-                  onChange={e => setEditingItem({ ...editingItem, startAt: e.target.value })}
-                  required 
-                />
-              </div>
-
-              <div className="form-group-admin">
-                <label>Длительность (минут)</label>
-                <input 
-                  type="number" 
-                  value={editingItem.durationMinutes || 45} 
-                  onChange={e => setEditingItem({ ...editingItem, durationMinutes: e.target.value })}
-                  required 
-                />
-              </div>
-
-              <div className="form-group-admin">
-                <label>Тренер</label>
-                <select 
-                  value={editingItem.trainerId || 1} 
-                  onChange={e => setEditingItem({ ...editingItem, trainerId: e.target.value })}
-                  className="w-full p-3 border border-slate-300 rounded-xl bg-white"
-                >
-                  {trainers.map(t => (
-                    <option key={t.id} value={t.id}>{t.name}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="form-group-admin">
-                <label>Количество свободных мест</label>
-                <input 
-                  type="number" 
-                  value={editingItem.availableSlots || 6} 
-                  onChange={e => setEditingItem({ ...editingItem, availableSlots: e.target.value })}
-                  required 
-                />
-              </div>
-
-              <div className="modal-actions">
-                <button type="button" className="btn-cancel-admin" onClick={() => setEditingItem(null)}>Отмена</button>
-                <button type="submit" className="btn-save-admin">Сохранить</button>
-              </div>
-            </form>
-          </div>
-        </div>
+        <ScheduleEditModal
+          editingItem={editingItem}
+          trainers={trainers}
+          onClose={() => setEditingItem(null)}
+          onSaveSuccess={() => {
+            setEditingItem(null); // Закрываем модалку
+            fetchData();          // Обновляем список расписания
+          }}
+        />
       )}
+
 
       {/* Модальное окно со списком участников занятия */}
       {viewingDetailsId && (
@@ -474,76 +418,16 @@ export default function SchedulePage() {
 
       {/* Модальное окно создания занятия */}
       {isCreating && (
-        <div className="modal-admin-overlay" onClick={() => setIsCreating(false)}>
-          <div className="modal-admin-card" onClick={e => e.stopPropagation()}>
-            <button className="absolute top-6 right-6 text-slate-400 bg-transparent border-0 cursor-pointer" onClick={() => setIsCreating(false)}>
-              <X className="w-5 h-5" />
-            </button>
-            <h2>Создать новое занятие</h2>
-            
-            <form onSubmit={handleCreateSchedule}>
-              <div className="form-group-admin">
-                <label>Название группы / занятия</label>
-                <input 
-                  type="text" 
-                  value={newItem.groupName} 
-                  onChange={e => setNewItem({ ...newItem, groupName: e.target.value })}
-                  placeholder="Например: Грудничковое плавание"
-                  required 
-                />
-              </div>
-
-              <div className="form-group-admin">
-                <label>Дата и время начала</label>
-                <input 
-                  type="datetime-local" 
-                  value={newItem.startAt} 
-                  onChange={e => setNewItem({ ...newItem, startAt: e.target.value })}
-                  required 
-                />
-              </div>
-
-              <div className="form-group-admin">
-                <label>Длительность (минут)</label>
-                <input 
-                  type="number" 
-                  value={newItem.durationMinutes} 
-                  onChange={e => setNewItem({ ...newItem, durationMinutes: e.target.value })}
-                  required 
-                />
-              </div>
-
-              <div className="form-group-admin">
-                <label>Тренер</label>
-                <select 
-                  value={newItem.trainerId} 
-                  onChange={e => setNewItem({ ...newItem, trainerId: e.target.value })}
-                  className="w-full p-3 border border-slate-300 rounded-xl bg-white"
-                >
-                  {trainers.map(t => (
-                    <option key={t.id} value={t.id}>{t.name} ({t.specialization || 'Инструктор'})</option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="form-group-admin">
-                <label>Количество свободных мест</label>
-                <input 
-                  type="number" 
-                  value={newItem.availableSlots} 
-                  onChange={e => setNewItem({ ...newItem, availableSlots: e.target.value })}
-                  required 
-                />
-              </div>
-
-              <div className="modal-actions">
-                <button type="button" className="btn-cancel-admin" onClick={() => setIsCreating(false)}>Отмена</button>
-                <button type="submit" className="btn-save-admin">Создать</button>
-              </div>
-            </form>
-          </div>
-        </div>
+        <ScheduleAddModal
+          trainers={trainers}
+          onClose={() => setIsCreating(false)}
+          onSaveSuccess={() => {
+            setIsCreating(false);
+            fetchData();
+          }}
+        />
       )}
+    
     </div>
   );
 }

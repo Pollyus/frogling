@@ -219,6 +219,46 @@ namespace Frogling.Api.Controllers
             return Ok(new { message = "Занятие удалено из расписания." });
         }
 
+        [Authorize(Roles = "Admin")]
+        [HttpPost("services")]
+        public async Task<IActionResult> CreateServicePlan([FromBody] CreateServicePlanDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.Name))
+                return BadRequest(new { message = "Название услуги обязательно." });
+
+            var servicePlan = new ServicePlan
+            {
+                Title = dto.Name.Trim(),
+                Description = dto.Description?.Trim() ?? string.Empty,
+                Price = dto.Price,
+                LessonsCount = dto.TotalLessons > 0 ? dto.TotalLessons : 1,
+                DurationDays = dto.DurationDays > 0 ? dto.DurationDays : 30,
+                IsActive = true, // По умолчанию услуга активна
+                IsTrial = dto.IsTrial
+            };
+
+            _context.ServicePlans.Add(servicePlan);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Услуга успешно создана!" });
+        }
+
+        // 6. Удалить услугу
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("services/{id:int}")]
+        public async Task<IActionResult> DeleteServicePlan(int id)
+        {
+            var service = await _context.ServicePlans.FindAsync(id);
+            if (service == null)
+                return NotFound(new { message = "Услуга не найдена." });
+
+            // Опционально: можно просто деактивировать, но мы удалим
+            _context.ServicePlans.Remove(service);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Услуга успешно удалена." });
+        }
+
     }
 
     public class UpdateUserAdminDto
@@ -241,5 +281,14 @@ namespace Frogling.Api.Controllers
         public int TrainerId { get; set; }
         public int AvailableSlots { get; set; }
         public DateTime? StartAt { get; set; }
+    }
+    public class CreateServicePlanDto
+    {
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public decimal Price { get; set; }
+        public int TotalLessons { get; set; }
+        public int DurationDays { get; set; } = 30; // Время действия абонемента в днях
+        public bool IsTrial { get; set; } = false;
     }
 }
