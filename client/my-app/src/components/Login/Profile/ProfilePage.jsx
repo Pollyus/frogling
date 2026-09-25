@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { 
   User, Mail, Phone, Calendar, Shield, Bell, Check, 
   Key, Award, Activity, Clock, FileText, CreditCard, 
-  ShoppingBag, AlertCircle, Loader2, Droplet
+  ShoppingBag, AlertCircle, Loader2, Droplet, MessageSquare
 } from 'lucide-react';
 import './ProfilePage.css';
 
@@ -35,6 +35,93 @@ export default function ProfilePage() {
 
   // 4. Активный таб
   const [activeTab, setActiveTab] = useState('info'); // info | subscription | bookings | history
+
+  // Состояния для чата с тренером в личном кабинете
+  const [trainers, setTrainers] = useState([]); // Список тренеров, с которыми можно вести диалог
+  const [activeTrainer, setActiveTrainer] = useState(null); // Выбранный тренер для чата
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState('');
+  const [currentUserId, setCurrentUserId] = useState(null);
+
+  // Загружаем список тренеров при монтировании (чтобы родитель знал, кому писать)
+  useEffect(() => {
+    const token = localStorage.getItem('auth_token');
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      try {
+        const u = JSON.parse(userStr);
+        setCurrentUserId(u.id || u.Id);
+      } catch (e) {}
+    }
+
+    if (!token) return;
+
+    // Получаем список всех тренеров (у них есть свойство userId для чата)
+    fetch(`${API_URL}/trainers`, { // Или ваш эндпоинт со списком тренеров, либо жестко пропишем ниже
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (Array.isArray(data)) setTrainers(data);
+    })
+    .catch(() => {
+      // Резервный список тренеров, если публичного эндпоинта нет
+      setTrainers([
+        { id: 1, name: 'Любовь', userId: '44444444-4444-4444-4444-444444444444', photoUrl: '👩‍🏫', specialization: 'Грудничковое плавание' },
+        { id: 2, name: 'Владислав', userId: '22222222-2222-2222-2222-222222222222', photoUrl: '👨‍🏫', specialization: 'Раннее обучение' },
+        { id: 3, name: 'Лидия', userId: '33333333-3333-3333-3333-333333333333', photoUrl: '🏊‍♀️', specialization: 'Аквааэробика и ЛФК' }
+      ]);
+    });
+  }, []);
+
+  // Опрос сообщений чата каждые 3 секунды, если выбран тренер
+  useEffect(() => {
+    if (!activeTrainer || !activeTrainer.userId) return;
+    const token = localStorage.getItem('auth_token');
+
+    const fetchMessages = () => {
+      fetch(`${API_URL}/chat/history/${activeTrainer.userId}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) setMessages(data);
+      });
+    };
+
+    fetchMessages();
+    const interval = setInterval(fetchMessages, 3000);
+    return () => clearInterval(interval);
+  }, [activeTrainer]);
+
+  // Отправка сообщения тренеру
+  const handleSendMessage = async (e) => {
+    e.preventDefault();
+    if (!newMessage.trim() || !activeTrainer) return;
+    const token = localStorage.getItem('auth_token');
+
+    try {
+      const res = await fetch(`${API_URL}/chat/send`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          receiverId: activeTrainer.userId,
+          text: newMessage
+        })
+      });
+
+      if (res.ok) {
+        const msg = await res.json();
+        setMessages(prev => [...prev, msg]);
+        setNewMessage('');
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   // Загрузка всех данных при монтировании
   useEffect(() => {
@@ -340,6 +427,13 @@ export default function ProfilePage() {
           >
             История покупок ({subscriptions.length})
           </button>
+          <button 
+            type="button"
+            className={`profile-tab-btn ${activeTab === 'chat' ? 'active' : ''}`}
+            onClick={() => setActiveTab('chat')}
+          >
+            Сообщения
+          </button>
         </div>
 
         {/* Вкладка 1: Личные данные */}
@@ -563,6 +657,111 @@ export default function ProfilePage() {
                 История покупок пуста.
               </div>
             )}
+          </div>
+        )}
+
+        {/* Вкладка: Чат с тренерами */}
+        {activeTab === 'chat' && (
+          <div className="profile-main-card">
+            <h2 className="profile-section-title">
+              <MessageSquare className="w-5 h-5 text-emerald-600" /> Связь с тренерами
+            </h2>
+
+            <div className="client-chat-layout" style={{ display: 'grid', gridTemplateColumns: '260px 1fr', gap: '20px', minHeight: '400px', marginTop: '20px' }}>
+              
+              {/* Список тренеров слева */}
+              <div className="trainers-list-sidebar" style={{ borderRight: '1px solid #e2e8f0', paddingRight: '16px' }}>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Выберите тренера:</p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {trainers.map(t => (
+                    <div
+                      key={t.id}
+                      onClick={() => setActiveTrainer(t)}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px',
+                        padding: '12px',
+                        borderRadius: '14px',
+                        cursor: 'pointer',
+                        background: activeTrainer?.id === t.id ? '#eef8ea' : '#f8fafc',
+                        border: activeTrainer?.id === t.id ? '1px solid #b2db6b' : '1px solid #e2e8f0',
+                        transition: 'all 0.2s'
+                      }}
+                    >
+                      <span style={{ fontSize: '24px' }}>{t.photoUrl || '🐸'}</span>
+                      <div>
+                        <div style={{ fontWeight: '700', fontSize: '14px', color: '#0f172a' }}>{t.name}</div>
+                        <div style={{ fontSize: '11px', color: '#64748b' }}>{t.specialization}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Область диалога справа */}
+              <div className="chat-conversation-area" style={{ display: 'flex', flexDirection: 'column', height: '420px', background: '#f8fafc', borderRadius: '16px', border: '1px solid #e2e8f0', overflow: 'hidden' }}>
+                {activeTrainer ? (
+                  <>
+                    {/* Шапка чата */}
+                    <div style={{ padding: '14px 18px', background: '#ffffff', borderBottom: '1px solid #e2e8f0', fontWeight: '700', fontSize: '14px', color: '#0f172a' }}>
+                      Диалог с тренером: {activeTrainer.name}
+                    </div>
+
+                    {/* Сообщения */}
+                    <div style={{ flex: 1, padding: '16px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                      {messages.length > 0 ? (
+                        messages.map(m => {
+                          const isMy = m.senderId === currentUserId;
+                          return (
+                            <div key={m.id} style={{ display: 'flex', justifyContent: isMy ? 'flex-end' : 'flex-start' }}>
+                              <div style={{
+                                maxWidth: '75%',
+                                padding: '10px 14px',
+                                borderRadius: '14px',
+                                background: isMy ? '#74b83b' : '#ffffff',
+                                color: isMy ? '#ffffff' : '#0f172a',
+                                border: isMy ? 'none' : '1px solid #e2e8f0',
+                                fontSize: '13px'
+                              }}>
+                                <p style={{ margin: 0 }}>{m.text}</p>
+                                <span style={{ fontSize: '10px', opacity: 0.7, display: 'block', textAlign: 'right', marginTop: '4px' }}>
+                                  {new Date(m.sentAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                                </span>
+                              </div>
+                            </div>
+                          );
+                        })
+                      ) : (
+                        <div style={{ textAlign: 'center', color: '#94a3b8', margin: 'auto', fontSize: '13px' }}>
+                          Нет сообщений. Напишите тренеру первым!
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Инпут отправки */}
+                    <form onSubmit={handleSendMessage} style={{ display: 'flex', padding: '12px', background: '#ffffff', borderTop: '1px solid #e2e8f0', gap: '8px' }}>
+                      <input
+                        type="text"
+                        value={newMessage}
+                        onChange={e => setNewMessage(e.target.value)}
+                        placeholder="Введите сообщение..."
+                        style={{ flex: 1, padding: '10px 14px', border: '1px solid #cbd5e1', borderRadius: '10px', fontSize: '13px', outline: 'none' }}
+                        required
+                      />
+                      <button type="submit" style={{ background: '#74b83b', color: 'white', border: 'none', padding: '0 16px', borderRadius: '10px', fontWeight: '700', cursor: 'pointer' }}>
+                        Отправить
+                      </button>
+                    </form>
+                  </>
+                ) : (
+                  <div style={{ margin: 'auto', color: '#94a3b8', fontSize: '13px', textAlign: 'center', padding: '20px' }}>
+                    👈 Выберите тренера из списка слева, чтобы начать диалог.
+                  </div>
+                )}
+              </div>
+
+            </div>
           </div>
         )}
 

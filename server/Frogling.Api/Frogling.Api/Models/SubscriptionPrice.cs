@@ -3,7 +3,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace Frogling.Api.Models // <-- Пространство имен должно быть именно таким!
+namespace Frogling.Api.Models 
 {
     public class SubscriptionPrice
     {

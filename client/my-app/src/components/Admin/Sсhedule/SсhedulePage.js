@@ -18,6 +18,7 @@ export default function SchedulePage() {
   const [schedule, setSchedule] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedDay, setSelectedDay] = useState('Все');
+  const [selectedDate, setSelectedDate] = useState('');
   const [bookedItem, setBookedItem] = useState(null);
   const [trainers, setTrainers] = useState([]);
   const [selectedTrainer, setSelectedTrainer] = useState('');
@@ -51,6 +52,25 @@ export default function SchedulePage() {
 
   return `${year}-${month}-${day}T${hours}:${minutes}`;
 };
+
+  const handleDateChange = (e) => {
+    const dateValue = e.target.value;
+    setSelectedDate(dateValue);
+    
+    if (dateValue) {
+      // Если выбрана дата, сбрасываем фильтр "Дни недели", 
+      // так как календарь более специфичен
+      setSelectedDay('');
+      
+      // Опционально: можно вычислить день недели из даты, 
+      // если в твоем расписании только названия дней (Пн, Вт)
+      /*
+      const date = new Date(dateValue);
+      const days = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+      setSelectedDay(days[date.getDay()]);
+      */
+    }
+  };
 
   // Загрузка расписания и списка тренеров
   const fetchData = async () => {
@@ -140,17 +160,41 @@ export default function SchedulePage() {
     setSelectedTrainer(event.target.value); 
   };
 
-  const filteredSchedule = schedule.filter(item => {
-    const dayMatch =
-      selectedDay === 'Все' ||
-      item.dayOfWeek.toLowerCase() === selectedDay.toLowerCase();
+    const filteredSchedule = schedule.filter(item => {
+    // 1. Фильтр по тренеру
+    const matchesTrainer = !selectedTrainer || item.trainerName === selectedTrainer;
 
-    // selectedTrainer хранит имя тренера (значение <option>)
-    const trainerMatch =
-      !selectedTrainer || item.trainerName === selectedTrainer;
+    // 2. Фильтр по времени (Дата или День недели)
+    let matchesTime = true;
 
-    return dayMatch && trainerMatch;
+    if (selectedDate) {
+      // Если выбрана дата в календаре (в формате YYYY-MM-DD), сравниваем по дате
+      // Преобразуем item.date к формату YYYY-MM-DD для точного сравнения
+      const itemDateOnly = item.date ? item.date.split('T')[0] : '';
+      matchesTime = itemDateOnly === selectedDate;
+    } else if (selectedDay && selectedDay !== 'Все') {
+      // Если выбран конкретный день недели (и это не "Все")
+      // Приводим к нижнему регистру для надежного сравнения (например, "понедельник" === "Понедельник")
+      const itemDayLower = (item.dayOfWeek || item.day || '').trim().toLowerCase();
+      const selectedDayLower = selectedDay.trim().toLowerCase();
+      matchesTime = itemDayLower === selectedDayLower;
+    }
+    // Если selectedDay === 'Все' и нет selectedDate, matchesTime остается true (показывает всё)
+
+    return matchesTrainer && matchesTime;
   });
+
+  // 1. Сначала фильтруем расписание только по выбранному тренеру
+  const scheduleForTrainer = schedule.filter(item => {
+    return !selectedTrainer || item.trainerName === selectedTrainer;
+  });
+
+  // 2. Получаем список дней недели, в которые у этого тренера есть занятия
+  const activeDaysWithClasses = scheduleForTrainer.map(item => 
+    (item.dayOfWeek || item.day || '').trim().toLowerCase()
+  );
+  
+
 
   const handleBooking = async (item) => {
     const token = localStorage.getItem('auth_token');
@@ -217,6 +261,7 @@ export default function SchedulePage() {
     const lower = dayStr.trim().toLowerCase();
     return map[lower] || dayStr; // Если не найдено, вернет исходный текст
   };
+
   
 
   return (
@@ -225,31 +270,55 @@ export default function SchedulePage() {
         <h1>Расписание занятий бассейна «Лягушонок»</h1>
         <p>Выберите удобный день и запишитесь на тренировку к нашим лучшим тренерам</p>
       </div>
+      <div className="filters-container">
+        {/* Верхняя строка: Календарь + Дни недели */}
+        <div className="days-filter-bar">
+          {/* Обертка для календаря и кнопки очистки */}
+          {/* Календарный фильтр */}
+          <div className="date-input-wrapper">
+              <input 
+                  type="date" 
+                  className="calendar-input"
+                  value={selectedDate}
+                  onChange={handleDateChange}
+              />
+              {selectedDate && (
+                  <button className="clear-date" onClick={() => setSelectedDate('')} title="Сбросить дату">✕</button>
+              )}
+          </div>
 
-      {/* Фильтры по дням недели */}
-      <div className="days-filter-bar">
-        {DAYS.map(day => (
-          <button
-            key={day}
-            type="button"
-            className={`day-btn ${selectedDay === day ? 'active' : ''}`}
-            onClick={() => setSelectedDay(day)}
-          >
-            {day === 'Все'
-              ? 'Все дни'
-              : day.charAt(0).toUpperCase() + day.slice(1)}
-          </button>
-        ))}
-      </div>
+          {/* Фильтры по дням недели */}
+          <div className="days-filter-bar">
+            {DAYS.map(day => {
+              
+              const dayLower = day.toLowerCase();
+              const hasClasses = day === 'Все' || activeDaysWithClasses.includes(dayLower);
 
-      {/* Фильтры по тренерам */}
-      <select className = "select-bar" value={selectedTrainer} onChange={handleTrainerChange}>
-        <option value=''>Все тренеры</option>
-        {trainers.map (t => (
-          <option key={t.Id} value={t.name}>{t.photoUrl}{t.name}</option>
-        ))}
+              return (
+                <button
+                  key={day}
+                  type="button"
+                  className={`day-btn ${selectedDay === day ? 'active' : ''} ${!hasClasses && day !== 'Все' ? 'opacity-50' : ''}`}
+                  onClick={() => { setSelectedDay(day); setSelectedDate(''); }}
+                >
+                  {day === 'Все' ? 'Все дни' : day}
+                  {/* Зеленая точка-индикатор наличия занятий */}
+                  {hasClasses && day !== 'Все' && <span className="class-indicator-dot"></span>}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Фильтры по тренерам */}
+          <select className = "select-bar" value={selectedTrainer} onChange={(e) => setSelectedTrainer(e.target.value)}>
+            <option value=''>Все тренеры</option>
+            {trainers.map (t => (
+              <option key={t.Id} value={t.name}>{t.photoUrl}{t.name}</option>
+            ))}
           
-      </select>
+          </select>
+        </div>
+      </div>
 
       {/* Список занятий */}
       <div className="schedule-grid">

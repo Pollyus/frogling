@@ -9,6 +9,8 @@ namespace Frogling.Api.Models
         public string Name { get; set; } = string.Empty; // Например, "Анна Сергеевна"
         public string Specialization { get; set; } = "Тренер по плаванию";
         public string PhotoUrl { get; set; } = "🐸"; // Эмодзи или ссылка на фото
+        public Guid? UserId { get; set; }
+        public User? User { get; set; }
         public string Certificates { get; set; } = string.Empty;
         public string SportsСategory { get; set; } = string.Empty;
         public string SportsСareer { get; set; } = string.Empty;

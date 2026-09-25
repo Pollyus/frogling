@@ -355,3 +355,224 @@
   color: #0f172a;
 }
 
+/* Выпадающий список тренеров в стиле дней недели */
+.trainers-select-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.select-bar {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: #ffffff;
+  color: #475569;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 40px 10px 20px;
+  border: 1px solid #cbd5e1;
+  border-radius: 9999px; /* Закругление как у кнопок дней */
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+  
+  /* Иконка стрелочки в зеленом цвете сайта (#74b83b) */
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%2374b83b' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 20px;
+}
+
+.select-bar:hover {
+  border-color: #74b83b;
+  color: #1a4314;
+}
+
+.select-bar:focus {
+  border-color: #74b83b;
+  color: #1a4314;
+  box-shadow: 0 0 0 3px rgba(116, 184, 59, 0.2);
+}
+
+.select-bar option {
+  background-color: #ffffff;
+  color: #475569;
+  font-weight: 500;
+}
+
+.secondary-filters {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+
+/* Обертка для календаря */
+.date-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Стилизация самого инпута даты */
+.calendar-input {
+  padding: 10px 16px;
+  border-radius: 9999px; /* Как у кнопок дней недели */
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: #475569;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.calendar-input:hover {
+  border-color: #74b83b;
+}
+
+.calendar-input:focus {
+  border-color: #74b83b;
+  box-shadow: 0 0 0 3px rgba(116, 184, 59, 0.15);
+}
+
+/* Стилизация иконки календаря (для Chrome/Safari) */
+.calendar-input::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: invert(48%) sepia(13%) saturate(3207%) hue-rotate(50deg) brightness(95%) contrast(80%); /* Под цвет #74b83b */
+  transition: transform 0.2s ease;
+}
+
+.calendar-input::-webkit-calendar-picker-indicator:hover {
+  transform: scale(1.1);
+}
+
+/* Кнопка очистки даты */
+.clear-date {
+  position: absolute;
+  right: 35px;
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 5px;
+}
+
+.clear-date:hover {
+  color: #ef4444;
+}
+
+/* Общий контейнер фильтров - уменьшили отступ до карточек расписания */
+.filters-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px; /* Маленькое расстояние между строкой дней и тренером */
+  margin-bottom: 20px; /* Уменьшенное расстояние до карточек расписания */
+}
+
+/* Панель дней недели и календаря */
+.days-filter-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 0; /* Убрали лишний отступ */
+}
+
+/* Обертка для календаря и кнопки сброса (стоят строго в ряд) */
+.date-input-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px; /* Отступ между инпутом даты и крестиком */
+}
+
+/* Стили самого инпута даты */
+.calendar-input {
+  padding: 8px 14px;
+  border-radius: 9999px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: #475569;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.calendar-input:hover {
+  border-color: #74b83b;
+}
+
+.calendar-input:focus {
+  border-color: #74b83b;
+  box-shadow: 0 0 0 3px rgba(116, 184, 59, 0.15);
+}
+
+.calendar-input::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: invert(48%) sepia(13%) saturate(3207%) hue-rotate(50deg) brightness(95%) contrast(80%);
+}
+
+/* Кнопка отмены (крестик) — находится СПРАВА от поля даты */
+.clear-date-btn {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #64748b;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.clear-date-btn:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #ef4444;
+}
+
+/* Блок тренеров */
+.trainer-filter-bar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0; /* Убрали лишний отступ */
+}
+/* Делаем кнопку относительной, чтобы точка позиционировалась внутри */
+.day-btn {
+  position: relative;
+}
+
+/* Зеленая точка-индикатор */
+.class-indicator-dot {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  width: 6px;
+  height: 6px;
+  background-color: #74b83b;
+  border-radius: 50%;
+  box-shadow: 0 0 4px rgba(116, 184, 59, 0.8);
+}
+
+/* Активная кнопка делает точку белой для контраста */
+.day-btn.active .class-indicator-dot {
+  background-color: #ffffff;
+}

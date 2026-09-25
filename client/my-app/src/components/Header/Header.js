@@ -9,6 +9,7 @@ export default function Header() {
   const [userName, setUserName] = useState('');
   const [isAuth, setIsAuth] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isTrainer, setIsTrainer] = useState(false);
 
   // Получаем имя вошедшего пользователя из localStorage
   useEffect(() => {
@@ -69,38 +70,46 @@ export default function Header() {
           <Link to="/promotions" className="nav-link">Акции</Link>
           <Link to="/schedule" className="nav-link">Расписание</Link>
 
-          {/* ВСПЛЫВАЕТ ТОЛЬКО ДЛЯ АДМИНИСТРАТОРА! */}
+          {/* Кнопка Админки */}
           {isAdmin && (
             <Link to="/admin" className="nav-link nav-link-admin flex items-center gap-1">
               <Shield className="w-3.5 h-3.5" /> Админка
             </Link>
           )}
+          
 
-          {/* Блок пользователя вместо слова "Профиль" */}
+          {/* КНОПКА КАБИНЕТА ТРЕНЕРА */}
+          {isTrainer && (
+            <Link to="/trainer-cabinet" className="nav-link nav-link-trainer flex items-center gap-1" style={{ background: '#eef8ea', color: '#2d6a1b', border: '1px solid #b2db6b', borderRadius: '8px', padding: '4px 10px', fontWeight: '700' }}>
+              <Briefcase className="w-3.5 h-3.5" /> Кабинет тренера
+            </Link>
+          )}
+
           {isAuth ? (
             <div className="user-nav-container">
-              <Link to="/profile" className="user-profile-badge" title="Перейти в личный кабинет">
-                <div className="user-mini-avatar">
-                  <User className="w-4 h-4 text-white" />
-                </div>
-                <span className="user-mini-name">{userName}</span>
-              </Link>
+              {/* Если это НЕ тренер, показываем ссылку на обычный профиль */}
+              {!isTrainer && (
+                <Link to="/profile" className="user-profile-badge">
+                  <div className="user-mini-avatar"><User className="w-4 h-4 text-white" /></div>
+                  <span className="user-mini-name">{userName}</span>
+                </Link>
+              )}
 
-              {/* Кнопка "Выйти" в шапке */}
-              <button 
-                type="button"
-                onClick={handleLogout} 
-                className="header-logout-button"
-                title="Выйти из аккаунта"
-              >
+              {/* Если это тренер, выводим его имя без ссылки на чужой профиль ученика */}
+              {isTrainer && (
+                <span className="user-profile-badge" style={{ cursor: 'default' }}>
+                  <div className="user-mini-avatar" style={{ background: '#2d6a1b' }}><Briefcase className="w-4 h-4 text-white" /></div>
+                  <span className="user-mini-name">{userName}</span>
+                </span>
+              )}
+
+              <button type="button" onClick={handleLogout} className="header-logout-button">
                 <LogOut className="w-4 h-4" />
                 <span>Выйти</span>
               </button>
             </div>
           ) : (
-            <Link to="/login" className="nav-link nav-link-login">
-              Войти
-            </Link>
+            <Link to="/login" className="nav-link nav-link-login">Войти</Link>
           )}
         </nav>
 

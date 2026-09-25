@@ -15,7 +15,7 @@ namespace Frogling.Api.Controllers
             _context = context;
         }
 
-        // GET: api/services (Публичный список всех активных услуг)
+        // GET: api/services (Публичный список всех активных услуг )
         [HttpGet]
         public async Task<IActionResult> GetServices()
         {

@@ -20,6 +20,7 @@ namespace Frogling.Api.Models
         public string ColorTheme { get; set; } = "emerald";     // Цветовая тема для UI (emerald, blue, amber)
 
         public int DurationDays { get; set; } = 30;             // Срок действия в днях
+        public bool IsTrial { get; set; }
 
         public bool IsActive { get; set; } = true;
     }

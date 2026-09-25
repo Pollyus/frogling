@@ -21,8 +21,9 @@ import ActionNewYear from '../ActionNewYear/ActionNewYear';
 import SchedulePage from '../Admin/Sсhedule/SсhedulePage';
 import ProtectedRoute from '../Login/ProtectedRoute';
 import MainLayout from '../Login/MainLayout';
-import Service from '../BuyService/ServicesPage'
-import AdminPanel from '../Admin/AdminPanel'
+import Service from '../BuyService/ServicesPage';
+import AdminPanel from '../Admin/AdminPanel';
+import TrainerCabinet from '../TrainersCabinet/TrainerCabinet';
 
 
 function App() {
@@ -57,6 +58,21 @@ function App() {
     return isAdmin ? <Outlet /> : <Navigate to="/" replace />;
   };
 
+  const TrainerRoute = () => {
+    const token = localStorage.getItem('auth_token');
+    const userStr = localStorage.getItem('user');
+    let isTrainer = false;
+
+    if (token && userStr) {
+      try {
+        const user = JSON.parse(userStr);
+        isTrainer = (user.role === 'Trainer' || user.Role === 'Trainer');
+      } catch (e) {}
+    }
+
+    return isTrainer ? <Outlet /> : <Navigate to="/" replace />;
+  };
+
   return (
     <div>
       <BrowserRouter>
@@ -80,6 +96,10 @@ function App() {
                 <Route path="/photo" element={<PhotoSlider />} />
                 <Route element={<AdminRoute />}>
                   <Route path="/admin" element={<AdminPanel />} />
+                </Route>
+                {/* Кабинет тренера (доступен только для роли Trainer) */}
+                <Route element={<TrainerRoute />}>
+                  <Route path="/trainer-cabinet" element={<TrainerCabinet />} />
                 </Route>
             {/* Защищенные маршруты: внутрь нельзя попасть без авторизации */}
               <Route element={<ProtectedRoute />}>

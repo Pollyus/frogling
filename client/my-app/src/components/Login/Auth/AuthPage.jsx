@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Mail, Lock, User, ShieldCheck, AlertCircle, ArrowRight, Github, Chrome } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, ShieldCheck, AlertCircle } from 'lucide-react';
 import './AuthPage.css';
 
 export default function AuthPage() {
@@ -66,7 +66,7 @@ export default function AuthPage() {
   };
 
   // Обработчик отправки формы
-  const API_BASE_URL = 'https://localhost:7026/api/auth'; 
+  const API_BASE_URL = 'https://localhost:7026/api/auth'; // Укажите ваш актуальный порт API
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -75,20 +75,11 @@ export default function AuthPage() {
     setIsLoading(true);
     setNotification(null);
 
-    // Определяем эндпоинт в зависимости от вкладки: /login или /register
     const endpoint = isLogin ? `${API_BASE_URL}/login` : `${API_BASE_URL}/register`;
 
-    // Формируем payload для C# DTO
     const payload = isLogin
-      ? {
-          email: formData.email,
-          password: formData.password
-        }
-      : {
-          fullName: formData.fullName,
-          email: formData.email,
-          password: formData.password
-        };
+      ? { email: formData.email, password: formData.password }
+      : { fullName: formData.fullName, email: formData.email, password: formData.password };
 
     try {
       const response = await fetch(endpoint, {
@@ -102,7 +93,6 @@ export default function AuthPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        // Если C# бэкенд вернул 400 или 401
         throw new Error(data.message || 'Произошла ошибка при авторизации.');
       }
 
@@ -115,9 +105,17 @@ export default function AuthPage() {
         message: isLogin ? 'Успешный вход! Перенаправление...' : 'Регистрация успешна! Добро пожаловать!'
       });
 
-      // Перенаправляем в профиль / на сайт через 800 мс
+      // Проверяем роль и перенаправляем в нужный кабинет через 800 мс
+      const userRole = data.user.role || data.user.Role;
+
       setTimeout(() => {
-        navigate('/', { replace: true });
+        if (userRole === 'Trainer') {
+          navigate('/trainer-cabinet', { replace: true });
+        } else if (userRole === 'Admin') {
+          navigate('/admin', { replace: true });
+        } else {
+          navigate('/profile', { replace: true });
+        }
       }, 800);
 
     } catch (err) {
@@ -278,23 +276,8 @@ export default function AuthPage() {
             className="submit-btn w-full py-3.5 bg-gradient-to-r from-emerald-600 to-green-500 hover:from-emerald-500 hover:to-green-400 text-white font-semibold rounded-xl transition duration-200 flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/30 disabled:opacity-75"
           >
             {isLoading ? 'Загрузка...' : isLogin ? 'Войти' : 'Создать аккаунт'}
-            {/* <ArrowRight className="w-4 h-4" /> */}
           </button>
         </form>
-
-        {/* <div className="divider relative my-6">
-          <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-800"></div></div>
-          <div className="relative flex justify-center text-xs uppercase"><span className="bg-slate-900 px-3 text-slate-500">или</span></div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-3">
-          <button type="button" onClick={() => alert('OAuth GitHub')} className="social-btn flex items-center justify-center gap-2 py-2.5 bg-slate-950 border border-slate-800 rounded-xl hover:bg-slate-900 text-sm text-slate-300 hover:text-white transition">
-            <Github className="w-4 h-4" /> Github
-          </button>
-          <button type="button" onClick={() => alert('OAuth Google')} className="social-btn flex items-center justify-center gap-2 py-2.5 bg-slate-950 border border-slate-800 rounded-xl hover:bg-slate-900 text-sm text-slate-300 hover:text-white transition">
-            <Chrome className="w-4 h-4 text-emerald-500" /> Google
-          </button>
-        </div> */}
       </div>
     </div>
   );

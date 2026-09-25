@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Frogling.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260923102602_FixCascadeBookingSubscription")]
-    partial class FixCascadeBookingSubscription
+    [Migration("20260925082341_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,6 +39,9 @@ namespace Frogling.Api.Migrations
                     b.Property<int>("ScheduleItemId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ScheduleItemId1")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("ScheduledAt")
                         .HasColumnType("datetime2");
 
@@ -52,11 +55,42 @@ namespace Frogling.Api.Migrations
 
                     b.HasIndex("ScheduleItemId");
 
+                    b.HasIndex("ScheduleItemId1");
+
                     b.HasIndex("SubscriptionId");
 
                     b.HasIndex("UserId");
 
                     b.ToTable("Bookings");
+                });
+
+            modelBuilder.Entity("Frogling.Api.Models.ChatMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("ReceiverId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("SenderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("SentAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ChatMessages");
                 });
 
             modelBuilder.Entity("Frogling.Api.Models.ScheduleItem", b =>
@@ -67,23 +101,18 @@ namespace Frogling.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AgeCategory")
-                        .HasColumnType("int");
-
                     b.Property<int>("AvailableSlots")
                         .HasColumnType("int");
 
-                    b.Property<string>("DayOfWeek")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("DurationMinutes")
+                        .HasColumnType("int");
 
                     b.Property<string>("GroupName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Time")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("StartAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("TrainerId")
                         .HasColumnType("int");
@@ -98,52 +127,65 @@ namespace Frogling.Api.Migrations
                         new
                         {
                             Id = 1,
-                            AgeCategory = 3,
-                            AvailableSlots = 3,
-                            DayOfWeek = "Понедельник",
-                            GroupName = "Малыши (1-3 года)",
-                            Time = "15:00 - 15:45",
+                            AvailableSlots = 6,
+                            DurationMinutes = 45,
+                            GroupName = "Грудничковое плавание",
+                            StartAt = new DateTime(2026, 10, 5, 10, 0, 0, 0, DateTimeKind.Utc),
                             TrainerId = 1
                         },
                         new
                         {
                             Id = 2,
-                            AgeCategory = 3,
-                            AvailableSlots = 2,
-                            DayOfWeek = "Понедельник",
-                            GroupName = "Головастики (4-6 лет)",
-                            Time = "16:00 - 16:45",
+                            AvailableSlots = 5,
+                            DurationMinutes = 45,
+                            GroupName = "Малыши 1–3 года",
+                            StartAt = new DateTime(2026, 10, 6, 16, 30, 0, 0, DateTimeKind.Utc),
                             TrainerId = 2
                         },
                         new
                         {
                             Id = 3,
-                            AgeCategory = 3,
-                            AvailableSlots = 4,
-                            DayOfWeek = "Среда",
-                            GroupName = "Малыши (1-3 года)",
-                            Time = "15:00 - 15:45",
+                            AvailableSlots = 6,
+                            DurationMinutes = 45,
+                            GroupName = "Головастики 4–6 лет",
+                            StartAt = new DateTime(2026, 10, 7, 15, 0, 0, 0, DateTimeKind.Utc),
                             TrainerId = 1
                         },
                         new
                         {
                             Id = 4,
-                            AgeCategory = 3,
-                            AvailableSlots = 1,
-                            DayOfWeek = "Среда",
-                            GroupName = "Пловцы (7-10 лет)",
-                            Time = "17:00 - 17:45",
+                            AvailableSlots = 4,
+                            DurationMinutes = 45,
+                            GroupName = "Пловцы 7–10 лет",
+                            StartAt = new DateTime(2026, 10, 8, 17, 15, 0, 0, DateTimeKind.Utc),
                             TrainerId = 3
                         },
                         new
                         {
                             Id = 5,
-                            AgeCategory = 3,
                             AvailableSlots = 5,
-                            DayOfWeek = "Пятница",
-                            GroupName = "Головастики (4-6 лет)",
-                            Time = "16:00 - 16:45",
+                            DurationMinutes = 45,
+                            GroupName = "Интенсив",
+                            StartAt = new DateTime(2026, 10, 9, 16, 0, 0, 0, DateTimeKind.Utc),
                             TrainerId = 2
+                        },
+                        new
+                        {
+                            Id = 6,
+                            AvailableSlots = 8,
+                            DurationMinutes = 45,
+                            GroupName = "Семейное плавание",
+                            StartAt = new DateTime(2026, 10, 10, 10, 0, 0, 0, DateTimeKind.Utc),
+                            TrainerId = 1
+                        },
+                        new
+                        {
+                            Id = 7,
+                            AvailableSlots = 10,
+                            DurationMinutes = 45,
+                            GroupName = "Свободное плавание",
+                            StartAt = new DateTime(2026, 10, 11, 12, 0, 0, 0, DateTimeKind.Utc),
+                            TrainerId = 3
                         });
                 });
 
@@ -173,6 +215,9 @@ namespace Frogling.Api.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsTrial")
+                        .HasColumnType("bit");
+
                     b.Property<int>("LessonsCount")
                         .HasColumnType("int");
 
@@ -196,6 +241,7 @@ namespace Frogling.Api.Migrations
                             Description = "Знакомство с тренером и водой для малышей от 2 месяцев.",
                             DurationDays = 7,
                             IsActive = true,
+                            IsTrial = false,
                             LessonsCount = 1,
                             Price = 0m,
                             Title = "Пробное занятие"
@@ -208,6 +254,7 @@ namespace Frogling.Api.Migrations
                             Description = "Идеально для начинающих. 4 занятия, которые можете посетить в любые дни месяца по записи",
                             DurationDays = 30,
                             IsActive = true,
+                            IsTrial = false,
                             LessonsCount = 4,
                             Price = 6000m,
                             Title = "Юный пловец"
@@ -220,6 +267,7 @@ namespace Frogling.Api.Migrations
                             Description = "Занятия родителя, тренера и ребенка. 4 занятия в месяц",
                             DurationDays = 45,
                             IsActive = true,
+                            IsTrial = false,
                             LessonsCount = 4,
                             Price = 7400m,
                             Title = "Семейный абонемент"
@@ -232,6 +280,7 @@ namespace Frogling.Api.Migrations
                             Description = "Разовое занятие групповое",
                             DurationDays = 30,
                             IsActive = true,
+                            IsTrial = false,
                             LessonsCount = 1,
                             Price = 1100m,
                             Title = "Групповое посещение"
@@ -244,6 +293,7 @@ namespace Frogling.Api.Migrations
                             Description = "Персональное 45-минутное занятие один на один с инструктором.",
                             DurationDays = 14,
                             IsActive = true,
+                            IsTrial = false,
                             LessonsCount = 1,
                             Price = 1600m,
                             Title = "Индивидуальное с тренером"
@@ -256,6 +306,7 @@ namespace Frogling.Api.Migrations
                             Description = "Персональное занятие 60 минут",
                             DurationDays = 30,
                             IsActive = true,
+                            IsTrial = false,
                             LessonsCount = 1,
                             Price = 1600m,
                             Title = "Разовые посещение"
@@ -268,6 +319,7 @@ namespace Frogling.Api.Migrations
                             Description = "Идеально для начинающих. 8 занятий, которые можете посетить в любые дни месяца по записи",
                             DurationDays = 30,
                             IsActive = true,
+                            IsTrial = false,
                             LessonsCount = 8,
                             Price = 11500m,
                             Title = "Активный пловец"
@@ -280,6 +332,7 @@ namespace Frogling.Api.Migrations
                             Description = "Занятия родителя, тренера и ребенка. 8 занятия в месяц",
                             DurationDays = 45,
                             IsActive = true,
+                            IsTrial = false,
                             LessonsCount = 8,
                             Price = 14000m,
                             Title = "Семейный Плюс"
@@ -292,6 +345,7 @@ namespace Frogling.Api.Migrations
                             Description = "Абонемент за 4 групповых занятия",
                             DurationDays = 30,
                             IsActive = true,
+                            IsTrial = false,
                             LessonsCount = 4,
                             Price = 4100m,
                             Title = "Групповой абонемент"
@@ -304,6 +358,7 @@ namespace Frogling.Api.Migrations
                             Description = "Абонемент за 8 групповых занятия",
                             DurationDays = 30,
                             IsActive = true,
+                            IsTrial = false,
                             LessonsCount = 8,
                             Price = 8000m,
                             Title = "Групповой абонемент"
@@ -390,7 +445,14 @@ namespace Frogling.Api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("Trainers");
 
@@ -398,38 +460,41 @@ namespace Frogling.Api.Migrations
                         new
                         {
                             Id = 1,
-                            Certificates = "Специалист грудничкового и малышкового плавания. Специалист спортивного и детского массажа",
+                            Certificates = "Специалист грудничкового и малышкового плавания.",
                             Education = "ПГУФКСиТ, специализация тренер по плаванию",
                             Experience = "3 года",
                             Name = "Любовь",
                             PhotoUrl = "👩‍🏫",
                             Specialization = "Специалист по грудничковому плаванию",
                             SportsСareer = "12 лет спортивной карьеры",
-                            SportsСategory = "Мастер спорта по плаванию"
+                            SportsСategory = "Мастер спорта по плаванию",
+                            UserId = new Guid("44444444-4444-4444-4444-444444444444")
                         },
                         new
                         {
                             Id = 2,
                             Certificates = "Специалист грудничкового и малышкового плавания",
                             Education = "ПГУФКСиТ, специализация тренер по плаванию",
-                            Experience = " 3 года",
+                            Experience = "3 года",
                             Name = "Владислав",
                             PhotoUrl = "👨‍🏫",
                             Specialization = "Раннее обучение плаванию",
-                            SportsСareer = "12 лет спортивной карьеры, участник всероссийских соревнований",
-                            SportsСategory = "Кандидат мастера спорта по плаванию"
+                            SportsСareer = "12 лет спортивной карьеры",
+                            SportsСategory = "Кандидат мастера спорта по плаванию",
+                            UserId = new Guid("22222222-2222-2222-2222-222222222222")
                         },
                         new
                         {
                             Id = 3,
-                            Certificates = "Специалист грудничкового и малышкового плавания. Детский массажист/Преподаватель детского массажа и моторного развития",
+                            Certificates = "Специалист грудничкового и малышкового плавания.",
                             Education = "КГМУ Сестринское дело",
                             Experience = "2 года",
                             Name = "Лидия",
                             PhotoUrl = "🏊‍♀️",
                             Specialization = "Аквааэробика и ЛФК",
                             SportsСareer = "Специалист физической терапии детей и взрослых",
-                            SportsСategory = ""
+                            SportsСategory = "",
+                            UserId = new Guid("33333333-3333-3333-3333-333333333333")
                         });
                 });
 
@@ -450,8 +515,8 @@ namespace Frogling.Api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsMedicalExaminationValid")
-                        .HasColumnType("bit");
+                    b.Property<DateTime?>("MedicalCheckDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("ParentName")
                         .IsRequired()
@@ -465,12 +530,66 @@ namespace Frogling.Api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
                         .IsUnique();
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("11111111-1111-1111-1111-111111111111"),
+                            CreatedAt = new DateTime(2026, 9, 25, 8, 23, 41, 481, DateTimeKind.Utc).AddTicks(3393),
+                            Email = "admin@frogling.ru",
+                            FullName = "Главный Администратор",
+                            MedicalCheckDate = new DateTime(2026, 9, 25, 8, 23, 41, 481, DateTimeKind.Utc).AddTicks(3431),
+                            ParentName = "",
+                            PasswordHash = "$2a$11$z4Ygli8Z.polnSU12EiJMeYSqB4woIbWm02mdnyPxRIKErPPkAq52",
+                            Phone = "",
+                            Role = "Admin"
+                        },
+                        new
+                        {
+                            Id = new Guid("44444444-4444-4444-4444-444444444444"),
+                            CreatedAt = new DateTime(2026, 9, 25, 8, 23, 41, 481, DateTimeKind.Utc).AddTicks(3438),
+                            Email = "luba@frogling.ru",
+                            FullName = "Любовь (Тренер)",
+                            MedicalCheckDate = new DateTime(2026, 9, 25, 8, 23, 41, 481, DateTimeKind.Utc).AddTicks(3438),
+                            ParentName = "",
+                            PasswordHash = "$2a$11$jPu9PCjT/qHI0GGIMc.rKORjqOzOYBv/Na/Q7yYMwF/8jBQQA5ZUe",
+                            Phone = "",
+                            Role = "Trainer"
+                        },
+                        new
+                        {
+                            Id = new Guid("22222222-2222-2222-2222-222222222222"),
+                            CreatedAt = new DateTime(2026, 9, 25, 8, 23, 41, 481, DateTimeKind.Utc).AddTicks(3442),
+                            Email = "vlad@frogling.ru",
+                            FullName = "Владислав (Тренер)",
+                            MedicalCheckDate = new DateTime(2026, 9, 25, 8, 23, 41, 481, DateTimeKind.Utc).AddTicks(3441),
+                            ParentName = "",
+                            PasswordHash = "$2a$11$jPu9PCjT/qHI0GGIMc.rKORjqOzOYBv/Na/Q7yYMwF/8jBQQA5ZUe",
+                            Phone = "",
+                            Role = "Trainer"
+                        },
+                        new
+                        {
+                            Id = new Guid("33333333-3333-3333-3333-333333333333"),
+                            CreatedAt = new DateTime(2026, 9, 25, 8, 23, 41, 481, DateTimeKind.Utc).AddTicks(3444),
+                            Email = "lida@frogling.ru",
+                            FullName = "Лидия (Тренер)",
+                            MedicalCheckDate = new DateTime(2026, 9, 25, 8, 23, 41, 481, DateTimeKind.Utc).AddTicks(3444),
+                            ParentName = "",
+                            PasswordHash = "$2a$11$jPu9PCjT/qHI0GGIMc.rKORjqOzOYBv/Na/Q7yYMwF/8jBQQA5ZUe",
+                            Phone = "",
+                            Role = "Trainer"
+                        });
                 });
 
             modelBuilder.Entity("Frogling.Api.Models.Booking", b =>
@@ -478,8 +597,12 @@ namespace Frogling.Api.Migrations
                     b.HasOne("Frogling.Api.Models.ScheduleItem", "ScheduleItem")
                         .WithMany()
                         .HasForeignKey("ScheduleItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.HasOne("Frogling.Api.Models.ScheduleItem", null)
+                        .WithMany("Bookings")
+                        .HasForeignKey("ScheduleItemId1");
 
                     b.HasOne("Frogling.Api.Models.SubscriptionPrice", "Subscription")
                         .WithMany()
@@ -520,6 +643,21 @@ namespace Frogling.Api.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Frogling.Api.Models.Trainer", b =>
+                {
+                    b.HasOne("Frogling.Api.Models.User", "User")
+                        .WithOne()
+                        .HasForeignKey("Frogling.Api.Models.Trainer", "UserId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Frogling.Api.Models.ScheduleItem", b =>
+                {
+                    b.Navigation("Bookings");
                 });
 
             modelBuilder.Entity("Frogling.Api.Models.Trainer", b =>
