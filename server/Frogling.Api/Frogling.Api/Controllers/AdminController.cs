@@ -164,6 +164,61 @@ namespace Frogling.Api.Controllers
             return Ok(new { message = "Расписание успешно обновлено!" });
         }
 
+        // POST: api/admin/schedule (Создать новое занятие)
+        [Authorize(Roles = "Admin")]
+        [HttpPost("schedule")]
+        public async Task<IActionResult> CreateScheduleItem([FromBody] UpdateScheduleDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.GroupName))
+                return BadRequest(new { message = "Название группы обязательно." });
+
+            if (!dto.StartAt.HasValue)
+                return BadRequest(new { message = "Укажите дату и время начала занятия." });
+
+            // Фиксируем точные часы и минуты без сдвига часовых поясов
+            var dt = dto.StartAt.Value;
+            var exactStartAt = new DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, 0, DateTimeKind.Utc);
+
+            var scheduleItem = new ScheduleItem
+            {
+                GroupName = dto.GroupName.Trim(),
+                StartAt = exactStartAt,
+                DurationMinutes = dto.DurationMinutes > 0 ? dto.DurationMinutes : 45,
+                TrainerId = dto.TrainerId > 0 ? dto.TrainerId : 1,
+                AvailableSlots = dto.AvailableSlots >= 0 ? dto.AvailableSlots : 6
+            };
+
+            _context.ScheduleItems.Add(scheduleItem);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Занятие успешно создано в расписании!" });
+        }
+
+        // DELETE: api/admin/schedule/{id}
+        [HttpDelete("schedule/{id:int}")]
+        public async Task<IActionResult> DeleteScheduleItem(int id)
+        {
+            var scheduleItem = await _context.ScheduleItems
+                .Include(s => s.Bookings)
+                .FirstOrDefaultAsync(s => s.Id == id);
+
+            if (scheduleItem == null)
+                return NotFound(new { message = "Занятие не найдено." });
+
+            if (scheduleItem.Bookings.Any())
+            {
+                return Conflict(new
+                {
+                    message = "Нельзя удалить занятие: на него уже записаны пользователи. Сначала отмените записи."
+                });
+            }
+
+            _context.ScheduleItems.Remove(scheduleItem);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Занятие удалено из расписания." });
+        }
+
     }
 
     public class UpdateUserAdminDto

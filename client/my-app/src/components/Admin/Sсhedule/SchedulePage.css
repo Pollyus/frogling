@@ -1,64 +1,150 @@
+/* Замените ваш SchedulePage.css на этот вариант */
+
 .schedule-container {
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 40px 20px;
   font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
-.schedule-header {
-  text-align: center;
-  margin-bottom: 30px;
-}
-
-.schedule-header h1 {
+.schedule-container h1 {
   font-size: 28px;
+  font-weight: 800;
   color: #1a4314;
-  margin-bottom: 8px;
+  margin-bottom: 24px;
 }
 
-.schedule-header p {
-  color: #64748b;
-  font-size: 15px;
+/* Фильтры */
+.filters-container {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 20px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 10px 30px -10px rgba(0, 70, 40, 0.05);
+  margin-bottom: 20px;
 }
 
-/* Фильтры по дням */
 .days-filter-bar {
   display: flex;
-  justify-content: center;
-  gap: 10px;
   flex-wrap: wrap;
-  margin-bottom: 32px;
+  align-items: center;
+  gap: 10px;
+}
+
+.date-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.calendar-input {
+  padding: 10px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  background: #f8fafc;
+  font-family: inherit;
+  font-size: 13px;
+  color: #0f172a;
+  outline: none;
+}
+
+.clear-date {
+  position: absolute;
+  right: 10px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #94a3b8;
+  font-weight: 700;
 }
 
 .day-btn {
-  padding: 10px 20px;
-  border-radius: 9999px;
-  background: #ffffff;
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: #f8fafc;
   border: 1px solid #cbd5e1;
-  font-size: 14px;
-  font-weight: 600;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
   color: #475569;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   transition: all 0.2s ease;
 }
 
 .day-btn:hover {
-  border-color: #74b83b;
-  color: #1a4314;
+  background: #e2e8f0;
+  color: #0f172a;
 }
 
 .day-btn.active {
   background: #74b83b;
   color: #ffffff;
   border-color: #74b83b;
-  box-shadow: 0 4px 12px rgba(116, 184, 59, 0.3);
+  box-shadow: 0 4px 12px rgba(116, 184, 59, 0.25);
+}
+
+.class-indicator-dot {
+  width: 6px;
+  height: 6px;
+  background: #22c55e;
+  border-radius: 50%;
+}
+
+.select-bar {
+  padding: 10px 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  background: #f8fafc;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  color: #475569;
+  outline: none;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+/* Секция кнопки добавления занятия после фильтров */
+.admin-add-section {
+  display: flex;
+  justify-content: center;
+  margin: 16px 0 28px 0;
+}
+
+.btn-admin-add-big {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 360px;
+  padding: 12px 22px;
+  background: linear-gradient(135deg, #74b83b, #4b8b20);
+  color: #ffffff;
+  border: none;
+  border-radius: 14px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(116, 184, 59, 0.25);
+  transition: all 0.2s ease;
+}
+
+.btn-admin-add-big:hover {
+  background: linear-gradient(135deg, #81cc42, #559c25);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(116, 184, 59, 0.35);
 }
 
 /* Сетка карточек расписания */
 .schedule-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 24px;
 }
 
 .schedule-card {
@@ -66,50 +152,43 @@
   border-radius: 20px;
   padding: 24px;
   border: 1px solid #e2e8f0;
-  box-shadow: 0 10px 30px -10px rgba(0, 70, 40, 0.05);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .schedule-card:hover {
-  transform: translateY(-3px);
-  border-color: #b2db6b;
+  transform: translateY(-2px);
+  box-shadow: 0 15px 30px -10px rgba(0, 70, 40, 0.1);
 }
 
 .schedule-card-top {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  gap: 10px;
   margin-bottom: 14px;
 }
 
 .day-pill, .time-pill {
   font-size: 12px;
-  font-weight: 600;
-  display: flex;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 10px;
+  display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 4px 10px;
-  border-radius: 8px;
+  gap: 6px;
 }
 
-.day-pill {
-  background: #eef8ea;
-  color: #2d6a1b;
-}
-
-.time-pill {
-  background: #f1f5f9;
-  color: #475569;
-}
+.day-pill { background: #eef8ea; color: #2d6a1b; border: 1px solid #b2db6b; }
+.time-pill { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
 
 .group-title {
   font-size: 18px;
-  font-weight: 700;
+  font-weight: 800;
   color: #0f172a;
-  margin: 0 0 16px;
+  margin: 0 0 14px 0;
 }
 
 .trainer-row {
@@ -117,462 +196,130 @@
   align-items: center;
   gap: 12px;
   background: #f8fafc;
-  padding: 10px 14px;
-  border-radius: 12px;
-  margin-bottom: 20px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 16px;
 }
 
 .trainer-avatar-mini {
   font-size: 24px;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #e2e8f0;
-  border-radius: 50%;
 }
 
 .trainer-name-text {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
-  color: #1e293b;
+  color: #0f172a;
 }
 
 .trainer-spec-text {
   font-size: 11px;
   color: #64748b;
+  margin-top: 2px;
 }
 
+/* Футер карточки: перенос кнопки вниз для предотвращения вылетов */
 .schedule-card-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px dashed #e2e8f0;
+}
+
+.schedule-card-footer-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: 16px;
-  border-top: 1px solid #f1f5f9;
 }
 
 .slots-info {
-  font-size: 12px;
-  color: #64748b;
+  font-size: 13px;
+  color: #475569;
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
+.admin-action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-action-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-action-icon.edit {
+  background: #f1f5f9;
+  color: #334155;
+  border-color: #cbd5e1;
+}
+
+.btn-action-icon.edit:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.btn-action-icon.delete {
+  background: #fef2f2;
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
+.btn-action-icon.delete:hover {
+  background: #dc2626;
+  color: #ffffff;
+  border-color: #dc2626;
+}
+
+/* Кнопка записи растянута на всю ширину внизу карточки */
 .btn-book-slot {
-  background: #10b981;
+  width: 100%;
+  padding: 12px;
+  background: #74b83b;
   color: #ffffff;
   border: none;
-  padding: 8px 16px;
-  border-radius: 10px;
-  font-size: 13px;
-  font-weight: 600;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
   cursor: pointer;
-  transition: background 0.2s ease;
+  box-shadow: 0 4px 12px rgba(116, 184, 59, 0.25);
+  transition: all 0.2s ease;
+  text-align: center;
 }
 
 .btn-book-slot:hover {
-  background: #059669;
+  background: #559c25;
+  transform: translateY(-1px);
 }
 
-.btn-book-slot:disabled,
 .btn-book-slot.disabled {
   background: #cbd5e1 !important;
   color: #64748b !important;
   cursor: not-allowed !important;
   box-shadow: none !important;
-  opacity: 0.7;
-}
-
-.btn-book-slot:disabled:hover {
   transform: none !important;
-  background: #cbd5e1 !important;
-}
-
-.select-bar{
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 32px;
 }
 
 .no-schedule {
   grid-column: 1 / -1;
   text-align: center;
   padding: 40px;
-  color: #64748b;
-  background: #fff;
-  border-radius: 20px;
-}
-
-.btn-edit-slot {
-  background: #f1f5f9;
-  color: #334155;
-  border: 1px solid #cbd5e1;
-  padding: 8px 14px;
-  border-radius: 12px;
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
-}
-
-.btn-edit-slot:hover {
-  background: #e2e8f0;
-  border-color: #94a3b8;
-  color: #0f172a;
-  transform: translateY(-1px);
-}
-
-.btn-edit-slot:active {
-  transform: translateY(0);
-}
-
-/* Модальное окно редактирования расписания (единый стиль с админкой) */
-.modal-admin-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-  padding: 20px;
-}
-
-.modal-admin-card {
-  background: #ffffff;
-  width: 100%;
-  max-width: 480px;
-  border-radius: 24px;
-  padding: 32px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  position: relative;
-  text-align: left;
-  animation: modalAppear 0.25s ease-out;
-}
-
-@keyframes modalAppear {
-  from { opacity: 0; transform: translateY(15px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.modal-admin-card h2 {
-  font-size: 20px;
-  font-weight: 800;
-  color: #0f172a;
-  margin-top: 0;
-  margin-bottom: 20px;
-  text-align: left;
-}
-
-.form-group-admin {
-  margin-bottom: 18px;
-  text-align: left;
-}
-
-.form-group-admin label {
-  display: block;
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  color: #64748b;
-  margin-bottom: 6px;
-  text-align: left;
-}
-
-.form-group-admin input,
-.form-group-admin select {
-  width: 100%;
-  padding: 12px 16px;
-  border: 1px solid #cbd5e1;
-  border-radius: 12px;
-  font-size: 14px;
-  font-family: inherit;
-  color: #0f172a;
   background: #f8fafc;
-  outline: none;
-  box-sizing: border-box;
-  transition: all 0.2s ease;
-}
-
-.form-group-admin input:focus,
-.form-group-admin select:focus {
-  border-color: #74b83b;
-  background: #ffffff;
-  box-shadow: 0 0 0 3px rgba(116, 184, 59, 0.15);
-}
-
-.modal-actions {
-  display: flex;
-  gap: 12px;
-  margin-top: 24px;
-}
-
-.btn-save-admin {
-  flex: 1;
-  padding: 12px;
-  background: linear-gradient(135deg, #74b83b, #4b8b20);
-  color: white;
-  border: none;
-  border-radius: 12px;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(116, 184, 59, 0.25);
-  transition: all 0.2s ease;
-}
-
-.btn-save-admin:hover {
-  background: linear-gradient(135deg, #81cc42, #559c25);
-  transform: translateY(-1px);
-}
-
-.btn-cancel-admin {
-  flex: 1;
-  padding: 12px;
-  background: #f1f5f9;
-  color: #475569;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.btn-cancel-admin:hover {
-  background: #e2e8f0;
-  color: #0f172a;
-}
-
-/* Выпадающий список тренеров в стиле дней недели */
-.trainers-select-wrapper {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 24px;
-}
-
-.select-bar {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  background-color: #ffffff;
-  color: #475569;
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 600;
-  padding: 10px 40px 10px 20px;
-  border: 1px solid #cbd5e1;
-  border-radius: 9999px; /* Закругление как у кнопок дней */
-  outline: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
-  
-  /* Иконка стрелочки в зеленом цвете сайта (#74b83b) */
-  background-image: url("data:image/svg+xml;utf8,<svg fill='%2374b83b' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
-  background-repeat: no-repeat;
-  background-position: right 14px center;
-  background-size: 20px;
-}
-
-.select-bar:hover {
-  border-color: #74b83b;
-  color: #1a4314;
-}
-
-.select-bar:focus {
-  border-color: #74b83b;
-  color: #1a4314;
-  box-shadow: 0 0 0 3px rgba(116, 184, 59, 0.2);
-}
-
-.select-bar option {
-  background-color: #ffffff;
-  color: #475569;
-  font-weight: 500;
-}
-
-.secondary-filters {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 15px;
-  margin-bottom: 32px;
-  flex-wrap: wrap;
-}
-
-/* Обертка для календаря */
-.date-input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-/* Стилизация самого инпута даты */
-.calendar-input {
-  padding: 10px 16px;
-  border-radius: 9999px; /* Как у кнопок дней недели */
-  border: 1px solid #cbd5e1;
-  background: #ffffff;
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 600;
-  color: #475569;
-  outline: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.calendar-input:hover {
-  border-color: #74b83b;
-}
-
-.calendar-input:focus {
-  border-color: #74b83b;
-  box-shadow: 0 0 0 3px rgba(116, 184, 59, 0.15);
-}
-
-/* Стилизация иконки календаря (для Chrome/Safari) */
-.calendar-input::-webkit-calendar-picker-indicator {
-  cursor: pointer;
-  filter: invert(48%) sepia(13%) saturate(3207%) hue-rotate(50deg) brightness(95%) contrast(80%); /* Под цвет #74b83b */
-  transition: transform 0.2s ease;
-}
-
-.calendar-input::-webkit-calendar-picker-indicator:hover {
-  transform: scale(1.1);
-}
-
-/* Кнопка очистки даты */
-.clear-date {
-  position: absolute;
-  right: 35px;
-  background: none;
-  border: none;
-  color: #94a3b8;
-  cursor: pointer;
-  font-size: 12px;
-  padding: 5px;
-}
-
-.clear-date:hover {
-  color: #ef4444;
-}
-
-/* Общий контейнер фильтров - уменьшили отступ до карточек расписания */
-.filters-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px; /* Маленькое расстояние между строкой дней и тренером */
-  margin-bottom: 20px; /* Уменьшенное расстояние до карточек расписания */
-}
-
-/* Панель дней недели и календаря */
-.days-filter-bar {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 0; /* Убрали лишний отступ */
-}
-
-/* Обертка для календаря и кнопки сброса (стоят строго в ряд) */
-.date-input-wrapper {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px; /* Отступ между инпутом даты и крестиком */
-}
-
-/* Стили самого инпута даты */
-.calendar-input {
-  padding: 8px 14px;
-  border-radius: 9999px;
-  border: 1px solid #cbd5e1;
-  background: #ffffff;
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 600;
-  color: #475569;
-  outline: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.calendar-input:hover {
-  border-color: #74b83b;
-}
-
-.calendar-input:focus {
-  border-color: #74b83b;
-  box-shadow: 0 0 0 3px rgba(116, 184, 59, 0.15);
-}
-
-.calendar-input::-webkit-calendar-picker-indicator {
-  cursor: pointer;
-  filter: invert(48%) sepia(13%) saturate(3207%) hue-rotate(50deg) brightness(95%) contrast(80%);
-}
-
-/* Кнопка отмены (крестик) — находится СПРАВА от поля даты */
-.clear-date-btn {
-  background: #f1f5f9;
-  border: 1px solid #cbd5e1;
+  border-radius: 20px;
+  border: 1px dashed #cbd5e1;
   color: #64748b;
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: bold;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-}
-
-.clear-date-btn:hover {
-  background: #fee2e2;
-  border-color: #fca5a5;
-  color: #ef4444;
-}
-
-/* Блок тренеров */
-.trainer-filter-bar {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 0; /* Убрали лишний отступ */
-}
-/* Делаем кнопку относительной, чтобы точка позиционировалась внутри */
-.day-btn {
-  position: relative;
-}
-
-/* Зеленая точка-индикатор */
-.class-indicator-dot {
-  position: absolute;
-  top: 6px;
-  right: 8px;
-  width: 6px;
-  height: 6px;
-  background-color: #74b83b;
-  border-radius: 50%;
-  box-shadow: 0 0 4px rgba(116, 184, 59, 0.8);
-}
-
-/* Активная кнопка делает точку белой для контраста */
-.day-btn.active .class-indicator-dot {
-  background-color: #ffffff;
+  font-size: 14px;
 }

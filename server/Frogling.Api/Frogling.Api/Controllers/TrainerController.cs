@@ -83,5 +83,53 @@ namespace Frogling.Api.Controllers
             return Ok(schedule);
         }
 
+        // GET: api/trainer/profile (Получить данные текущего тренера)
+        [HttpGet("profile")]
+        public async Task<IActionResult> GetTrainerProfile()
+        {
+            var userId = GetCurrentUserId();
+            if (userId == null) return Unauthorized();
+
+            var trainer = await _context.Trainers.FirstOrDefaultAsync(t => t.UserId == userId.Value);
+            if (trainer == null) return NotFound(new { message = "Профиль не найден." });
+
+            return Ok(trainer);
+        }
+
+        // PUT: api/trainer/profile (Обновить данные тренера)
+        [HttpPut("profile")]
+        public async Task<IActionResult> UpdateTrainerProfile([FromBody] UpdateTrainerProfileDto dto)
+        {
+            var userId = GetCurrentUserId();
+            if (userId == null) return Unauthorized();
+
+            var trainer = await _context.Trainers.FirstOrDefaultAsync(t => t.UserId == userId.Value);
+            if (trainer == null) return NotFound(new { message = "Профиль тренера не найден." });
+
+            trainer.Name = dto.Name?.Trim() ?? trainer.Name;
+            trainer.Specialization = dto.Specialization?.Trim() ?? trainer.Specialization;
+            trainer.Experience = dto.Experience?.Trim() ?? trainer.Experience;
+            trainer.Education = dto.Education?.Trim() ?? trainer.Education;
+            trainer.Certificates = dto.Certificates?.Trim() ?? trainer.Certificates;
+            trainer.SportsСareer = dto.SportsCareer?.Trim() ?? trainer.SportsСareer;
+            trainer.SportsСategory = dto.SportsCategory?.Trim() ?? trainer.SportsСategory;
+            trainer.PhotoUrl = dto.PhotoUrl?.Trim() ?? trainer.PhotoUrl;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Профиль успешно сохранён!", trainer });
+        }
+
+    }
+    public class UpdateTrainerProfileDto
+    {
+        public string? Name { get; set; }
+        public string? Specialization { get; set; }
+        public string? Experience { get; set; }
+        public string? Education { get; set; }
+        public string? Certificates { get; set; }
+        public string? SportsCareer { get; set; }
+        public string? SportsCategory { get; set; }
+        public string? PhotoUrl { get; set; }
     }
 }
