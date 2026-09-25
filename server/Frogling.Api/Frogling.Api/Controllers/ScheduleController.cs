@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Frogling.Api.Data;
 using System.Globalization;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace Frogling.Api.Controllers
 {
@@ -50,5 +52,39 @@ namespace Frogling.Api.Controllers
 
             return Ok(result);
         }
+        // GET: api/schedule/{id}/attendees
+        [Authorize(Roles = "Admin,Trainer")] // Доступ только админу и тренерам
+        [HttpGet("{id}/attendees")]
+        public async Task<IActionResult> GetScheduleAttendees(int id)
+        {
+            var scheduleItem = await _context.ScheduleItems
+                .Include(s => s.Bookings)
+                    .ThenInclude(b => b.User)
+                .FirstOrDefaultAsync(s => s.Id == id);
+
+            if (scheduleItem == null)
+                return NotFound(new { message = "Занятие не найдено." });
+
+            var result = new
+            {
+                scheduleItem.Id,
+                scheduleItem.GroupName,
+                date = scheduleItem.StartAt.ToString("dd.MM.yyyy"),
+                startTime = scheduleItem.StartAt.ToString("HH:mm"),
+                endTime = scheduleItem.EndAt.ToString("HH:mm"),
+                attendees = scheduleItem.Bookings.Select(b => new
+                {
+                    bookingId = b.Id,
+                    userId = b.UserId,
+                    fullName = b.User?.FullName ?? "Неизвестный клиент",
+                    phone = b.User?.Phone ?? "",
+                    email = b.User?.Email ?? "",
+                    parentName = b.User?.ParentName ?? ""
+                })
+            };
+
+            return Ok(result);
+        }
+
     }
 }

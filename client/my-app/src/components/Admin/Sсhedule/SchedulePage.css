@@ -323,3 +323,37 @@
   color: #64748b;
   font-size: 14px;
 }
+
+.attendees-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+.attendee-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+.contact-pill {
+  background: #ffffff;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  text-decoration: none;
+  color: inherit;
+}
+.btn-remove-attendee {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  padding: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, User, Users, MapPin, Loader2, CheckCircle, Edit, X, Trash2, Plus } from 'lucide-react';
 import './SchedulePage.css';
+import ScheduleDetailsModal from './ScheduleDetailsModal';
 
 const DAYS = [
   'Все',
@@ -21,6 +22,7 @@ export default function SchedulePage() {
   const [selectedDate, setSelectedDate] = useState('');
   const [trainers, setTrainers] = useState([]);
   const [selectedTrainer, setSelectedTrainer] = useState('');
+  const [viewingDetailsId, setViewingDetailsId] = useState(null);
 
   // Состояния для редактирования и создания занятия
   const [editingItem, setEditingItem] = useState(null);
@@ -280,7 +282,7 @@ export default function SchedulePage() {
         </div>
       </div>
 
-      {/* Кнопка добавления занятия после фильтров */}
+      {/* Кнопка добавления занятия */}
       {isAdmin && (
         <div className="admin-add-section">
           <button
@@ -356,11 +358,20 @@ export default function SchedulePage() {
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
+
+                        <button 
+                          type="button"
+                          onClick={() => setViewingDetailsId(item.id)} // Открываем детали
+                          className="btn-action-icon view"
+                          title="Посмотреть записанных"
+                        >
+                          <Users className="w-4 h-4 text-emerald-600" />
+                        </button>
                       </div>
                     )}
                   </div>
 
-                  {/* Кнопка Записаться строго внизу на всю ширину */}
+                  {/* Кнопка Записаться */}
                   <button 
                     type="button"
                     onClick={() => handleBooking(item)}
@@ -450,6 +461,15 @@ export default function SchedulePage() {
             </form>
           </div>
         </div>
+      )}
+
+      {/* Модальное окно со списком участников занятия */}
+      {viewingDetailsId && (
+        <ScheduleDetailsModal 
+          scheduleItemId={viewingDetailsId} 
+          onClose={() => setViewingDetailsId(null)} 
+          isAdmin={isAdmin}
+        />
       )}
 
       {/* Модальное окно создания занятия */}
