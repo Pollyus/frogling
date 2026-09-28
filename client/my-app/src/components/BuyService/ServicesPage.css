@@ -655,3 +655,41 @@
   border-color: #94a3b8;
   transform: translateY(-1px);
 }
+.promo-card {
+  position: relative;
+  padding-top: 72px; /* место под кнопки и иконку; подстройте под разметку */
+}
+
+.promo-card-actions {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  gap: 8px;
+  z-index: 2;
+}
+
+.promo-card-actions button {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #cbd5e1;
+  border-radius: 11px;
+  background: #f8fafc;
+  color: #334155;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.promo-card-actions button:hover {
+  border-color: #74b83b;
+  color: #1a4314;
+  transform: translateY(-1px);
+}
+
+.promo-card-actions button:last-child {
+  color: #dc2626;
+  background: #fff7f7;
+  border-color: #fecaca;
+}

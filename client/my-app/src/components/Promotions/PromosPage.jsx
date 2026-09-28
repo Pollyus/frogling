@@ -43,7 +43,7 @@ export default function PromosPage() {
       setLoading(false);
     }
   }, [isAdmin]);
-
+  
   useEffect(() => {
     const userStr = localStorage.getItem('user');
     if (userStr) {
@@ -218,22 +218,12 @@ export default function PromosPage() {
 
                     {/* Разделенные кнопки редактирования и удаления без наложения */}
                     {isAdmin && (
-                      <div className="admin-card-buttons">
-                        <button
-                          type="button"
-                          onClick={() => handleOpenEdit(promo)}
-                          className="btn-action-icon edit"
-                          title="Редактировать"
-                        >
-                          <Edit className="w-4 h-4" />
+                      <div className="promo-card-actions">
+                        <button type="button" onClick={() => handleOpenEdit(promo)} aria-label="Редактировать">
+                          <Edit size={18} />
                         </button>
-                        <button
-                          type="button"
-                          onClick={() => handleDelete(promo.id)}
-                          className="btn-action-icon delete"
-                          title="Удалить"
-                        >
-                          <Trash2 className="w-4 h-4" />
+                        <button type="button" onClick={() => handleDelete(promo.id)} aria-label="Удалить">
+                          <Trash2 size={18} />
                         </button>
                       </div>
                     )}

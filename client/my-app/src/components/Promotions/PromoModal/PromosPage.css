@@ -83,9 +83,13 @@
 
 /* Блок кнопок действий в правом верхнем углу (БЕЗ наложения) */
 .admin-card-buttons {
+  position: absolute;
+  top: 16px;
+  right: 16px;
   display: flex;
   align-items: center;
-  gap: 8px; /* Расстояние между кнопками */
+  gap: 6px;
+  z-index: 10;
 }
 
 .btn-action-icon {
@@ -410,4 +414,238 @@
 .promo-modal-close:hover {
   background: #f1f5f9;
   color: #0f172a;
+}
+
+/* Позиционирование кнопок действий в правом верхнем углу карточки */
+.promo-card {
+  position: relative; /* Обязательно для абсолютного позиционирования кнопок */
+}
+
+.promo-card-actions {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 10;
+}
+
+.promo-action-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.promo-action-btn.edit {
+  background: #f1f5f9;
+  color: #334155;
+  border-color: #cbd5e1;
+}
+
+.promo-action-btn.edit:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.promo-action-btn.delete {
+  background: #fef2f2;
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
+.promo-action-btn.delete:hover {
+  background: #dc2626;
+  color: #ffffff;
+}
+
+/* Стили блока поиска и списка пользователей в модальном окне */
+/* Поле поиска пользователей */
+.user-search-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  background: #ffffff;
+  font-family: inherit;
+  font-size: 13px;
+  color: #0f172a;
+  outline: none;
+  margin-bottom: 10px;
+  transition: all 0.2s ease;
+}
+
+.user-search-input:focus {
+  border-color: #74b83b;
+  box-shadow: 0 0 0 3px rgba(116, 184, 59, 0.15);
+}
+
+/* Контейнер списка пользователей со стильной полосой прокрутки */
+.users-select-container {
+  max-height: 180px;
+  overflow-y: auto;
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  background: #f8fafc;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-sizing: border-box;
+}
+
+/* Красивая кастомная полоса прокрутки под стиль сайта Frogling */
+.users-select-container::-webkit-scrollbar,
+.modal-admin-card::-webkit-scrollbar {
+  width: 6px;
+}
+
+.users-select-container::-webkit-scrollbar-track,
+.modal-admin-card::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 8px;
+}
+
+.users-select-container::-webkit-scrollbar-thumb,
+.modal-admin-card::-webkit-scrollbar-thumb {
+  background: #74b83b;
+  border-radius: 8px;
+}
+
+.users-select-container::-webkit-scrollbar-thumb:hover,
+.modal-admin-card::-webkit-scrollbar-thumb:hover {
+  background: #559c25;
+}
+
+/* Карточка пользователя в списке (Имя слева, Чекбокс справа) */
+.user-select-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.user-select-info {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
+.user-select-name {
+  font-weight: 700;
+  color: #334155;
+  white-space: nowrap;
+}
+
+.user-select-email {
+  color: #64748b;
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-select-checkbox {
+  flex: 0 0 auto;
+  margin: 0;
+}
+@media (max-width: 520px) {
+  .user-select-info {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 2px;
+  }
+}
+
+/* Контейнер списка со скроллом на всю ширину формы */
+.users-select-container {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  max-height: 200px !important;
+  overflow-y: auto !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 14px !important;
+  background: #f8fafc !important;
+  padding: 8px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+}
+
+/* Строка пользователя: элементы слева и справа */
+.user-select-row {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 10px 14px !important;
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 10px !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+.user-select-row:hover {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+}
+
+.user-select-row.selected {
+  background: #f0fdf4 !important;
+  border-color: #74b83b !important;
+}
+
+/* Колонка текста (Имя и Email) */
+.user-text-col {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 2px !important;
+  min-width: 0 !important;
+  text-align: left !important;
+}
+
+.user-name-label {
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
+  text-transform: none !important;
+}
+
+.user-email-label {
+  font-size: 11px !important;
+  color: #64748b !important;
+  word-break: break-all !important;
+  text-transform: none !important;
+}
+
+/* ЧЕКБОКС: отменяем глобальный width: 100% */
+.user-checkbox-fixed {
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  max-width: 18px !important;
+  margin: 0 0 0 12px !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+  accent-color: #74b83b !important;
+  display: inline-block !important;
+  flex-shrink: 0 !important;
 }
