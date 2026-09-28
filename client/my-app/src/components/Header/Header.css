@@ -51,108 +51,204 @@
   margin-top: 5px; /* Добавляем небольшой отступ сверху от названия */
 }
 
+/* Единый современный стиль шапки сайта "Лягушонок" */
+.header-container {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: linear-gradient(to bottom, #7BA61F, rgba(255, 255, 255, 0.8));
+  /* box-shadow: 0 4px 20px rgba(45, 106, 27, 0.15); */
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+}
+
+.header-content {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+/* Логотип */
+.header-logo-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.header-logo-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.header-logo-group:hover .header-logo-icon {
+  transform: scale(1.06) rotate(-5deg);
+}
+
+.header-logo-text {
+  font-size: 22px;
+  font-weight: 800;
+  color: #1a4314;
+  letter-spacing: -0.02em;
+}
+
 /* Навигация */
 .header-nav {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 8px;
+  flex-wrap: nowrap;
 }
 
+/* Единый базовый стиль для ВСЕХ вкладок навигации */
 .nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #184112;
   text-decoration: none;
-  font-size: 13.5px;
-  font-weight: 600;
-  color: #1e3a17;
-  padding: 6px 4px;
-  transition: color 0.2s ease;
+  border-radius: 12px;
+  background: transparent;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  transition: all 0.2s ease;
 }
 
 .nav-link:hover {
-  color: #0d2309;
+  background: rgba(255, 255, 255, 0.25);
+  color: #0d2808;
+  transform: translateY(-1px);
 }
 
-.nav-link-login {
+.nav-link.active {
   background: #ffffff;
-  padding: 8px 18px;
-  border-radius: 9999px;
-  color: #2b6b1d;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  color: #1a4314;
+  box-shadow: 0 4px 12px rgba(26, 67, 20, 0.12);
 }
 
-/* Блок пользователя в шапке */
+/* Аккуратная вкладка "Админка" в едином размере и форме */
+.nav-link.nav-link-admin {
+  background: rgba(254, 242, 242, 0.9);
+  color: #b91c1c;
+  border: 1px solid rgba(252, 165, 165, 0.6);
+}
+
+.nav-link.nav-link-admin:hover {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.nav-link.nav-link-admin.active {
+  background: #ffffff;
+  color: #dc2626;
+  border-color: #fca5a5;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.15);
+}
+
+/* Правый блок пользователя */
 .user-nav-container {
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin-left: 8px;
+  gap: 10px;
+  margin-left: 12px;
+  flex-shrink: 0;
 }
 
 .user-profile-badge {
-  display: flex;
-  flex-direction: column;
+  display: inline-flex;
   align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.3);
+  padding: 5px 12px 5px 6px;
+  border-radius: 9999px;
   text-decoration: none;
-  gap: 2px;
-  transition: transform 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  transition: all 0.2s ease;
 }
 
 .user-profile-badge:hover {
+  background: rgba(255, 255, 255, 0.5);
   transform: translateY(-1px);
 }
 
 .user-mini-avatar {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #2d6a1b, #1e4b12);
+  background: #1a4314;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.role-avatar {
+  background: #047857;
 }
 
 .user-mini-name {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
-  color: #183d12;
-  max-width: 90px;
+  color: #1a4314;
+  max-width: 130px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.nav-link-admin {
-  background: #fef2f2 !important;
-  color: #dc2626 !important;
-  border: 1px solid #fecaca;
-  border-radius: 8px;
-  padding: 4px 10px !important;
-  font-weight: 700 !important;
-}
-
-.nav-link-admin:hover {
-  background: #fee2e2 !important;
-}
-
-
-/* Кнопка "Выйти" в шапке */
+/* Кнопка "Выйти" */
 .header-logout-button {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(239, 68, 68, 0.12);
+  padding: 8px 14px;
+  border-radius: 12px;
+  background: rgba(254, 242, 242, 0.85);
+  border: 1px solid rgba(252, 165, 165, 0.6);
   color: #991b1b;
-  border: 1px solid rgba(239, 68, 68, 0.25);
-  padding: 6px 12px;
-  border-radius: 10px;
-  font-size: 12px;
+  font-family: inherit;
+  font-size: 13px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .header-logout-button:hover {
-  background: rgba(239, 68, 68, 0.2);
+  background: #fee2e2;
   color: #7f1d1d;
-  border-color: rgba(239, 68, 68, 0.4);
+  transform: translateY(-1px);
+}
+
+/* Кнопка "Войти" для гостей */
+.nav-link-login {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 18px;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #1a4314;
+  font-size: 14px;
+  font-weight: 800;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(26, 67, 20, 0.12);
+  transition: all 0.2s ease;
+}
+
+.nav-link-login:hover {
+  transform: translateY(-1px);
+  background: #f8fafc;
 }

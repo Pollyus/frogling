@@ -1,22 +1,23 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Check, CreditCard, Droplet, Users, Star, X, Loader2, Plus, Trash2 } from 'lucide-react';
+import { Check, CreditCard, Droplet, Users, Star, X, Loader2, Plus, Trash2, Edit } from 'lucide-react';
 import './ServicesPage.css';
 import ServiceAddModal from './ServiceModal/ServiceAddModal';
+import ServiceEditModal from './ServiceModal/ServiceEditModal';
 
 const API_URL = 'https://localhost:7026/api';
 
 const getServiceIcon = (theme) => {
   switch (theme) {
-    case 'blue': return <Users className="w-6 h-6" />;
-    case 'amber': return <Star className="w-6 h-6" />;
-    default: return <Droplet className="w-6 h-6" />;
+    case 'blue': return <Users className="w-6 h-6 text-white" />;
+    case 'amber': return <Star className="w-6 h-6 text-white" />;
+    default: return <Droplet className="w-6 h-6 text-white" />;
   }
 };
 
 export default function ServicesPage() {
   const navigate = useNavigate();
-  const [services, setServices] = useState([]);
+  const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedSub, setSelectedSub] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -24,14 +25,14 @@ export default function ServicesPage() {
   const [isCreatingService, setIsCreatingService] = useState(false);
   const [promotions, setPromotions] = useState([]);
   const [selectedPromoId, setSelectedPromoId] = useState('');
+  const [editingPlan, setEditingPlan] = useState(null);
 
-  // ВЫНОСИМ ФУНКЦИЮ НАРУЖУ, чтобы она была доступна везде
   const fetchServices = useCallback(async () => {
     try {
       const response = await fetch(`${API_URL}/services`);
       if (!response.ok) throw new Error('Ошибка загрузки услуг');
       const data = await response.json();
-      setServices(data);
+      if (Array.isArray(data)) setPlans(data);
     } catch (err) {
       console.error('Ошибка:', err);
     } finally {
@@ -53,9 +54,8 @@ export default function ServicesPage() {
     }
   }, []);
 
-  // Загрузка акций
   useEffect(() => {
-    fetch(`${API_URL}/promotions`) // Замени на твой эндпоинт промоакций
+    fetch(`${API_URL}/promotions`)
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) setPromotions(data);
@@ -63,10 +63,42 @@ export default function ServicesPage() {
       .catch(err => console.error('Ошибка загрузки акций:', err));
   }, []);
 
+  const handleSavePlan = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('auth_token');
+
+    try {
+      const res = await fetch(`${API_URL}/admin/services/${editingPlan.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          title: editingPlan.title,
+          price: parseFloat(editingPlan.price) || 0,
+          lessonsCount: parseInt(editingPlan.lessonsCount) || 1,
+          durationDays: parseInt(editingPlan.durationDays) || 30,
+          description: editingPlan.description || '',
+          category: editingPlan.category || 'Разовые',
+          colorTheme: editingPlan.colorTheme || 'emerald'
+        })
+      });
+
+      if (!res.ok) throw new Error('Не удалось обновить услугу');
+
+      alert('Услуга успешно обновлена!');
+      setEditingPlan(null);
+      fetchServices();
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
   const handleDeleteService = async (e, id) => {
-    e.stopPropagation(); // ВАЖНО: предотвращаем открытие модалки оплаты при нажатии на корзину
+    e.stopPropagation();
     if (!window.confirm('Вы действительно хотите удалить эту услугу?')) return;
-    
+
     const token = localStorage.getItem('auth_token');
     try {
       const res = await fetch(`${API_URL}/admin/services/${id}`, {
@@ -74,8 +106,8 @@ export default function ServicesPage() {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {
-        alert('Услуга удалена!');
-        fetchServices(); // Теперь функция доступна
+        alert('Услуга успешно удалена!');
+        fetchServices();
       } else {
         alert('Ошибка при удалении на сервере');
       }
@@ -84,7 +116,11 @@ export default function ServicesPage() {
     }
   };
 
-    const handlePurchase = async () => {
+  const handleSelectPlan = (plan) => {
+    setSelectedSub(plan);
+  };
+
+  const handlePurchase = async () => {
     const token = localStorage.getItem('auth_token');
     if (!token) {
       alert('Для покупки абонемента необходимо войти в систему.');
@@ -101,38 +137,25 @@ export default function ServicesPage() {
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
-          title: selectedSub.title || selectedSub.name,
-          price: selectedSub.price,
-          totalLessons: selectedSub.lessonsCount || selectedSub.totalLessons,
-          daysValid: selectedSub.durationDays || 30,
-          promotionId: selectedPromoId ? parseInt(selectedPromoId) : null // Передаем ID акции
+          servicePlanId: selectedSub.id,
+          promotionId: selectedPromoId ? parseInt(selectedPromoId) : null
         }),
       });
 
-      if (!response.ok) throw new Error('Не удалось оформить покупку');
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || 'Не удалось оформить покупку');
 
-      alert(`Абонемент успешно оплачен!`);
+      alert(data.message || 'Абонемент успешно активирован!');
       setSelectedSub(null);
       setSelectedPromoId('');
       navigate('/profile');
     } catch (err) {
-      alert('Ошибка при оплате. Попробуйте еще раз.');
+      alert(err.message || 'Ошибка при оплате.');
     } finally {
       setIsProcessing(false);
     }
   };
 
-
-  if (loading) {
-    return (
-      <div className="services-loading">
-        <Loader2 className="w-8 h-8 animate-spin text-emerald-600" />
-        <p>Загрузка каталога услуг...</p>
-      </div>
-    );
-  } 
-
-  // Функция расчета цены с учетом выбранной акции
   const calculateFinalPrice = () => {
     if (!selectedSub) return 0;
     let price = selectedSub.price;
@@ -140,7 +163,6 @@ export default function ServicesPage() {
     if (selectedPromoId) {
       const promo = promotions.find(p => p.id === parseInt(selectedPromoId));
       if (promo) {
-        // Если скидка в рублях (promo.discountAmount) или процентах (promo.discountPercentage)
         if (promo.discountAmount) {
           price = Math.max(0, price - promo.discountAmount);
         } else if (promo.discountPercentage) {
@@ -151,131 +173,202 @@ export default function ServicesPage() {
     return price;
   };
 
-
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-[50vh]">
+        <Loader2 className="w-8 h-8 animate-spin text-emerald-600" />
+      </div>
+    );
+  }
 
   return (
-    <div className="services-container">
-      <div className="services-header">
-        <h1>Услуги и абонементы бассейна</h1>
-        <p>Выберите программу плавания для вашего ребенка</p>
+    <div className="services-page-container">
+      <div className="services-hero-header">
+        <h1>Услуги и абонементы</h1>
+        <p>Выберите подходящий формат занятий в бассейне «Лягушонок»</p>
       </div>
 
-      <div className="services-page">
-        {isAdmin && (
-          <div className="admin-add-section">
-            <button
-              type="button"
-              onClick={() => setIsCreatingService(true)}
-              className="btn-admin-add-big"
-            >
-              <Plus className="w-5 h-5" /> Добавить новую услугу
-            </button>
-          </div>
-        )}
-
-        <div className="subs-grid">
-          {services.map((sub) => (
-            <div 
-              key={sub.id} 
-              className={`sub-card border-${sub.colorTheme || 'emerald'}`}
-              onClick={() => setSelectedSub(sub)}
-            >
-              {/* Кнопка удаления для админа (с e.stopPropagation) */}
-              {isAdmin && (
-                <button 
-                  onClick={(e) => handleDeleteService(e, sub.id)}
-                  className="btn-delete-service"
-                  title="Удалить услугу"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              )}
-
-              <div className={`sub-card-icon bg-${sub.colorTheme || 'emerald'}`}>
-                {getServiceIcon(sub.colorTheme)}
-              </div>
-              
-              <h3 className="sub-card-title">{sub.title || sub.name}</h3>
-              <div className="sub-card-price">{sub.price.toLocaleString('ru-RU')} ₽</div>
-              <p className="sub-card-text">{sub.description}</p>
-              
-              <div className="sub-card-footer">
-                <span>
-                  <Check className="w-4 h-4" /> 
-                  {(sub.lessonsCount || sub.totalLessons)} 
-                  { (sub.lessonsCount || sub.totalLessons) === 1 ? ' занятие' : ' занятий'}
-                </span>
-                <button type="button" className="btn-buy-small">Выбрать</button>
-              </div>
-            </div>
-          ))}
+      {isAdmin && (
+        <div className="admin-add-section" style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
+          <button
+            type="button"
+            onClick={() => setIsCreatingService(true)}
+            className="btn-admin-add-big"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 24px', background: '#74b83b', color: 'white', borderRadius: '14px', fontWeight: '700', border: 'none', cursor: 'pointer' }}
+          >
+            <Plus className="w-5 h-5" /> Добавить новую услугу
+          </button>
         </div>
+      )}
 
-        {/* Модалка создания */}
-        {isCreatingService && (
-          <ServiceAddModal
-            onClose={() => setIsCreatingService(false)}
-            onSaveSuccess={() => {
-              setIsCreatingService(false);
-              fetchServices(); // Теперь работает
-            }}
-          />
-        )}
+      <div className="services-grid-layout">
+        {plans.map((plan) => {
+          const isFamily = plan.colorTheme === 'blue' || plan.title.toLowerCase().includes('семей');
+          const isAmber = plan.colorTheme === 'amber';
 
-        {/* Модалка покупки (обновленная) */}
-                {selectedSub && (
-          <div className="modal-overlay" onClick={() => !isProcessing && setSelectedSub(null)}>
-            <div className="purchase-modal" onClick={(e) => e.stopPropagation()}>
-              <button className="close-modal" onClick={() => setSelectedSub(null)} disabled={isProcessing}>
-                <X />
-              </button>
-              <div className="modal-content">
-                <CreditCard className="w-12 h-12 text-emerald-600 mb-4 mx-auto" />
-                <h2>Оформление абонемента</h2>
-                <p>Вы выбрали: <strong>«{selectedSub.title || selectedSub.name}»</strong></p>
-                <p className="modal-sub-details">
-                   Базовая цена: <strong>{selectedSub.price} ₽</strong>
-                </p>
+          let iconBg = 'icon-bg-emerald';
+          let borderTheme = 'border-emerald';
 
-                {/* ВЫБОР АКЦИИ / ПРОМОКОДА */}
-                {promotions.length > 0 && (
-                  <div className="form-group-admin" style={{ margin: '16px 0', textAlign: 'left' }}>
-                    <label style={{ fontSize: '12px', fontWeight: 'bold', color: '#64748b' }}>Применить акцию:</label>
-                    <select 
-                      className="select-bar" 
-                      style={{ width: '100%', marginTop: '6px' }}
-                      value={selectedPromoId}
-                      onChange={(e) => setSelectedPromoId(e.target.value)}
-                    >
-                      <option value="">Без акции (полная стоимость)</option>
-                      {promotions.map(promo => (
-                        <option key={promo.id} value={promo.id}>
-                          {promo.title} ({promo.discountAmount ? `-${promo.discountAmount}₽` : `-${promo.discountPercentage}%`})
-                        </option>
-                      ))}
-                    </select>
+          if (isFamily) {
+            iconBg = 'icon-bg-blue';
+            borderTheme = 'border-blue';
+          } else if (isAmber) {
+            iconBg = 'icon-bg-amber';
+            borderTheme = 'border-amber';
+          }
+
+          return (
+            <div key={plan.id} className={`service-plan-card ${borderTheme}`}>
+              <div className="service-card-body">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
+                  <div className={`service-plan-icon ${iconBg}`}>
+                    {getServiceIcon(plan.colorTheme)}
                   </div>
-                )}
 
-                {/* Итоговая цена */}
-                <div className="price-total" style={{ fontSize: '24px', fontWeight: 'bold', color: '#74b83b', margin: '15px 0' }}>
-                  Итого к оплате: {calculateFinalPrice()} ₽
+                  {isAdmin && (
+                    <button
+                      type="button"
+                      onClick={(e) => handleDeleteService(e, plan.id)}
+                      style={{ background: '#fef2f2', color: '#dc2626', border: '1px solid #fecaca', padding: '8px', borderRadius: '10px', cursor: 'pointer' }}
+                      title="Удалить услугу"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  )}
                 </div>
-                
-                <button 
-                  className="btn-confirm-purchase" 
-                  onClick={handlePurchase}
-                  disabled={isProcessing}
-                >
-                  {isProcessing ? 'Проведение оплаты...' : `Оплатить ${calculateFinalPrice()} ₽`}
-                </button>
-                <p className="secure-text">Безопасная оплата через шлюз Frogling</p>
+
+                <h3 className="service-plan-title">{plan.title}</h3>
+
+                <div className="service-plan-price">
+                  {plan.price > 0 ? (
+                    <>
+                      <span>{plan.price.toLocaleString('ru-RU')}</span> ₽
+                    </>
+                  ) : (
+                    <span className="text-free">Бесплатно</span>
+                  )}
+                </div>
+
+                <p className="service-plan-description">{plan.description}</p>
+              </div>
+
+              <div className="service-card-footer">
+                <div className="service-lessons-badge">
+                  <Check className="w-4 h-4 text-emerald-600" />
+                  <span>
+                    {plan.lessonsCount} {plan.lessonsCount === 1 ? 'занятие' : plan.lessonsCount < 5 ? 'занятия' : 'занятий'}
+                  </span>
+                </div>
+
+                {isAdmin ? (
+                  <button
+                    type="button"
+                    onClick={() => setEditingPlan(plan)}
+                    className="btn-plan-action btn-plan-edit"
+                  >
+                    <Edit className="w-4 h-4" />
+                    <span>Редактировать</span>
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => handleSelectPlan(plan)}
+                    className="btn-plan-action btn-plan-select"
+                  >
+                    Выбрать
+                  </button>
+                )}
               </div>
             </div>
-          </div>
-        )}
-
+          );
+        })}
       </div>
+
+      {isCreatingService && (
+        <ServiceAddModal
+          onClose={() => setIsCreatingService(false)}
+          onSaveSuccess={() => {
+            setIsCreatingService(false);
+            fetchServices();
+          }}
+        />
+      )}
+
+      {/* Вынесенная модалка редактирования */}
+      <ServiceEditModal
+        editingPlan={editingPlan}
+        setEditingPlan={setEditingPlan}
+        handleSavePlan={handleSavePlan}
+      />
+
+      {/* Модальное окно покупки (оформления) абонемента в едином стиле */}
+      {selectedSub && (
+        <div className="modal-admin-overlay" onClick={() => !isProcessing && setSelectedSub(null)}>
+          <div className="modal-admin-card" onClick={(e) => e.stopPropagation()}>
+            <button 
+              type="button"
+              className="absolute top-6 right-6 text-slate-400 hover:text-slate-600 bg-transparent border-0 cursor-pointer" 
+              onClick={() => setSelectedSub(null)}
+              disabled={isProcessing}
+            >
+              <X className="w-5 h-5" />
+            </button>
+            
+            <h2>Оформление абонемента</h2>
+            <p style={{ color: '#64748b', fontSize: '14px', marginBottom: '16px' }}>
+              Вы выбрали: <strong>«{selectedSub.title}»</strong>
+            </p>
+            <p style={{ color: '#334155', fontSize: '14px', marginBottom: '16px' }}>
+              Базовая цена: <strong>{selectedSub.price} ₽</strong>
+            </p>
+
+            {promotions.length > 0 && (
+              <div className="form-group-admin">
+                <label>Применить акцию</label>
+                <select
+                  value={selectedPromoId}
+                  onChange={(e) => setSelectedPromoId(e.target.value)}
+                  className="w-full p-3 border border-slate-300 rounded-xl bg-white"
+                >
+                  <option value="">Без акции (полная стоимость)</option>
+                  {promotions.map(promo => (
+                    <option key={promo.id} value={promo.id}>
+                      {promo.title} ({promo.discountAmount ? `-${promo.discountAmount}₽` : `-${promo.discountPercentage}%`})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            <div style={{ fontSize: '20px', fontWeight: '800', color: '#74b83b', margin: '20px 0' }}>
+              Итого к оплате: {calculateFinalPrice()} ₽
+            </div>
+
+            <div className="modal-actions">
+              <button 
+                type="button" 
+                className="btn-cancel-admin" 
+                onClick={() => setSelectedSub(null)}
+                disabled={isProcessing}
+              >
+                Отмена
+              </button>
+              <button 
+                type="button" 
+                className="btn-save-admin"
+                onClick={handlePurchase}
+                disabled={isProcessing}
+              >
+                {isProcessing ? 'Оплата...' : 'Оплатить'}
+              </button>
+            </div>
+            
+            <p className="secure-text" style={{ textAlign: 'center', fontSize: '11px', color: '#94a3b8', marginTop: '16px' }}>
+              Безопасная оплата через шлюз Frogling
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

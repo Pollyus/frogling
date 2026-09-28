@@ -120,7 +120,7 @@ namespace Frogling.Api.Controllers
                     // finalPrice = dto.Price - (dto.Price * promo.DiscountPercentage / 100);
 
                     // Или если фиксированная скидка:
-                    finalPrice = Math.Max(0, dto.Price - promo.DiscountAmount);
+                    finalPrice = Math.Max(0, (decimal)(dto.Price - promo.DiscountAmount));
                 }
             }
 

@@ -259,6 +259,45 @@ namespace Frogling.Api.Controllers
             return Ok(new { message = "Услуга успешно удалена." });
         }
 
+        [HttpPut("services/{id:int}")]
+        public async Task<IActionResult> UpdateServicePlan(int id, [FromBody] UpdateServicePlanDto dto)
+        {
+            var plan = await _context.ServicePlans.FindAsync(id);
+            if (plan == null)
+                return NotFound(new { message = "Услуга не найдена." });
+
+            if (string.IsNullOrWhiteSpace(dto.Title))
+                return BadRequest(new { message = "Название услуги не может быть пустым." });
+
+            plan.Title = dto.Title.Trim();
+            plan.Price = dto.Price >= 0 ? dto.Price : plan.Price;
+            plan.LessonsCount = dto.LessonsCount > 0 ? dto.LessonsCount : plan.LessonsCount;
+            plan.DurationDays = dto.DurationDays > 0 ? dto.DurationDays : plan.DurationDays;
+            plan.Description = dto.Description?.Trim() ?? string.Empty;
+            plan.Category = dto.Category?.Trim() ?? "Разовые";
+            plan.ColorTheme = dto.ColorTheme?.Trim() ?? "emerald";
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Карточка услуги успешно обновлена!", plan });
+        }
+
+        // GET: api/admin/users (Получить всех пользователей для выбора в персональных акциях)
+        [Authorize(Roles = "Admin")]
+        [HttpGet("users")]
+        public async Task<IActionResult> GetAllUsersForAdmin()
+        {
+            var users = await _context.Users
+                .Select(u => new
+                {
+                    u.Id,
+                    u.FullName,
+                    u.Email
+                })
+                .ToListAsync();
+
+            return Ok(users);
+        }
     }
 
     public class UpdateUserAdminDto
@@ -267,6 +306,17 @@ namespace Frogling.Api.Controllers
         public string Phone { get; set; } = string.Empty;
         public string ParentName { get; set; } = string.Empty;
         public DateTime? MedicalCheckDate { get; set; }
+    }
+
+    public class UpdateServicePlanDto
+    {
+        public string Title { get; set; } = string.Empty;
+        public decimal Price { get; set; }
+        public int LessonsCount { get; set; }
+        public int DurationDays { get; set; }
+        public string Description { get; set; } = string.Empty;
+        public string Category { get; set; } = "Разовые";
+        public string ColorTheme { get; set; } = "emerald";
     }
 
     public class AdminBookDto

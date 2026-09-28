@@ -14,7 +14,7 @@ namespace Frogling.Api.Data
         public DbSet<ChatMessage> ChatMessages { get; set; } = null!;
         public DbSet<ScheduleItem> ScheduleItems { get; set; } = null!;
         public DbSet<Booking> Bookings { get; set; } = null!;
-        public DbSet<Promotion> Promotions { get; set; }
+        public DbSet<Promotion> Promotions { get; set; } = null!;
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

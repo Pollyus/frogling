@@ -13,7 +13,7 @@ import TrainersCarousel from '../TrainersCarousel/TrainersCarousel';
 import LessonsList from '../Lessons/LessonsList';
 import FirstLessonRequirements from '../FirstLessonRequirements/FirstLessonRequirements';
 import ProductsList from '../Products/ProductsList';
-import Promotions from '../Promotions/Promotions';
+// import Promotions from '../Promotions/Promotions';
 import SocialLinks from '../SocialLinks/SocialLinks';
 import PhotoSlider from '../PhotoSlider/PhotoSlider';
 import VideoPlay from '../VideoPlay/VideoPlay';
@@ -24,6 +24,7 @@ import MainLayout from '../Login/MainLayout';
 import Service from '../BuyService/ServicesPage';
 import AdminPanel from '../Admin/AdminPanel';
 import TrainerCabinet from '../TrainersCabinet/TrainerCabinet';
+import Promotions from '../Promotions/PromosPage';
 
 
 function App() {

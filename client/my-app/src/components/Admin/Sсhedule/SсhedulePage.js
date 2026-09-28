@@ -374,14 +374,16 @@ export default function SchedulePage() {
                   </div>
 
                   {/* Кнопка Записаться */}
-                  <button 
-                    type="button"
-                    onClick={() => handleBooking(item)}
-                    disabled={freeSlots <= 0}
-                    className={`btn-book-slot ${freeSlots <= 0 ? 'disabled' : ''}`}
-                  >
-                    {freeSlots > 0 ? 'Записаться' : 'Мест нет'}
-                  </button>
+                  {!isAdmin && (
+                    <button 
+                      type="button"
+                      onClick={() => handleBooking(item)}
+                      disabled={freeSlots <= 0}
+                      className={`btn-book-slot ${freeSlots <= 0 ? 'disabled' : ''}`}
+                    >
+                      {freeSlots > 0 ? 'Записаться' : 'Мест нет'}
+                    </button>
+                  )}
                 </div>
               </div>
             );
