@@ -1,4 +1,6 @@
-﻿namespace Frogling.Api.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Frogling.Api.Models
 {
     public class User
     {

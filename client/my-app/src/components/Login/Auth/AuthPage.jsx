@@ -12,6 +12,10 @@ export default function AuthPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [notification, setNotification] = useState(null);
+  const [rememberMe, setRememberMe] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+
 
   // Данные формы
   const [formData, setFormData] = useState({
@@ -75,59 +79,64 @@ export default function AuthPage() {
     setIsLoading(true);
     setNotification(null);
 
-    const endpoint = isLogin ? `${API_BASE_URL}/login` : `${API_BASE_URL}/register`;
+    const endpoint = isLogin
+      ? `${API_BASE_URL}/login`
+      : `${API_BASE_URL}/register`;
 
     const payload = isLogin
-      ? { email: formData.email, password: formData.password }
-      : { fullName: formData.fullName, email: formData.email, password: formData.password };
+      ? {
+          email: formData.email,
+          password: formData.password,
+          rememberMe
+        }
+      : {
+          fullName: formData.fullName,
+          email: formData.email,
+          password: formData.password
+        };
 
     try {
       const response = await fetch(endpoint, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
       });
 
-      const data = await response.json();
+      const data = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        throw new Error(data.message || 'Произошла ошибка при авторизации.');
+        throw new Error(
+          data.message || 'Неверный email или пароль. Проверьте данные и попробуйте снова.'
+        );
       }
 
-      // Сохраняем полученный JWT токен и данные пользователя
       localStorage.setItem('auth_token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
 
       setNotification({
         type: 'success',
-        message: isLogin ? 'Успешный вход! Перенаправление...' : 'Регистрация успешна! Добро пожаловать!'
+        message: isLogin
+          ? 'Успешный вход! Перенаправление...'
+          : 'Регистрация успешна! Добро пожаловать!'
       });
 
-      // Проверяем роль и перенаправляем в нужный кабинет через 800 мс
       const userRole = data.user.role || data.user.Role;
 
       setTimeout(() => {
-        if (userRole === 'Trainer') {
-          navigate('/trainer-cabinet', { replace: true });
-        } else if (userRole === 'Admin') {
-          navigate('/admin', { replace: true });
-        } else {
-          navigate('/profile', { replace: true });
-        }
+        if (userRole === 'Trainer') navigate('/trainer-cabinet', { replace: true });
+        else if (userRole === 'Admin') navigate('/admin', { replace: true });
+        else navigate('/profile', { replace: true });
       }, 800);
-
     } catch (err) {
-      console.error('Ошибка сети/авторизации:', err);
       setNotification({
         type: 'error',
-        message: err.message || 'Не удалось подключиться к серверу API'
+        message: err.message || 'Ошибка входа.'
       });
     } finally {
       setIsLoading(false);
     }
   };
+
 
   return (
     <div className="auth-container min-h-screen bg-slate-950 text-white flex items-center justify-center p-4 relative overflow-hidden">
@@ -205,7 +214,11 @@ export default function AuthPage() {
                 className={`auth-input w-full pl-10 pr-10 py-3 bg-slate-950 border ${errors.email ? 'error border-red-500' : 'border-slate-800 focus:border-emerald-500'} rounded-xl text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 transition`}
               />
             </div>
-            {errors.email && <p className="error-text text-xs text-red-400 mt-1 flex items-center gap-1"><AlertCircle className="w-3 h-3" />{errors.email}</p>}
+            {errorMessage && (
+              <div className="login-error" role="alert">
+                {errorMessage}
+              </div>
+            )}
           </div>
 
           <div className="form-group">
@@ -259,10 +272,25 @@ export default function AuthPage() {
           )}
 
           {isLogin ? (
-            <label className="checkbox-label flex items-center gap-2 text-sm text-slate-400 cursor-pointer">
-              <input type="checkbox" name="rememberMe" checked={formData.rememberMe} onChange={handleInputChange} className="rounded bg-slate-950 border-slate-800 text-emerald-500 focus:ring-0" />
-              <span>Запомнить меня</span>
-            </label>
+            <div className="login-options">
+              <label className="remember-me">
+                <input
+                  type="checkbox"
+                  name="rememberMe"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                />
+                <span>Запомнить меня</span>
+              </label>
+
+              <button
+                type="button"
+                className="forgot-password-link"
+                onClick={() => setShowForgotPassword(true)}
+              >
+                Забыли пароль?
+              </button>
+            </div>
           ) : (
             <label className="checkbox-label flex items-start gap-2 text-xs text-slate-400 cursor-pointer">
               <input type="checkbox" name="agreeTerms" checked={formData.agreeTerms} onChange={handleInputChange} className="rounded bg-slate-950 border-slate-800 text-emerald-500 focus:ring-0 mt-0.5" />

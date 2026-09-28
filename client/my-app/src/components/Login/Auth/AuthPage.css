@@ -261,3 +261,92 @@ p {
 .divider span {
   padding: 0 10px;
 }
+
+.login-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 12px 0 18px;
+  font-size: 13px;
+}
+
+.remember-me {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #475569;
+  cursor: pointer;
+}
+
+.remember-me input {
+  width: 17px;
+  height: 17px;
+  margin: 0;
+  accent-color: #74b83b;
+  flex: 0 0 auto;
+}
+
+.forgot-password-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #4b8b20;
+  font: inherit;
+  cursor: pointer;
+}
+
+.forgot-password-link:hover {
+  color: #1a4314;
+  text-decoration: underline;
+}
+
+.login-error {
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 13px;
+}
+.login-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 8px 0 16px;
+}
+
+.remember-me {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #e2e8f0;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.remember-me input {
+  display: block;
+  width: 17px;
+  height: 17px;
+  margin: 0;
+  flex: 0 0 17px;
+  accent-color: #7BA61F;
+}
+
+.forgot-password-link {
+  padding: 4px 0;
+  border: 0;
+  background: transparent;
+  color: #b8dc77;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.forgot-password-link:hover {
+  color: #d6f5a4;
+  text-decoration: underline;
+}

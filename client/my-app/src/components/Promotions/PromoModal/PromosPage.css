@@ -77,9 +77,71 @@
   box-shadow: 0 5px 12px rgba(15, 23, 42, 0.08);
 }
 
-.icon-bg-emerald { background: linear-gradient(135deg, #81c784, #5da96b); }
-.icon-bg-blue { background: linear-gradient(135deg, #78a9e8, #5d8fd4); }
-.icon-bg-amber { background: linear-gradient(135deg, #edbd69, #d9a649); }
+/* Яркие, насыщенные цвета иконок */
+.icon-bg-emerald {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+  color: #ffffff !important;
+}
+
+.icon-bg-blue {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+  color: #ffffff !important;
+}
+
+.icon-bg-amber {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+  color: #ffffff !important;
+}
+
+/* Иконки внутри плашек всегда яркие белые */
+.service-plan-icon svg,
+.sub-card-icon svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+}
+
+/* Сочные границы карточек при наведении и по умолчанию */
+.service-plan-card.border-emerald,
+.sub-card.border-emerald {
+  border-color: #86efac;
+}
+.service-plan-card.border-emerald:hover,
+.sub-card.border-emerald:hover {
+  border-color: #10b981;
+}
+
+.service-plan-card.border-blue,
+.sub-card.border-blue {
+  border-color: #93c5fd;
+}
+.service-plan-card.border-blue:hover,
+.sub-card.border-blue:hover {
+  border-color: #3b82f6;
+}
+
+.service-plan-card.border-amber,
+.sub-card.border-amber {
+  border-color: #fde68a;
+}
+.service-plan-card.border-amber:hover,
+.sub-card.border-amber:hover {
+  border-color: #f59e0b;
+}
+
+/* Яркая цена */
+.service-plan-price {
+  color: #0f172a;
+}
+.border-amber .service-plan-price {
+  color: #d97706 !important;
+}
+.border-emerald .service-plan-price {
+  color: #059669 !important;
+}
+.border-blue .service-plan-price {
+  color: #2563eb !important;
+}
+
 
 /* Блок кнопок действий в правом верхнем углу (БЕЗ наложения) */
 .admin-card-buttons {
@@ -648,4 +710,59 @@
   accent-color: #74b83b !important;
   display: inline-block !important;
   flex-shrink: 0 !important;
+}
+
+/* Нужен внутренний отступ, чтобы скроллбар не упирался в содержимое */
+.modal-admin-card,
+.promo-modal-card {
+  box-sizing: border-box;
+  padding-right: 30px !important;
+  scrollbar-width: thin;
+  scrollbar-color: #74b83b transparent;
+}
+
+/* Скроллбар основного окна */
+.modal-admin-card::-webkit-scrollbar,
+.promo-modal-card::-webkit-scrollbar {
+  width: 5px;
+}
+
+.modal-admin-card::-webkit-scrollbar-track,
+.promo-modal-card::-webkit-scrollbar-track {
+  background: transparent;
+  margin-block: 14px;
+}
+
+.modal-admin-card::-webkit-scrollbar-thumb,
+.promo-modal-card::-webkit-scrollbar-thumb {
+  background: #74b83b;
+  border-radius: 999px;
+}
+
+/* Скроллбар списка найденных пользователей */
+.users-select-container {
+  box-sizing: border-box;
+  padding-right: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: #74b83b transparent;
+}
+
+.users-select-container::-webkit-scrollbar {
+  width: 4px;
+}
+
+.users-select-container::-webkit-scrollbar-track {
+  background: transparent;
+  margin-block: 5px;
+}
+
+.users-select-container::-webkit-scrollbar-thumb {
+  background: #74b83b;
+  border-radius: 999px;
+}
+
+.users-select-container::-webkit-scrollbar-thumb:hover,
+.modal-admin-card::-webkit-scrollbar-thumb:hover,
+.promo-modal-card::-webkit-scrollbar-thumb:hover {
+  background: #559c25;
 }

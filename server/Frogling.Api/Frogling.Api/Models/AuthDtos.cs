@@ -26,6 +26,7 @@ namespace Frogling.Api.Models
 
         [Required(ErrorMessage = "Пароль обязателен")]
         public string Password { get; set; } = string.Empty;
+        public bool RememberMe { get; set; }
     }
 
     // Ответ сервера при успехе

@@ -87,7 +87,7 @@ namespace Frogling.Api.Controllers
             }
 
             // 3. Генерируем токен
-            var token = GenerateJwtToken(user);
+            var token = GenerateJwtToken(user, dto.RememberMe);
 
             return Ok(new AuthResponseDto
             {
@@ -102,7 +102,7 @@ namespace Frogling.Api.Controllers
             });
         }
 
-        private string GenerateJwtToken(User user)
+        private string GenerateJwtToken(User user, bool rememberMe = false)
         {
             var jwtSettings = _config.GetSection("JwtSettings");
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]!));
@@ -115,6 +115,10 @@ namespace Frogling.Api.Controllers
                 new Claim("FullName", user.FullName),
                 new Claim(ClaimTypes.Role, string.IsNullOrEmpty(user.Role) ? "User" : user.Role)
             };
+
+            var expiryDays = rememberMe
+                ? double.Parse(jwtSettings["RememberMeExpiryDays"] ?? "30")
+                : double.Parse(jwtSettings["ExpiryDays"]!);
 
             var token = new JwtSecurityToken(
                 issuer: jwtSettings["Issuer"],
