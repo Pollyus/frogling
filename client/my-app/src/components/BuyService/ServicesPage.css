@@ -203,6 +203,165 @@
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   position: relative;
 }
+.modal-admin-overlay,
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(31, 41, 55, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.modal-admin-card,
+.purchase-modal {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  max-height: min(90vh, 850px);
+  overflow-y: auto;
+  padding: 32px 28px 28px;
+  border: 1px solid #e5e9ec;
+  border-radius: 26px;
+  background: #ffffff;
+  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.18);
+  text-align: left;
+}
+
+/* Шапка модального окна с заголовком и круглым крестиком */
+.modal-admin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+
+.modal-admin-header h2 {
+  margin: 0;
+  color: #172554;
+  font-size: 23px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+/* Круглая кнопка закрытия [X] в стиле Рис. 1 */
+.btn-modal-close-round,
+.close-modal {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #eff4fa;
+  border: none;
+  color: #475569;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.btn-modal-close-round:hover,
+.close-modal:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+  transform: scale(1.05);
+}
+
+/* Поля формы модального окна */
+.form-group-admin {
+  margin-bottom: 16px;
+}
+
+.form-group-admin label {
+  display: block;
+  margin-bottom: 7px;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Стиль для ВСЕХ инпутов, селектов и текстареа */
+.form-group-admin input,
+.form-group-admin select,
+.form-group-admin textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 16px;
+  border: 1px solid #dce3eb;
+  border-radius: 14px;
+  background: #fbfcfd;
+  color: #1e293b;
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.form-group-admin input:focus,
+.form-group-admin select:focus,
+.form-group-admin textarea:focus {
+  border-color: #74b83b;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(116, 184, 59, 0.15);
+}
+
+.form-group-admin textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Кнопки внизу (Отмена / Сохранить) */
+.modal-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.btn-cancel-admin,
+.btn-save-admin {
+  min-height: 46px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 14px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.btn-cancel-admin {
+  background: #f1f5f9;
+  color: #334155;
+}
+
+.btn-cancel-admin:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.btn-save-admin {
+  background: #74b83b;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(116, 184, 59, 0.25);
+}
+
+.btn-save-admin:hover {
+  background: #559c25;
+  box-shadow: 0 6px 16px rgba(116, 184, 59, 0.35);
+}
+
 
 .payment-title {
   font-size: 20px;

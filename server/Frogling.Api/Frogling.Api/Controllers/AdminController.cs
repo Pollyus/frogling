@@ -6,9 +6,9 @@ using Frogling.Api.Models;
 
 namespace Frogling.Api.Controllers
 {
-    [Authorize(Roles = "Admin")] // Доступ строго для Администраторов
+    [Authorize(Roles = "Admin")]
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/admin")]
     public class AdminController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -18,164 +18,143 @@ namespace Frogling.Api.Controllers
             _context = context;
         }
 
-        // 1. Получить список всех клиентов
+        // GET: api/admin/users
         [HttpGet("users")]
-        public async Task<IActionResult> GetAllUsers()
+        public async Task<IActionResult> GetAllUsersForAdmin()
         {
             var users = await _context.Users
-                .Where(u => u.Role != "Admin")
                 .Select(u => new
                 {
                     u.Id,
                     u.FullName,
                     u.Email,
-                    u.Phone,
-                    u.ParentName,
+                    u.Role,
                     u.MedicalCheckDate,
-                    u.IsMedicalCheckValid,
-                    ActiveSubscription = u.Subscriptions
-                        .Where(s => s.IsActive && s.RemainingLessons > 0)
-                        .Select(s => s.Title)
-                        .FirstOrDefault()
+                    u.Phone,
+                    u.ParentName
                 })
                 .ToListAsync();
 
             return Ok(users);
         }
 
-        // 2. Изменить информацию о клиенте / статус медосмотра
-        [HttpPut("users/{userId}")]
-        public async Task<IActionResult> UpdateUserByAdmin(Guid userId, [FromBody] UpdateUserAdminDto dto)
+        // PUT: api/admin/users/{id}/medical-check
+        [HttpPut("users/{id:guid}/medical-check")]
+        public async Task<IActionResult> UpdateMedicalCheck(Guid id, [FromBody] UpdateMedicalCheckDto dto)
         {
-            var user = await _context.Users.FindAsync(userId);
-            if (user == null) return NotFound(new { message = "Пользователь не найден." });
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+                return NotFound(new { message = "Пользователь не найден." });
 
-            user.FullName = dto.FullName?.Trim() ?? string.Empty;
-            user.Phone = dto.Phone?.Trim() ?? string.Empty;
-            user.ParentName = dto.ParentName?.Trim() ?? string.Empty;
-            if (dto.MedicalCheckDate.HasValue)
-            {
-                user.MedicalCheckDate = dto.MedicalCheckDate.Value.ToUniversalTime();
-            }
-            else
-            {
-                user.MedicalCheckDate = null;
-            }
-
+            user.MedicalCheckDate = dto.MedicalCheckDate?.ToUniversalTime() ?? DateTime.UtcNow;
             await _context.SaveChangesAsync();
-            return Ok(new
-            {
-                message = "Данные успешно обновлены",
-                user.MedicalCheckDate,
-                user.IsMedicalCheckValid
-            });
+
+            return Ok(new { message = "Дата медосмотра успешно обновлена!", user.MedicalCheckDate });
         }
 
-        // 3. Записать клиента на занятие от имени админа
-        [HttpPost("bookings")]
-        public async Task<IActionResult> AdminBookLesson([FromBody] AdminBookDto dto)
+        // GET: api/admin/promotions
+        [HttpGet("promotions")]
+        public async Task<IActionResult> GetAllPromotions()
         {
-            var user = await _context.Users.Include(u => u.Subscriptions).FirstOrDefaultAsync(u => u.Id == dto.UserId);
-            var scheduleItem = await _context.ScheduleItems.FindAsync(dto.ScheduleItemId);
+            var promos = await _context.Promotions.ToListAsync();
+            return Ok(promos);
+        }
 
-            if (user == null || scheduleItem == null)
-                return NotFound(new { message = "Клиент или занятие не найдены." });
+        // POST: api/admin/promotions
+        [HttpPost("promotions")]
+        public async Task<IActionResult> CreatePromotion([FromBody] UpdatePromotionDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.Title))
+                return BadRequest(new { message = "Название акции обязательно." });
 
-            if (scheduleItem.AvailableSlots <= 0)
-                return BadRequest(new { message = "Нет свободных мест." });
+            var targetIds = dto.TargetUserIds != null && dto.TargetUserIds.Any()
+                ? string.Join(",", dto.TargetUserIds.Where(id => !string.IsNullOrWhiteSpace(id)))
+                : null;
 
-            var activeSub = user.Subscriptions
-                .FirstOrDefault(s => s.IsActive && s.RemainingLessons > 0 && s.ExpiryDate > DateTime.UtcNow);
-
-            if (activeSub == null)
-                return BadRequest(new { message = "У клиента нет активного абонемента с занятиями." });
-
-            activeSub.RemainingLessons--;
-            scheduleItem.AvailableSlots--;
-
-            var booking = new Booking
+            var promo = new Promotion
             {
-                UserId = user.Id,
-                ScheduleItemId = scheduleItem.Id,
-                SubscriptionId = activeSub.Id,
-                ScheduledAt = scheduleItem.StartAt,
-                BookedAt = DateTime.UtcNow
+                Title = dto.Title.Trim(),
+                Description = dto.Description?.Trim() ?? string.Empty,
+                DiscountAmount = dto.DiscountAmount,
+                DiscountPercentage = dto.DiscountPercentage,
+                TargetUserIds = targetIds,
+                ColorTheme = string.IsNullOrWhiteSpace(dto.ColorTheme) ? "emerald" : dto.ColorTheme.Trim(),
+                IsActive = dto.IsActive
             };
 
-            _context.Bookings.Add(booking);
+            _context.Promotions.Add(promo);
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Клиент успешно записан на занятие!" });
+            return Ok(new { message = "Акция успешно создана!", promo });
         }
 
-        // 4. Отменить запись клиента
-        [HttpDelete("bookings/{bookingId}")]
-        public async Task<IActionResult> AdminCancelBooking(int bookingId)
+        // PUT: api/admin/promotions/{id}
+        [HttpPut("promotions/{id:int}")]
+        public async Task<IActionResult> UpdatePromotion(int id, [FromBody] UpdatePromotionDto dto)
         {
-            var booking = await _context.Bookings
-                .Include(b => b.ScheduleItem)
-                .Include(b => b.Subscription)
-                .FirstOrDefaultAsync(b => b.Id == bookingId);
+            var promo = await _context.Promotions.FindAsync(id);
+            if (promo == null)
+                return NotFound(new { message = "Акция не найдена." });
 
-            if (booking == null) return NotFound(new { message = "Запись не найдена." });
+            if (string.IsNullOrWhiteSpace(dto.Title))
+                return BadRequest(new { message = "Название акции обязательно." });
 
-            if (booking.ScheduleItem != null)
-                booking.ScheduleItem.AvailableSlots++;
+            var targetIds = dto.TargetUserIds != null && dto.TargetUserIds.Any()
+                ? string.Join(",", dto.TargetUserIds.Where(id => !string.IsNullOrWhiteSpace(id)))
+                : null;
 
-            if (booking.Subscription != null && booking.Subscription.RemainingLessons < booking.Subscription.TotalLessons)
-                booking.Subscription.RemainingLessons++;
+            promo.Title = dto.Title.Trim();
+            promo.Description = dto.Description?.Trim() ?? string.Empty;
+            promo.DiscountAmount = dto.DiscountAmount;
+            promo.DiscountPercentage = dto.DiscountPercentage;
+            promo.TargetUserIds = targetIds;
+            promo.ColorTheme = string.IsNullOrWhiteSpace(dto.ColorTheme) ? "emerald" : dto.ColorTheme.Trim();
+            promo.IsActive = dto.IsActive;
 
-            _context.Bookings.Remove(booking);
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Запись отменена администратором." });
+            return Ok(new { message = "Акция успешно обновлена!", promo });
         }
 
-        [Authorize(Roles = "Admin")]
-        [HttpPut("schedule/{id}")]
-        public async Task<IActionResult> UpdateScheduleItem(int id, [FromBody] UpdateScheduleDto dto)
+        // DELETE: api/admin/promotions/{id}
+        [HttpDelete("promotions/{id:int}")]
+        public async Task<IActionResult> DeletePromotion(int id)
         {
-            var scheduleItem = await _context.ScheduleItems.FindAsync(id);
-            if (scheduleItem == null)
-                return NotFound(new { message = "Занятие в расписании не найдено." });
+            var promo = await _context.Promotions.FindAsync(id);
+            if (promo == null)
+                return NotFound(new { message = "Акция не найдена." });
 
-            // Обновляем данные
-            if (!string.IsNullOrWhiteSpace(dto.GroupName))
-                scheduleItem.GroupName = dto.GroupName.Trim();
-            if (dto.StartAt.HasValue)
-            {
-                var dt = dto.StartAt.Value;
-                // Записываем ровно то время, которое ввел пользователь
-                scheduleItem.StartAt = new DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, 0, DateTimeKind.Utc);
-            }
-            if (dto.DurationMinutes > 0)
-                scheduleItem.DurationMinutes = dto.DurationMinutes;
-            if (dto.TrainerId > 0)
-            {
-                bool trainerExists = await _context.Trainers.AnyAsync(t => t.Id == dto.TrainerId);
-                if (trainerExists)
-                    scheduleItem.TrainerId = dto.TrainerId;
-            }
-            if (dto.AvailableSlots >= 0)
-                scheduleItem.AvailableSlots = dto.AvailableSlots;
-
+            _context.Promotions.Remove(promo);
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Расписание успешно обновлено!" });
+            return Ok(new { message = "Акция удалена." });
         }
 
-        // POST: api/admin/schedule (Создать новое занятие)
-        [Authorize(Roles = "Admin")]
+        // Управление услугами и расписанием
+        [HttpPut("services/{id:int}")]
+        public async Task<IActionResult> UpdateServicePlan(int id, [FromBody] UpdateServicePlanDto dto)
+        {
+            var plan = await _context.ServicePlans.FindAsync(id);
+            if (plan == null) return NotFound(new { message = "Услуга не найдена." });
+
+            plan.Title = dto.Title.Trim();
+            plan.Price = dto.Price >= 0 ? dto.Price : plan.Price;
+            plan.LessonsCount = dto.LessonsCount > 0 ? dto.LessonsCount : plan.LessonsCount;
+            plan.DurationDays = dto.DurationDays > 0 ? dto.DurationDays : plan.DurationDays;
+            plan.Description = dto.Description?.Trim() ?? string.Empty;
+            plan.Category = dto.Category?.Trim() ?? "Разовые";
+            plan.ColorTheme = dto.ColorTheme?.Trim() ?? "emerald";
+
+            await _context.SaveChangesAsync();
+            return Ok(new { message = "Карточка услуги успешно обновлена!", plan });
+        }
+
         [HttpPost("schedule")]
         public async Task<IActionResult> CreateScheduleItem([FromBody] UpdateScheduleDto dto)
         {
-            if (string.IsNullOrWhiteSpace(dto.GroupName))
-                return BadRequest(new { message = "Название группы обязательно." });
+            if (string.IsNullOrWhiteSpace(dto.GroupName) || !dto.StartAt.HasValue)
+                return BadRequest(new { message = "Заполните название и дату начала." });
 
-            if (!dto.StartAt.HasValue)
-                return BadRequest(new { message = "Укажите дату и время начала занятия." });
-
-            // Фиксируем точные часы и минуты без сдвига часовых поясов
             var dt = dto.StartAt.Value;
             var exactStartAt = new DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, 0, DateTimeKind.Utc);
 
@@ -191,121 +170,55 @@ namespace Frogling.Api.Controllers
             _context.ScheduleItems.Add(scheduleItem);
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Занятие успешно создано в расписании!" });
+            return Ok(new { message = "Занятие создано.", scheduleItem.Id });
         }
 
-        // DELETE: api/admin/schedule/{id}
+        [HttpPut("schedule/{id:int}")]
+        public async Task<IActionResult> UpdateScheduleItem(int id, [FromBody] UpdateScheduleDto dto)
+        {
+            var scheduleItem = await _context.ScheduleItems.FindAsync(id);
+            if (scheduleItem == null) return NotFound(new { message = "Занятие не найдено." });
+
+            var dt = dto.StartAt.Value;
+            scheduleItem.GroupName = dto.GroupName.Trim();
+            scheduleItem.StartAt = new DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, 0, DateTimeKind.Utc);
+            scheduleItem.DurationMinutes = dto.DurationMinutes > 0 ? dto.DurationMinutes : 45;
+            scheduleItem.TrainerId = dto.TrainerId;
+            scheduleItem.AvailableSlots = dto.AvailableSlots >= 0 ? dto.AvailableSlots : 6;
+
+            await _context.SaveChangesAsync();
+            return Ok(new { message = "Занятие обновлено." });
+        }
+
         [HttpDelete("schedule/{id:int}")]
         public async Task<IActionResult> DeleteScheduleItem(int id)
         {
-            var scheduleItem = await _context.ScheduleItems
-                .Include(s => s.Bookings)
-                .FirstOrDefaultAsync(s => s.Id == id);
-
-            if (scheduleItem == null)
-                return NotFound(new { message = "Занятие не найдено." });
+            var scheduleItem = await _context.ScheduleItems.Include(s => s.Bookings).FirstOrDefaultAsync(s => s.Id == id);
+            if (scheduleItem == null) return NotFound(new { message = "Занятие не найдено." });
 
             if (scheduleItem.Bookings.Any())
-            {
-                return Conflict(new
-                {
-                    message = "Нельзя удалить занятие: на него уже записаны пользователи. Сначала отмените записи."
-                });
-            }
+                return Conflict(new { message = "Нельзя удалить занятие с записанными пользователями." });
 
             _context.ScheduleItems.Remove(scheduleItem);
             await _context.SaveChangesAsync();
-
-            return Ok(new { message = "Занятие удалено из расписания." });
-        }
-
-        [Authorize(Roles = "Admin")]
-        [HttpPost("services")]
-        public async Task<IActionResult> CreateServicePlan([FromBody] CreateServicePlanDto dto)
-        {
-            if (string.IsNullOrWhiteSpace(dto.Name))
-                return BadRequest(new { message = "Название услуги обязательно." });
-
-            var servicePlan = new ServicePlan
-            {
-                Title = dto.Name.Trim(),
-                Description = dto.Description?.Trim() ?? string.Empty,
-                Price = dto.Price,
-                LessonsCount = dto.TotalLessons > 0 ? dto.TotalLessons : 1,
-                DurationDays = dto.DurationDays > 0 ? dto.DurationDays : 30,
-                IsActive = true, // По умолчанию услуга активна
-                IsTrial = dto.IsTrial
-            };
-
-            _context.ServicePlans.Add(servicePlan);
-            await _context.SaveChangesAsync();
-
-            return Ok(new { message = "Услуга успешно создана!" });
-        }
-
-        // 6. Удалить услугу
-        [Authorize(Roles = "Admin")]
-        [HttpDelete("services/{id:int}")]
-        public async Task<IActionResult> DeleteServicePlan(int id)
-        {
-            var service = await _context.ServicePlans.FindAsync(id);
-            if (service == null)
-                return NotFound(new { message = "Услуга не найдена." });
-
-            // Опционально: можно просто деактивировать, но мы удалим
-            _context.ServicePlans.Remove(service);
-            await _context.SaveChangesAsync();
-
-            return Ok(new { message = "Услуга успешно удалена." });
-        }
-
-        [HttpPut("services/{id:int}")]
-        public async Task<IActionResult> UpdateServicePlan(int id, [FromBody] UpdateServicePlanDto dto)
-        {
-            var plan = await _context.ServicePlans.FindAsync(id);
-            if (plan == null)
-                return NotFound(new { message = "Услуга не найдена." });
-
-            if (string.IsNullOrWhiteSpace(dto.Title))
-                return BadRequest(new { message = "Название услуги не может быть пустым." });
-
-            plan.Title = dto.Title.Trim();
-            plan.Price = dto.Price >= 0 ? dto.Price : plan.Price;
-            plan.LessonsCount = dto.LessonsCount > 0 ? dto.LessonsCount : plan.LessonsCount;
-            plan.DurationDays = dto.DurationDays > 0 ? dto.DurationDays : plan.DurationDays;
-            plan.Description = dto.Description?.Trim() ?? string.Empty;
-            plan.Category = dto.Category?.Trim() ?? "Разовые";
-            plan.ColorTheme = dto.ColorTheme?.Trim() ?? "emerald";
-
-            await _context.SaveChangesAsync();
-
-            return Ok(new { message = "Карточка услуги успешно обновлена!", plan });
-        }
-
-        // GET: api/admin/users (Получить всех пользователей для выбора в персональных акциях)
-        [Authorize(Roles = "Admin")]
-        [HttpGet("users")]
-        public async Task<IActionResult> GetAllUsersForAdmin()
-        {
-            var users = await _context.Users
-                .Select(u => new
-                {
-                    u.Id,
-                    u.FullName,
-                    u.Email
-                })
-                .ToListAsync();
-
-            return Ok(users);
+            return Ok(new { message = "Занятие удалено." });
         }
     }
 
-    public class UpdateUserAdminDto
+    public class UpdateMedicalCheckDto
     {
-        public string FullName { get; set; } = string.Empty;
-        public string Phone { get; set; } = string.Empty;
-        public string ParentName { get; set; } = string.Empty;
         public DateTime? MedicalCheckDate { get; set; }
+    }
+
+    public class UpdatePromotionDto
+    {
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public decimal? DiscountAmount { get; set; }
+        public int? DiscountPercentage { get; set; }
+        public List<string>? TargetUserIds { get; set; }
+        public string ColorTheme { get; set; } = "emerald";
+        public bool IsActive { get; set; } = true;
     }
 
     public class UpdateServicePlanDto
@@ -319,26 +232,12 @@ namespace Frogling.Api.Controllers
         public string ColorTheme { get; set; } = "emerald";
     }
 
-    public class AdminBookDto
-    {
-        public Guid UserId { get; set; }
-        public int ScheduleItemId { get; set; }
-    }
     public class UpdateScheduleDto
     {
-        public string GroupName { get; set; } = string.Empty;
+        public string? GroupName { get; set; }
+        public DateTime? StartAt { get; set; }
         public int DurationMinutes { get; set; } = 45;
         public int TrainerId { get; set; }
-        public int AvailableSlots { get; set; }
-        public DateTime? StartAt { get; set; }
-    }
-    public class CreateServicePlanDto
-    {
-        public string Name { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-        public decimal Price { get; set; }
-        public int TotalLessons { get; set; }
-        public int DurationDays { get; set; } = 30; // Время действия абонемента в днях
-        public bool IsTrial { get; set; } = false;
+        public int AvailableSlots { get; set; } = 6;
     }
 }

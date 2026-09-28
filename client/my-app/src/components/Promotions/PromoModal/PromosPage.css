@@ -1,0 +1,413 @@
+/* Основные стили страницы акций */
+.services-page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px 60px;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+}
+
+.services-hero-header {
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.services-hero-header h1 {
+  font-size: 32px;
+  font-weight: 800;
+  color: #1a4314;
+  margin-bottom: 8px;
+}
+
+.services-hero-header p {
+  font-size: 15px;
+  color: #64748b;
+  margin: 0;
+}
+
+.services-grid-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 28px;
+  align-items: stretch;
+}
+
+.service-plan-card {
+  min-height: 390px;
+  padding: 26px 24px 20px;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 24px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.045);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+
+.service-plan-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+}
+
+.service-plan-card.border-emerald { border-color: #d1e8cc; }
+.service-plan-card.border-blue { border-color: #d6e4f7; }
+.service-plan-card.border-amber { border-color: #f2e4c4; }
+
+.service-card-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+/* Верхняя строка карточки с иконкой и разнесенными кнопками управления */
+.service-card-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.service-plan-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 5px 12px rgba(15, 23, 42, 0.08);
+}
+
+.icon-bg-emerald { background: linear-gradient(135deg, #81c784, #5da96b); }
+.icon-bg-blue { background: linear-gradient(135deg, #78a9e8, #5d8fd4); }
+.icon-bg-amber { background: linear-gradient(135deg, #edbd69, #d9a649); }
+
+/* Блок кнопок действий в правом верхнем углу (БЕЗ наложения) */
+.admin-card-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Расстояние между кнопками */
+}
+
+.btn-action-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-action-icon.edit {
+  background: #f1f5f9;
+  color: #334155;
+  border-color: #cbd5e1;
+}
+
+.btn-action-icon.edit:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.btn-action-icon.delete {
+  background: #fef2f2;
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
+.btn-action-icon.delete:hover {
+  background: #dc2626;
+  color: #ffffff;
+  border-color: #dc2626;
+}
+
+.service-plan-title {
+  min-height: 48px;
+  margin: 12px 0 8px;
+  color: #172033;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.service-plan-price {
+  margin-bottom: 12px;
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.service-plan-description {
+  flex: 1;
+  margin: 0 0 18px;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.service-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid #edf1f4;
+}
+
+.service-lessons-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #516574;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.btn-plan-select {
+  min-height: 40px;
+  padding: 9px 20px;
+  background: #79b94c;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-plan-select:hover {
+  background: #69a942;
+}
+
+/* ==================================================== */
+/* МОДАЛЬНОЕ ОКНО (СТИЛЬ РАСПИСАНИЯ + МУЛЬТИВЫБОР КЛИЕНТОВ) */
+/* ==================================================== */
+
+.modal-admin-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(31, 41, 55, 0.48);
+  backdrop-filter: blur(5px);
+}
+
+.modal-admin-card {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  max-height: min(90vh, 850px);
+  overflow-y: auto;
+  padding: 32px;
+  border: 1px solid #e4e9e5;
+  border-radius: 24px;
+  background: #ffffff;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.2);
+  text-align: left;
+}
+
+/* Кнопка закрытия [X] в правом верхнем углу (как в расписании) */
+.btn-modal-close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.btn-modal-close:hover {
+  color: #0f172a;
+  background: #f1f5f9;
+}
+
+.modal-admin-card h2 {
+  margin: 0 40px 20px 0;
+  color: #203528;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.form-group-admin {
+  margin-bottom: 16px;
+}
+
+.form-group-admin label {
+  display: block;
+  margin-bottom: 7px;
+  color: #718077;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+}
+
+.form-group-admin input,
+.form-group-admin select,
+.form-group-admin textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border: 1px solid #dce4df;
+  border-radius: 12px;
+  background: #fbfcfb;
+  color: #29382f;
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+.form-group-admin input:focus,
+.form-group-admin select:focus,
+.form-group-admin textarea:focus {
+  border-color: #9cc88b;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(132, 184, 102, 0.14);
+}
+
+/* Список чекбоксов для выбора нескольких клиентов */
+.users-multiselect-container {
+  max-height: 160px;
+  overflow-y: auto;
+  border: 1px solid #dce4df;
+  border-radius: 12px;
+  background: #fbfcfb;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.user-checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #ffffff;
+  border: 1px solid #edf1f4;
+  transition: all 0.15s ease;
+}
+
+.user-checkbox-row:hover {
+  background: #f1f5f9;
+}
+
+.user-checkbox-row.selected {
+  background: #eef8ea;
+  border-color: #b2db6b;
+}
+
+.user-checkbox-row input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #74b83b;
+}
+
+.user-checkbox-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.user-email {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.btn-cancel-admin,
+.btn-save-admin {
+  min-height: 42px;
+  padding: 10px 18px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-cancel-admin {
+  background: #f1f4f6;
+  color: #5b6874;
+}
+
+.btn-save-admin {
+  background: #79b94c;
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(121, 185, 76, 0.18);
+}
+.promo-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(31, 41, 55, 0.48);
+  backdrop-filter: blur(5px);
+}
+
+.promo-modal-card {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 32px;
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.2);
+}
+
+.promo-modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: #94a3b8;
+  cursor: pointer;
+}
+
+.promo-modal-close:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}

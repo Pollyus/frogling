@@ -11,8 +11,7 @@ namespace Frogling.Api.Models
         public int? DiscountPercentage { get; set; } // Скидка в процентах (например, 10%), если используется
         public DateTime ExpiryDate { get; set; } // Срок действия акции
         public bool IsActive { get; set; } = true; // Активна ли акция в данный момент
-        public Guid? TargetUserId { get; set; }
-        public User? TargetUser { get; set; }
+        public string? TargetUserIds { get; set; }
 
         public string ColorTheme { get; set; } = "emerald"; // emerald, blue, amber
     }

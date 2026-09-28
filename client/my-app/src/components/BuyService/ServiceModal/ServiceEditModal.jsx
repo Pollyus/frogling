@@ -7,14 +7,18 @@ export default function ServiceEditModal({ editingPlan, setEditingPlan, handleSa
   return (
     <div className="modal-admin-overlay" onClick={() => setEditingPlan(null)}>
       <div className="modal-admin-card" onClick={(e) => e.stopPropagation()}>
-        <button
-          type="button"
-          className="absolute top-6 right-6 text-slate-400 hover:text-slate-600 bg-transparent border-0 cursor-pointer"
-          onClick={() => setEditingPlan(null)}
-        >
-          <X className="w-5 h-5" />
-        </button>
-        <h2>Редактирование услуги</h2>
+        {/* Шапка модального окна с круглым крестиком справа (как на Рис. 1) */}
+        <div className="modal-admin-header">
+          <h2>Редактирование услуги</h2>
+          <button
+            type="button"
+            className="modal-close-btn"
+            onClick={() => setEditingPlan(null)}
+            title="Закрыть"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
 
         <form onSubmit={handleSavePlan}>
           <div className="form-group-admin">
@@ -23,6 +27,7 @@ export default function ServiceEditModal({ editingPlan, setEditingPlan, handleSa
               type="text"
               value={editingPlan.title || ''}
               onChange={(e) => setEditingPlan({ ...editingPlan, title: e.target.value })}
+              placeholder="Например: Групповое посещение"
               required
             />
           </div>
@@ -62,7 +67,6 @@ export default function ServiceEditModal({ editingPlan, setEditingPlan, handleSa
             <select
               value={editingPlan.category || 'Разовые'}
               onChange={(e) => setEditingPlan({ ...editingPlan, category: e.target.value })}
-              className="w-full p-3 border border-slate-300 rounded-xl bg-white"
             >
               <option value="Разовые">Разовые</option>
               <option value="Абонементы">Абонементы</option>
@@ -76,12 +80,16 @@ export default function ServiceEditModal({ editingPlan, setEditingPlan, handleSa
               rows="3"
               value={editingPlan.description || ''}
               onChange={(e) => setEditingPlan({ ...editingPlan, description: e.target.value })}
-              placeholder="Краткое описание условий услуги"
+              placeholder="Короткое описание условий"
             />
           </div>
 
           <div className="modal-actions">
-            <button type="button" className="btn-cancel-admin" onClick={() => setEditingPlan(null)}>
+            <button
+              type="button"
+              className="btn-cancel-admin"
+              onClick={() => setEditingPlan(null)}
+            >
               Отмена
             </button>
             <button type="submit" className="btn-save-admin">
