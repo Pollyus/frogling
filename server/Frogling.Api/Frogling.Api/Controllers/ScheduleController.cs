@@ -25,8 +25,10 @@ namespace Frogling.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetSchedule()
         {
+            var now = DateTime.UtcNow;
             var schedule = await _context.ScheduleItems
                 .Include(s => s.Trainer)
+                .Where(s => s.StartAt.AddMinutes(s.DurationMinutes) >= now)
                 .OrderBy(s => s.StartAt)
                 .ToListAsync();
 
@@ -164,7 +166,60 @@ namespace Frogling.Api.Controllers
             return Ok(new { message = "Абонемент успешно приобретен со скидкой!", finalPrice });
         }
 
-    } 
+        [Authorize(Roles = "Admin,Trainer")]
+        [HttpGet("archive")]
+        public async Task<IActionResult> GetArchive()
+        {
+            var now = DateTime.UtcNow;
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var query = _context.ScheduleItems
+                .Include(s => s.Trainer)
+                .Where(s => s.StartAt < now);
+
+            // Тренер видит только свои прошедшие занятия
+            if (User.IsInRole("Trainer"))
+            {
+                if (!Guid.TryParse(userId, out var trainerUserId))
+                    return Unauthorized();
+
+                var trainerId = await _context.Trainers
+                    .Where(t => t.UserId == trainerUserId)
+                    .Select(t => t.Id)
+                    .FirstOrDefaultAsync();
+
+                query = query.Where(s => s.TrainerId == trainerId);
+            }
+
+            var items = await query
+                .OrderByDescending(s => s.StartAt)
+                .Select(s => new
+                {
+                    s.Id,
+                    s.GroupName,
+                    s.StartAt,
+                    EndAt = s.StartAt.AddMinutes(s.DurationMinutes),
+                    s.DurationMinutes,
+                    s.TrainerId,
+                    TrainerName = s.Trainer != null ? s.Trainer.Name : "Инструктор",
+
+                    Participants = _context.Bookings
+                        .Where(b => b.ScheduleItemId == s.Id)
+                        .Select(b => new
+                        {
+                            b.Id,
+                            StudentName = b.User != null ? b.User.FullName : "Клиент",
+                            ParentName = b.User != null ? b.User.ParentName : "",
+                            Phone = b.User != null ? b.User.Phone : ""
+                        })
+                        .ToList()
+                })
+                .ToListAsync();
+
+            return Ok(items);
+        }
+
+    }
     public class BuySubscriptionDto
         {
             public string Title { get; set; } = string.Empty;

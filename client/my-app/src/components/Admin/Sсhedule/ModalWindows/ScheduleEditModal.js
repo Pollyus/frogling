@@ -5,11 +5,12 @@ const API_URL = 'https://localhost:7026/api';
 
 export default function ScheduleEditModal({ editingItem, trainers, onClose, onSaveSuccess }) {
   const [formData, setFormData] = useState({
-    groupName: editingItem?.groupName || '',
-    startAt: editingItem?.startAt || '',
-    durationMinutes: editingItem?.durationMinutes || 45,
-    trainerId: editingItem?.trainerId || 1,
-    availableSlots: editingItem?.availableSlots || 6
+    groupName: '',
+    startAt: '',
+    durationMinutes: 30,
+    trainerId: trainers.length > 0 ? trainers[0].id || trainers[0].Id : 1,
+    availableSlots: 3,
+    totalSlots:3
   });
 
   const [loading, setLoading] = useState(false);

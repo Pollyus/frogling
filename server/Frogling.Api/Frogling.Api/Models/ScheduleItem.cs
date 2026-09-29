@@ -19,7 +19,8 @@ namespace Frogling.Api.Models
         [Required]
         public string GroupName { get; set; } = string.Empty;
 
-        public int AvailableSlots { get; set; }
+        public int AvailableSlots { get; set; } = 3;
+        public int TotalSlots { get; set; } = 3;
 
         public int TrainerId { get; set; }
 

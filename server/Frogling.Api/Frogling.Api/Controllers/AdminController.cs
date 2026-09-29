@@ -3,10 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Frogling.Api.Data;
 using Frogling.Api.Models;
+using System.Security.Claims;
 
 namespace Frogling.Api.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Trainer")]
     [ApiController]
     [Route("api/admin")]
     public class AdminController : ControllerBase
@@ -165,7 +166,8 @@ namespace Frogling.Api.Controllers
                 StartAt = exactStartAt,
                 DurationMinutes = dto.DurationMinutes > 0 ? dto.DurationMinutes : 45,
                 TrainerId = dto.TrainerId > 0 ? dto.TrainerId : 1,
-                AvailableSlots = dto.AvailableSlots >= 0 ? dto.AvailableSlots : 6
+                AvailableSlots = dto.AvailableSlots,
+                TotalSlots = dto.TotalSlots > 0 ? dto.TotalSlots : 3
             };
 
             _context.ScheduleItems.Add(scheduleItem);
@@ -186,7 +188,8 @@ namespace Frogling.Api.Controllers
             scheduleItem.StartAt = new DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, 0, DateTimeKind.Utc);
             scheduleItem.DurationMinutes = dto.DurationMinutes > 0 ? dto.DurationMinutes : 45;
             scheduleItem.TrainerId = dto.TrainerId;
-            scheduleItem.AvailableSlots = dto.AvailableSlots >= 0 ? dto.AvailableSlots : 6;
+            scheduleItem.AvailableSlots = dto.AvailableSlots >= 0 ? dto.AvailableSlots : 3;
+            scheduleItem.TotalSlots = dto.TotalSlots > 0 ? dto.TotalSlots : 3;
 
             await _context.SaveChangesAsync();
             return Ok(new { message = "Занятие обновлено." });
@@ -205,6 +208,74 @@ namespace Frogling.Api.Controllers
             _context.ScheduleItems.Remove(scheduleItem);
             await _context.SaveChangesAsync();
             return Ok(new { message = "Занятие удалено." });
+        }
+
+        [Authorize(Roles = "Admin,Trainer")]
+        [HttpGet("schedule/archive")]
+        public async Task<IActionResult> GetArchive()
+        {
+            // Текущее точное время (UTC)
+            var now = DateTime.UtcNow;
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue("sub");
+
+            var query = _context.ScheduleItems
+                .Include(s => s.Trainer)
+                .AsEnumerable() // Переходим в память, чтобы корректно учесть продолжительность занятия (StartAt + DurationMinutes)
+                .Where(s => {
+                    // Занятие считается прошедшим, когда истекло его время (Начало + Длительность)
+                    var endTime = s.StartAt.AddMinutes(s.DurationMinutes > 0 ? s.DurationMinutes : 45);
+                    return endTime < now;
+                })
+                .AsQueryable();
+
+            // Если пользователь — Тренер, показываем только его занятия
+            if (User.IsInRole("Trainer"))
+            {
+                if (Guid.TryParse(userIdString, out var trainerUserId))
+                {
+                    var trainerId = await _context.Trainers
+                        .Where(t => t.UserId == trainerUserId)
+                        .Select(t => (int?)t.Id)
+                        .FirstOrDefaultAsync();
+
+                    if (trainerId.HasValue)
+                    {
+                        query = query.Where(s => s.TrainerId == trainerId.Value);
+                    }
+                    else
+                    {
+                        return Ok(new List<object>()); // Тренер не привязан к профилю
+                    }
+                }
+            }
+
+            var items = query
+                .OrderByDescending(s => s.StartAt)
+                .Select(s => new
+                {
+                    s.Id,
+                    s.GroupName,
+                    StartAt = s.StartAt,
+                    EndAt = s.StartAt.AddMinutes(s.DurationMinutes > 0 ? s.DurationMinutes : 45),
+                    s.DurationMinutes,
+                    s.TrainerId,
+                    TrainerName = s.Trainer != null ? s.Trainer.Name : "Инструктор",
+                    Participants = _context.Bookings
+                        .Where(b => b.ScheduleItemId == s.Id)
+                        .Include(b => b.User)
+                        .Select(b => new
+                        {
+                            b.Id,
+                            StudentName = b.User != null ? b.User.FullName : "Клиент",
+                            ParentName = b.User != null ? b.User.ParentName : "",
+                            Phone = b.User != null ? b.User.Phone : "",
+                            Email = b.User != null ? b.User.Email : ""
+                        })
+                        .ToList()
+                })
+                .ToList();
+
+            return Ok(items);
         }
     }
 
@@ -241,6 +312,7 @@ namespace Frogling.Api.Controllers
         public DateTime? StartAt { get; set; }
         public int DurationMinutes { get; set; } = 45;
         public int TrainerId { get; set; }
-        public int AvailableSlots { get; set; } = 6;
+        public int AvailableSlots { get; set; }
+        public int TotalSlots { get; set; } 
     }
 }

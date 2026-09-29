@@ -633,3 +633,43 @@
   background: #e2e8f0;
   color: #0f172a;
 }
+
+/* Поиск в шапке */
+.schedule-search-main {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: #f1f5f9;
+  border-radius: 12px;
+  padding: 0 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.schedule-search-main input {
+  background: transparent;
+  border: none;
+  padding: 10px 8px;
+  outline: none;
+  font-size: 14px;
+  width: 200px;
+}
+
+/* Сворачиваемый заголовок фильтров */
+.filter-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f1f5f9;
+  margin-bottom: 15px;
+}
+
+.filter-content-animate {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}

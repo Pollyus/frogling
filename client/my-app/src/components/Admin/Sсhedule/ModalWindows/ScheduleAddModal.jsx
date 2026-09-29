@@ -7,9 +7,10 @@ export default function ScheduleAddModal({ trainers, onClose, onSaveSuccess }) {
   const [formData, setFormData] = useState({
     groupName: '',
     startAt: '',
-    durationMinutes: 45,
+    durationMinutes: 30,
     trainerId: trainers.length > 0 ? trainers[0].id || trainers[0].Id : 1,
-    availableSlots: 6
+    availableSlots: 3,
+    totalSlots:3
   });
 
   const [loading, setLoading] = useState(false);
@@ -48,6 +49,7 @@ export default function ScheduleAddModal({ trainers, onClose, onSaveSuccess }) {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="modal-admin-overlay" onClick={onClose}>
@@ -104,15 +106,25 @@ export default function ScheduleAddModal({ trainers, onClose, onSaveSuccess }) {
             </select>
           </div>
 
-          <div className="form-group-admin">
-            <label>Всего свободных мест</label>
-            <input 
-              type="number" 
-              value={formData.availableSlots} 
-              onChange={e => setFormData({ ...formData, availableSlots: e.target.value })}
-              required 
+          <div className="form-group-admin" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+          
+          <div>
+            <label>Всего мест</label>
+            <input
+              type="number"
+              value={formData.totalSlots}
+              onChange={(e) => setFormData({ ...formData, totalSlots: e.target.value })}
             />
           </div>
+          <div>
+            <label>Свободно</label>
+            <input
+              type="number"
+              value={formData.availableSlots}
+              onChange={(e) => setFormData({ ...formData, availableSlots: e.target.value })}
+            />
+          </div>
+        </div>
 
           <div className="modal-actions">
             <button type="button" className="btn-cancel-admin" onClick={onClose} disabled={loading}>
