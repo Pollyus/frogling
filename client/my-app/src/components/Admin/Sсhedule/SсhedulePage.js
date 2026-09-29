@@ -29,6 +29,7 @@ export default function SchedulePage() {
   // Состояния для редактирования и создания занятия
   const [editingItem, setEditingItem] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isTrainer, setIsTrainer] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [newItem, setNewItem] = useState({
     groupName: '',
@@ -44,6 +45,18 @@ export default function SchedulePage() {
       try {
         const user = JSON.parse(userStr);
         setIsAdmin(user.role === 'Admin' || user.Role === 'Admin');
+      } catch (e) {}
+    }
+  }, []);
+
+  useEffect(() => {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      try {
+        const user = JSON.parse(userStr);
+        const role = user.role || user.Role;
+        setIsAdmin(role === 'Admin');
+        setIsTrainer(role === 'Trainer'); // <--- Определяем тренера
       } catch (e) {}
     }
   }, []);
@@ -241,6 +254,11 @@ export default function SchedulePage() {
     );
   }
 
+  
+
+// Переменная для проверки прав на редактирование (Админ ИЛИ Тренер)
+const canManageSchedule = isAdmin || isTrainer;
+
   return (
     <div className="schedule-container">
       <h1>Расписание занятий</h1>
@@ -285,7 +303,7 @@ export default function SchedulePage() {
       </div>
 
       {/* Кнопка добавления занятия */}
-      {isAdmin && (
+      {canManageSchedule && (
         <div className="admin-add-section">
           <button
             type="button"
@@ -338,7 +356,7 @@ export default function SchedulePage() {
                       Свободно <strong>{freeSlots}</strong> из <strong>{totalSlots}</strong> мест
                     </span>
 
-                    {isAdmin && (
+                    {canManageSchedule && (
                       <div className="admin-action-buttons">
                         <button 
                           type="button"
@@ -374,7 +392,7 @@ export default function SchedulePage() {
                   </div>
 
                   {/* Кнопка Записаться */}
-                  {!isAdmin && (
+                  {!canManageSchedule && (
                     <button 
                       type="button"
                       onClick={() => handleBooking(item)}
@@ -408,6 +426,16 @@ export default function SchedulePage() {
         />
       )}
 
+      {canManageSchedule && (
+        <button 
+          type="button"
+          onClick={() => openParticipantsModal(item.id)}
+          className="btn-action-icon participants"
+          title="Посмотреть записавшихся"
+        >
+          <Users className="w-4 h-4" />
+        </button>
+      )}
 
       {/* Модальное окно со списком участников занятия */}
       {viewingDetailsId && (

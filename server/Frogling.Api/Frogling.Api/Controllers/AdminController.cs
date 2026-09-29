@@ -149,6 +149,7 @@ namespace Frogling.Api.Controllers
             return Ok(new { message = "Карточка услуги успешно обновлена!", plan });
         }
 
+        [Authorize(Roles = "Admin,Trainer")]
         [HttpPost("schedule")]
         public async Task<IActionResult> CreateScheduleItem([FromBody] UpdateScheduleDto dto)
         {
@@ -173,6 +174,7 @@ namespace Frogling.Api.Controllers
             return Ok(new { message = "Занятие создано.", scheduleItem.Id });
         }
 
+        [Authorize(Roles = "Admin,Trainer")]
         [HttpPut("schedule/{id:int}")]
         public async Task<IActionResult> UpdateScheduleItem(int id, [FromBody] UpdateScheduleDto dto)
         {
@@ -190,6 +192,7 @@ namespace Frogling.Api.Controllers
             return Ok(new { message = "Занятие обновлено." });
         }
 
+        [Authorize(Roles = "Admin,Trainer")]
         [HttpDelete("schedule/{id:int}")]
         public async Task<IActionResult> DeleteScheduleItem(int id)
         {

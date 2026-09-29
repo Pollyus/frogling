@@ -9,6 +9,8 @@
   /* color: #7BA61F; */
 }
 
+
+
 /* Дополнительные стили для кнопки "Записаться", если это необходимо */
 @media (max-width: 768px) {
   /* .ycwidget {
@@ -24,4 +26,25 @@
       display: none;
   } */
 
+}
+
+.page-content {
+  animation: pageFadeIn 220ms ease-out;
+}
+
+@keyframes pageFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-content {
+    animation: none;
+  }
 }

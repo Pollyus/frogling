@@ -90,6 +90,28 @@ namespace Frogling.Api.Controllers
             return Ok(result);
         }
 
+        // GET: api/schedule/{id}/participants
+        [Authorize(Roles = "Admin,Trainer")]
+        [HttpGet("schedule/{id:int}/participants")]
+        public async Task<IActionResult> GetScheduleParticipants(int id)
+        {
+            var participants = await _context.Bookings
+                .Where(b => b.ScheduleItemId == id)
+                .Include(b => b.User)
+                .Select(b => new
+                {
+                    b.Id,
+                    b.BookedAt,
+                    UserName = b.User != null ? b.User.FullName : "Клиент",
+                    UserEmail = b.User != null ? b.User.Email : "",
+                    UserPhone = b.User != null ? b.User.Phone : ""
+                })
+                .ToListAsync();
+
+            return Ok(participants);
+        }
+
+
         private Guid? GetCurrentUserId()
         {
             var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier)

@@ -66,11 +66,8 @@ export default function Header() {
         {/* Навигационное меню */}
         <nav className="header-nav">
           {isAdmin ? (
-            /* Меню для АДМИНИСТРАТОРА: только Услуги, Акции, Расписание и Админка */
+            /* 1. Меню для АДМИНИСТРАТОРА */
             <>
-              <Link to="/services" className={`nav-link ${isActive('/services') ? 'active' : ''}`}>
-                Услуги
-              </Link>
               <Link to="/promotions" className={`nav-link ${isActive('/promotions') ? 'active' : ''}`}>
                 Акции
               </Link>
@@ -81,10 +78,26 @@ export default function Header() {
                 <Shield className="w-4 h-4" />
                 <span>Админка</span>
               </Link>
-              
+            </>
+          ) : isTrainer ? (
+            /* 2. Меню для ТРЕНЕРА: Тренеры, Расписание, Услуги, Кабинет */
+            <>
+              <Link to="/trainers" className={`nav-link ${isActive('/trainers') ? 'active' : ''}`}>
+                Тренеры
+              </Link>
+              <Link to="/schedule" className={`nav-link ${isActive('/schedule') ? 'active' : ''}`}>
+                Расписание
+              </Link>
+              <Link to="/services" className={`nav-link ${isActive('/services') ? 'active' : ''}`}>
+                Услуги
+              </Link>
+              <Link to="/trainer-cabinet" className={`nav-link ${isActive('/trainer-cabinet') ? 'active' : ''}`}>
+                <Briefcase className="w-4 h-4" />
+                <span>Кабинет тренера</span>
+              </Link>
             </>
           ) : (
-            /* Меню для ОБЫЧНЫХ ПОЛЬЗОВАТЕЛЕЙ И ГОСТЕЙ */
+            /* 3. Меню для ОБЫЧНЫХ ПОЛЬЗОВАТЕЛЕЙ И ГОСТЕЙ */
             <>
               <Link to="/about" className={`nav-link ${isActive('/about') ? 'active' : ''}`}>
                 О нас
@@ -104,27 +117,19 @@ export default function Header() {
               <Link to="/services" className={`nav-link ${isActive('/services') ? 'active' : ''}`}>
                 Услуги
               </Link>
-              {/* <Link to="/promos" className={`nav-link ${isActive('/promos') ? 'active' : ''}`}>
-                Акции
-              </Link> */}
               <Link to="/promotions" className={`nav-link ${isActive('/promotions') ? 'active' : ''}`}>
                 Акции
               </Link>
               <Link to="/schedule" className={`nav-link ${isActive('/schedule') ? 'active' : ''}`}>
                 Расписание
               </Link>
-              {isTrainer && (
-                <Link to="/trainer-cabinet" className={`nav-link ${isActive('/trainer-cabinet') ? 'active' : ''}`}>
-                  <Briefcase className="w-4 h-4" />
-                  <span>Кабинет тренера</span>
-                </Link>
-              )}
             </>
           )}
 
           {/* Правая панель пользователя / Вход */}
           {isAuth ? (
             <div className="user-nav-container">
+              {/* Показываем профиль только обычным пользователям */}
               {!isAdmin && !isTrainer && (
                 <Link to="/profile" className="user-profile-badge">
                   <div className="user-mini-avatar">
@@ -134,14 +139,15 @@ export default function Header() {
                 </Link>
               )}
 
-              {/* {(isAdmin || isTrainer) && (
+              {/* Показываем имя для тренера и админа без ссылки на профиль */}
+              {(isAdmin || isTrainer) && (
                 <div className="user-profile-badge role-badge">
-                  <div className="user-mini-avatar role-avatar">
+                   <div className="user-mini-avatar role-avatar">
                     {isAdmin ? <Shield className="w-3.5 h-3.5 text-white" /> : <Briefcase className="w-3.5 h-3.5 text-white" />}
                   </div>
                   <span className="user-mini-name">{userName}</span>
                 </div>
-              )} */}
+              )}
 
               <button type="button" onClick={handleLogout} className="header-logout-button" title="Выйти из аккаунта">
                 <LogOut className="w-4 h-4" />
