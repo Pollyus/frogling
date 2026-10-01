@@ -55,13 +55,27 @@ export default function ServicesPage() {
   }, []);
 
   useEffect(() => {
-    fetch(`${API_URL}/promotions`)
-      .then(res => res.json())
-      .then(data => {
-        if (Array.isArray(data)) setPromotions(data);
+      const token = localStorage.getItem('auth_token');
+
+      fetch(`${API_URL}/promotions`, {
+        headers: token
+          ? { Authorization: `Bearer ${token}` }
+          : {}
       })
-      .catch(err => console.error('Ошибка загрузки акций:', err));
+        .then(res => res.json())
+        .then(data => {
+          if (Array.isArray(data)) {
+            setPromotions(data);
+          }
+        })
+        .catch(err => console.error('Ошибка загрузки акций:', err));
   }, []);
+
+  const openPurchaseModal = (service) => {
+    setSelectedSub(service);
+    setSelectedPromoId('');
+  };
+
 
   const handleSavePlan = async (e) => {
     e.preventDefault();
@@ -303,37 +317,50 @@ export default function ServicesPage() {
 
       {/* Модальное окно покупки (оформления) абонемента в едином стиле */}
       {selectedSub && (
-        <div className="modal-admin-overlay" onClick={() => !isProcessing && setSelectedSub(null)}>
-          <div className="modal-admin-card" onClick={(e) => e.stopPropagation()}>
-            <button 
+        <div
+          className="modal-admin-overlay"
+          onClick={() => !isProcessing && setSelectedSub(null)}
+        >
+          <div
+            className="modal-admin-card payment-modal-card"
+            onClick={e => e.stopPropagation()}
+          >
+            <button
               type="button"
-              className="absolute top-6 right-6 text-slate-400 hover:text-slate-600 bg-transparent border-0 cursor-pointer" 
+              className="modal-close-btn"
               onClick={() => setSelectedSub(null)}
               disabled={isProcessing}
             >
               <X className="w-5 h-5" />
             </button>
-            
-            <h2>Оформление абонемента</h2>
-            <p style={{ color: '#64748b', fontSize: '14px', marginBottom: '16px' }}>
-              Вы выбрали: <strong>«{selectedSub.title}»</strong>
-            </p>
-            <p style={{ color: '#334155', fontSize: '14px', marginBottom: '16px' }}>
-              Базовая цена: <strong>{selectedSub.price} ₽</strong>
-            </p>
+
+            <h2 className="modal-title-custom">
+              Оформление абонемента
+            </h2>
+
+            <div className="purchase-service-preview">
+              <h3>{selectedSub.title || selectedSub.name}</h3>
+              <p>{selectedSub.description}</p>
+              <strong>{selectedSub.price} ₽</strong>
+            </div>
 
             {promotions.length > 0 && (
-              <div className="form-group-admin">
-                <label>Применить акцию</label>
+              <div className="form-group-admin promotion-select-group">
+                <label>Доступная акция</label>
+
                 <select
+                  className="select-admin-custom"
                   value={selectedPromoId}
-                  onChange={(e) => setSelectedPromoId(e.target.value)}
-                  className="w-full p-3 border border-slate-300 rounded-xl bg-white"
+                  onChange={e => setSelectedPromoId(e.target.value)}
                 >
-                  <option value="">Без акции (полная стоимость)</option>
+                  <option value="">Без скидки</option>
+
                   {promotions.map(promo => (
                     <option key={promo.id} value={promo.id}>
-                      {promo.title} ({promo.discountAmount ? `-${promo.discountAmount}₽` : `-${promo.discountPercentage}%`})
+                      {promo.title}
+                      {promo.discountAmount
+                        ? ` — скидка ${promo.discountAmount} ₽`
+                        : ` — скидка ${promo.discountPercentage}%`}
                     </option>
                   ))}
                 </select>
@@ -344,28 +371,25 @@ export default function ServicesPage() {
               Итого к оплате: {calculateFinalPrice()} ₽
             </div>
 
-            <div className="modal-actions">
-              <button 
-                type="button" 
-                className="btn-cancel-admin" 
+             <div className="modal-actions">
+              <button
+                type="button"
+                className="btn-cancel-admin"
                 onClick={() => setSelectedSub(null)}
                 disabled={isProcessing}
               >
                 Отмена
               </button>
-              <button 
-                type="button" 
+
+              <button
+                type="button"
                 className="btn-save-admin"
                 onClick={handlePurchase}
                 disabled={isProcessing}
               >
-                {isProcessing ? 'Оплата...' : 'Оплатить'}
+                {isProcessing ? 'Обработка...' : 'Оплатить'}
               </button>
             </div>
-            
-            <p className="secure-text" style={{ textAlign: 'center', fontSize: '11px', color: '#94a3b8', marginTop: '16px' }}>
-              Безопасная оплата через шлюз Frogling
-            </p>
           </div>
         </div>
       )}

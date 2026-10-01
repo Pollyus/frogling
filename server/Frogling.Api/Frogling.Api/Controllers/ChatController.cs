@@ -68,5 +68,25 @@ namespace Frogling.Api.Controllers
 
             return Ok(message);
         }
+
+        // PATCH: api/chat/react/{messageId}
+        [HttpPatch("react/{messageId:int}")]
+        public async Task<IActionResult> ReactToMessage(int messageId, [FromBody] string emoji)
+        {
+            var currentUserId = GetCurrentUserId();
+            var message = await _context.ChatMessages.FindAsync(messageId);
+
+            if (message == null) return NotFound();
+
+            // Проверяем, что пользователь участвует в этом чате
+            if (message.SenderId != currentUserId && message.ReceiverId != currentUserId)
+                return Forbid();
+
+            message.Emoji = emoji; // Устанавливаем смайлик
+            await _context.SaveChangesAsync();
+
+            return Ok(new { messageId, emoji });
+        }
+
     }
 }

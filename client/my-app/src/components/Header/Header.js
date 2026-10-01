@@ -102,16 +102,16 @@ export default function Header() {
               <Link to="/about" className={`nav-link ${isActive('/about') ? 'active' : ''}`}>
                 О нас
               </Link>
-              <Link to="/classes" className={`nav-link ${isActive('/classes') ? 'active' : ''}`}>
+              <Link to="/lessons" className={`nav-link ${isActive('/lessons') ? 'active' : ''}`}>
                 Виды занятий
               </Link>
               <Link to="/trainers" className={`nav-link ${isActive('/trainers') ? 'active' : ''}`}>
                 Тренеры
               </Link>
-              <Link to="/gallery" className={`nav-link ${isActive('/gallery') ? 'active' : ''}`}>
+              {/* <Link to="/gallery" className={`nav-link ${isActive('/gallery') ? 'active' : ''}`}>
                 Фото занятий
-              </Link>
-              <Link to="/first-lesson" className={`nav-link ${isActive('/first-lesson') ? 'active' : ''}`}>
+              </Link> */}
+              <Link to="/first" className={`nav-link ${isActive('/first') ? 'active' : ''}`}>
                 Первое занятие
               </Link>
               <Link to="/services" className={`nav-link ${isActive('/services') ? 'active' : ''}`}>

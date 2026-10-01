@@ -4,6 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Frogling.Api.Data;
 using Frogling.Api.Models;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace Frogling.Api.Controllers
 {
@@ -22,21 +26,26 @@ namespace Frogling.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetPromotions()
         {
-            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue("sub");
-            var currentUserId = userIdString?.ToLower();
+            var userIdValue =
+                User.FindFirstValue(ClaimTypes.NameIdentifier) ??
+                User.FindFirstValue(JwtRegisteredClaimNames.Sub) ??
+                User.FindFirstValue("sub");
 
-            var allPromos = await _context.Promotions
-                .Where(p => p.IsActive)
+            Guid.TryParse(userIdValue, out var userId);
+
+            var promotions = await _context.Promotions
+                .Where(p => p.IsActive && p.ExpiryDate > DateTime.UtcNow)
                 .ToListAsync();
 
-            // Если TargetUserIds пустой - акция для всех
-            // Если указаны ID - проверяем, входит ли текущий юзер в список
-            var filtered = allPromos.Where(p =>
+            var result = promotions.Where(p =>
                 string.IsNullOrWhiteSpace(p.TargetUserIds) ||
-                (!string.IsNullOrEmpty(currentUserId) && p.TargetUserIds.ToLower().Contains(currentUserId))
-            ).ToList();
+                p.TargetUserIds
+                    .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                    .Select(x => x.Trim())
+                    .Any(x => Guid.TryParse(x, out var targetId) && targetId == userId)
+            );
 
-            return Ok(filtered);
+            return Ok(result);
         }
     }
 }

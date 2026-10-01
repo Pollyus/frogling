@@ -7,7 +7,6 @@ export default function ServiceEditModal({ editingPlan, setEditingPlan, handleSa
   return (
     <div className="modal-admin-overlay" onClick={() => setEditingPlan(null)}>
       <div className="modal-admin-card" onClick={(e) => e.stopPropagation()}>
-        {/* Шапка модального окна с круглым крестиком справа (как на Рис. 1) */}
         <div className="modal-admin-header">
           <h2>Редактирование услуги</h2>
           <button

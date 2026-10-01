@@ -18,6 +18,7 @@ namespace Frogling.Api.Models
         public DateTime SentAt { get; set; } = DateTime.UtcNow;
 
         public bool IsRead { get; set; } = false;
+        public string Emoji { get; set; }
     }
 
     // DTO для отправки нового сообщения
@@ -28,5 +29,6 @@ namespace Frogling.Api.Models
 
         [Required]
         public string Text { get; set; } = string.Empty;
+        public string Emoji { get; set; }
     }
 }

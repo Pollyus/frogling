@@ -105,13 +105,22 @@ export default function ScheduleEditModal({ editingItem, trainers, onClose, onSa
           </div>
 
           <div className="form-group-admin">
-            <label>Количество свободных мест</label>
-            <input 
-              type="number" 
-              value={formData.availableSlots} 
-              onChange={e => setFormData({ ...formData, availableSlots: e.target.value })}
-              required 
+            <div>
+            <label>Всего мест</label>
+            <input
+              type="number"
+              value={formData.totalSlots}
+              onChange={(e) => setFormData({ ...formData, totalSlots: e.target.value })}
             />
+          </div>
+          <div>
+            <label>Свободно</label>
+            <input
+              type="number"
+              value={formData.availableSlots}
+              onChange={(e) => setFormData({ ...formData, availableSlots: e.target.value })}
+            />
+          </div>
           </div>
 
           <div className="modal-actions">

@@ -19,7 +19,7 @@ export default function ServicePaymentModal({ service, onClose, onConfirmPayment
     <div className="modal-admin-overlay" onClick={onClose}>
       <div className="payment-modal-card" onClick={e => e.stopPropagation()}>
         {/* Круглый крестик в углу */}
-        <button className="modal-close-btn" onClick={onClose} title="Закрыть">
+       <button className="modal-close-btn" onClick={onClose} title="Закрыть">
           <X className="w-5 h-5" />
         </button>
 

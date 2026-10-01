@@ -44,10 +44,11 @@ namespace Frogling.Api.Controllers
                 dayOfWeek = s.StartAt.ToString("dddd", culture),
 
                 startTime = s.StartAt.ToString("HH:mm"),
-                endTime = s.EndAt.ToString("HH:mm"), // Автоматически: 10:00 + 45 мин = 10:45
+                endTime = s.StartAt.AddMinutes(s.DurationMinutes).ToString("HH:mm"),
 
                 s.GroupName,
                 s.AvailableSlots,
+                totalSlots = s.TotalSlots,
 
                 trainerId = s.TrainerId,
                 trainerName = s.Trainer?.Name ?? "Инструктор",

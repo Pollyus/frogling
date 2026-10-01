@@ -56,6 +56,7 @@ export default function SchedulePage() {
       } catch (e) { console.error("Ошибка парсинга роли", e); }
     }
   }, []);
+  
 
   // Загрузка расписания и тренеров
   const fetchData = useCallback(async () => {
@@ -156,17 +157,6 @@ export default function SchedulePage() {
     return map[dayStr.trim().toLowerCase()] || dayStr;
   };
 
-  // const filteredSchedule = schedule.filter(item => {
-  //   const matchesTrainer = !selectedTrainer || item.trainerName === selectedTrainer;
-  //   let matchesTime = true;
-  //   if (selectedDate) {
-  //     matchesTime = (item.date ? item.date.split('T')[0] : '') === selectedDate;
-  //   } else if (selectedDay && selectedDay !== 'Все') {
-  //     matchesTime = (item.dayOfWeek || '').trim().toLowerCase() === selectedDay.trim().toLowerCase();
-  //   }
-  //   return matchesTrainer && matchesTime;
-  // });
-
   const scheduleForTrainer = schedule.filter(item => !selectedTrainer || item.trainerName === selectedTrainer);
   const activeDaysWithClasses = scheduleForTrainer.map(item => (item.dayOfWeek || '').trim().toLowerCase());
 
@@ -179,6 +169,7 @@ export default function SchedulePage() {
   }
 
   const canManageSchedule = isAdmin || isTrainer;
+  
 
   return (
     <div className="schedule-container">

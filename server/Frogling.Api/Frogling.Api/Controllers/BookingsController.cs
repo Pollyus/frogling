@@ -38,8 +38,8 @@ namespace Frogling.Api.Controllers
             if (userId == null) return Unauthorized();
 
             var culture = new System.Globalization.CultureInfo("ru-RU");
+            var now = DateTime.UtcNow;
 
-            // КРИТИЧЕСКИ ВАЖНО: .Include подгружает занятие и тренера из базы данных!
             var bookings = await _context.Bookings
                 .Where(b => b.UserId == userId.Value)
                 .Include(b => b.ScheduleItem)
@@ -47,22 +47,37 @@ namespace Frogling.Api.Controllers
                 .OrderBy(b => b.ScheduleItem != null ? b.ScheduleItem.StartAt : DateTime.MaxValue) // Сортируем: ближайшие занятия будут первыми
                 .ToListAsync();
 
-            var result = bookings.Select(b => new
-            {
-                b.Id,
-                b.BookedAt,
-                Date = b.ScheduleItem != null ? b.ScheduleItem.StartAt.ToString("dd.MM.yyyy") : "",
-                DayOfWeek = b.ScheduleItem != null
-                    ? culture.TextInfo.ToTitleCase(b.ScheduleItem.StartAt.ToString("dddd", culture))
-                    : "",
-                Time = b.ScheduleItem != null
-                    ? $"{b.ScheduleItem.StartAt:HH:mm} - {b.ScheduleItem.EndAt:HH:mm}"
-                    : "",
-                GroupName = b.ScheduleItem != null ? b.ScheduleItem.GroupName : "Занятие по плаванию",
-                TrainerName = b.ScheduleItem != null && b.ScheduleItem.Trainer != null ? b.ScheduleItem.Trainer.Name : "Инструктор"
-            });
 
-            return Ok(result);
+
+            var items = bookings.Select(b =>
+            {
+                var startAt = b.ScheduleItem?.StartAt;
+                var isCompleted = startAt.HasValue && startAt.Value < now;
+
+                return new
+                {
+                    b.Id,
+                    b.BookedAt,
+                    ScheduleItemId = b.ScheduleItemId,
+                    Date = startAt?.ToString("dd.MM.yyyy") ?? "",
+                    StartAt = startAt,
+                    DayOfWeek = startAt.HasValue
+                        ? culture.TextInfo.ToTitleCase(startAt.Value.ToString("dddd", culture))
+                        : "",
+                    Time = b.ScheduleItem != null
+                        ? $"{b.ScheduleItem.StartAt:HH:mm} - {b.ScheduleItem.EndAt:HH:mm}"
+                        : "",
+                    GroupName = b.ScheduleItem?.GroupName ?? "Занятие по плаванию",
+                    TrainerName = b.ScheduleItem?.Trainer?.Name ?? "Инструктор",
+                    IsCompleted = isCompleted
+                };
+            }).ToList();
+
+            return Ok(new
+            {
+                Upcoming = items.Where(x => !x.IsCompleted).ToList(),
+                Completed = items.Where(x => x.IsCompleted).OrderByDescending(x => x.StartAt).ToList()
+            });
         }
 
 
@@ -94,8 +109,12 @@ namespace Frogling.Api.Controllers
 
             // 4. Находим активный абонемент пользователя с остатком занятий > 0
             var activeSubscription = await _context.Subscriptions
-                .Where(s => s.UserId == userId.Value && s.IsActive && s.RemainingLessons > 0 && s.ExpiryDate > DateTime.UtcNow)
-                .OrderBy(s => s.ExpiryDate) // Сначала те, которые раньше сгорают
+                .Where(s => s.UserId == userId.Value
+                    && s.IsActive
+                    && s.RemainingLessons > 0
+                    && s.ExpiryDate > DateTime.UtcNow)
+                .OrderBy(s => s.Id)
+                .ThenBy(s => s.Id)         // стабильный порядок при одинаковой дате
                 .FirstOrDefaultAsync();
 
             if (activeSubscription == null)
@@ -153,8 +172,8 @@ namespace Frogling.Api.Controllers
                 return NotFound(new { message = "Запись не найдена." });
 
             // Место освобождается при любой отмене.
-            if (booking.ScheduleItem != null)
-                booking.ScheduleItem.AvailableSlots++;
+            //if (booking.ScheduleItem != null)
+            //    booking.ScheduleItem.AvailableSlots++;
 
             var now = DateTime.UtcNow;
 

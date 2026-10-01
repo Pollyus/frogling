@@ -12,7 +12,6 @@ const API_URL = 'https://localhost:7026/api';
 export default function ProfilePage() {
   const navigate = useNavigate();
   
-  // 1. Состояния профиля (ФИО, Email, Телефон, Родитель)
   const [user, setUser] = useState({ 
     fullName: '', 
     email: '', 
@@ -24,26 +23,23 @@ export default function ProfilePage() {
   const [profileError, setProfileError] = useState('');
   const [isSaved, setIsSaved] = useState(false);
 
-  // 2. Состояния абонементов
   const [subscriptions, setSubscriptions] = useState([]);
   const [loadingSubs, setLoadingSubs] = useState(true);
 
-  // 3. Состояния бронирований/записей
-  const [myBookings, setMyBookings] = useState([]);
+  // Разделение записей на предстоящие и завершённые
+  const [bookings, setBookings] = useState({ upcoming: [], completed: [] });
   const [loadingBookings, setLoadingBookings] = useState(true);
   const [bookingsError, setBookingsError] = useState(null);
+  const [bookingTab, setBookingTab] = useState('upcoming'); // 'upcoming' | 'completed'
 
-  // 4. Активный таб
-  const [activeTab, setActiveTab] = useState('info'); // info | subscription | bookings | history
+  const [activeTab, setActiveTab] = useState('info');
 
-  // Состояния для чата с тренером в личном кабинете
-  const [trainers, setTrainers] = useState([]); // Список тренеров, с которыми можно вести диалог
-  const [activeTrainer, setActiveTrainer] = useState(null); // Выбранный тренер для чата
+  const [trainers, setTrainers] = useState([]);
+  const [activeTrainer, setActiveTrainer] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [currentUserId, setCurrentUserId] = useState(null);
 
-  // Загружаем список тренеров при монтировании (чтобы родитель знал, кому писать)
   useEffect(() => {
     const token = localStorage.getItem('auth_token');
     const userStr = localStorage.getItem('user');
@@ -56,8 +52,7 @@ export default function ProfilePage() {
 
     if (!token) return;
 
-    // Получаем список всех тренеров (у них есть свойство userId для чата)
-    fetch(`${API_URL}/trainers`, { // Или ваш эндпоинт со списком тренеров, либо жестко пропишем ниже
+    fetch(`${API_URL}/trainers`, {
       headers: { 'Authorization': `Bearer ${token}` }
     })
     .then(res => res.json())
@@ -65,7 +60,6 @@ export default function ProfilePage() {
       if (Array.isArray(data)) setTrainers(data);
     })
     .catch(() => {
-      // Резервный список тренеров, если публичного эндпоинта нет
       setTrainers([
         { id: 1, name: 'Любовь', userId: '44444444-4444-4444-4444-444444444444', photoUrl: '👩‍🏫', specialization: 'Грудничковое плавание' },
         { id: 2, name: 'Владислав', userId: '22222222-2222-2222-2222-222222222222', photoUrl: '👨‍🏫', specialization: 'Раннее обучение' },
@@ -74,7 +68,6 @@ export default function ProfilePage() {
     });
   }, []);
 
-  // Опрос сообщений чата каждые 3 секунды, если выбран тренер
   useEffect(() => {
     if (!activeTrainer || !activeTrainer.userId) return;
     const token = localStorage.getItem('auth_token');
@@ -94,10 +87,12 @@ export default function ProfilePage() {
     return () => clearInterval(interval);
   }, [activeTrainer]);
 
-  // Отправка сообщения тренеру
-  const handleSendMessage = async (e) => {
-    e.preventDefault();
-    if (!newMessage.trim() || !activeTrainer) return;
+  const handleSendMessage = async () => {
+    if (!messageText.trim() || !activeChatUserId) {
+      alert("Выберите собеседника и введите текст сообщения.");
+      return;
+    }
+
     const token = localStorage.getItem('auth_token');
 
     try {
@@ -108,28 +103,30 @@ export default function ProfilePage() {
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
-          receiverId: activeTrainer.userId,
-          text: newMessage
+          receiverId: activeChatUserId, // Имя совпадает с ReceiverId
+          text: messageText.trim()       // Имя совпадает с Text
         })
       });
 
-      if (res.ok) {
-        const msg = await res.json();
-        setMessages(prev => [...prev, msg]);
-        setNewMessage('');
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.message || 'Ошибка при отправке сообщения');
       }
+
+      const newMessage = await res.json();
+      setMessageText('');
+      setChatMessages((prev) => [...prev, newMessage]); // Добавляем новое сообщение в чат
     } catch (err) {
-      console.error(err);
+      alert(err.message);
     }
   };
 
-  // Загрузка всех данных при монтировании
+
   useEffect(() => {
     const fetchAllData = async () => {
       const token = localStorage.getItem('auth_token');
       const storedUser = localStorage.getItem('user');
 
-      // Шаг A. Первичная загрузка пользователя из localStorage (чтобы UI не моргал)
       if (storedUser) {
         try {
           const parsed = JSON.parse(storedUser);
@@ -140,9 +137,7 @@ export default function ProfilePage() {
             phone: parsed.phone || '',
             parentName: parsed.parentName || ''
           }));
-        } catch (e) {
-          setUser(prev => ({ ...prev, email: storedUser }));
-        }
+        } catch (e) {}
       }
 
       if (!token) {
@@ -152,7 +147,6 @@ export default function ProfilePage() {
         return;
       }
 
-      // Шаг B. Загрузка профиля из базы данных (SQL Server)
       try {
         const profileRes = await fetch(`${API_URL}/profile`, {
           headers: { 'Authorization': `Bearer ${token}` }
@@ -163,12 +157,11 @@ export default function ProfilePage() {
           localStorage.setItem('user', JSON.stringify(profileData));
         }
       } catch (err) {
-        console.error('Ошибка загрузки профиля из БД:', err);
+        console.error('Ошибка загрузки профиля:', err);
       } finally {
         setLoadingProfile(false);
       }
 
-      // Шаг C. Загрузка абонементов
       try {
         const subsRes = await fetch(`${API_URL}/subscriptions`, {
           headers: { 'Authorization': `Bearer ${token}` }
@@ -178,22 +171,25 @@ export default function ProfilePage() {
           setSubscriptions(Array.isArray(subsData) ? subsData : []);
         }
       } catch (err) {
-        console.error('Ошибка загрузки абонементов из БД:', err);
+        console.error('Ошибка загрузки абонементов:', err);
       } finally {
         setLoadingSubs(false);
       }
 
-      // Шаг D. Загрузка записей на занятия
       try {
         const bookingsRes = await fetch(`${API_URL}/bookings`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (bookingsRes.ok) {
-          const bookingsData = await bookingsRes.json();
-          setMyBookings(Array.isArray(bookingsData) ? bookingsData : []);
+          const data = await bookingsRes.json();
+          // Принимаем объект { upcoming: [...], completed: [...] }
+          setBookings({
+            upcoming: data.upcoming || data.Upcoming || [],
+            completed: data.completed || data.Completed || []
+          });
         }
       } catch (err) {
-        console.error('Ошибка загрузки записей из БД:', err);
+        console.error('Ошибка загрузки записей:', err);
         setBookingsError('Не удалось загрузить записи.');
       } finally {
         setLoadingBookings(false);
@@ -203,41 +199,25 @@ export default function ProfilePage() {
     fetchAllData();
   }, []);
 
-  // Функция для сокращения дня недели
   const getShortDay = (dayStr) => {
     if (!dayStr) return '';
     const map = {
-      'понедельник': 'Пн',
-      'вторник': 'Вт',
-      'среда': 'Ср',
-      'четверг': 'Чт',
-      'пятница': 'Пт',
-      'суббота': 'Сб',
-      'воскресенье': 'Вс'
+      'понедельник': 'Пн', 'вторник': 'Вт', 'среда': 'Ср',
+      'четверг': 'Чт', 'пятница': 'Пт', 'суббота': 'Сб', 'воскресенье': 'Вс'
     };
-    const lower = dayStr.trim().toLowerCase();
-    return map[lower] || dayStr; // Если не найдено, вернет исходный текст
+    return map[dayStr.trim().toLowerCase()] || dayStr;
   };
 
-
-  // Вычисляем активный абонемент
   const activeSub = Array.isArray(subscriptions)
     ? subscriptions.find(s => s.isActive && new Date(s.expiryDate) > new Date())
     : null;
 
-  // ВЫЧИСЛЯЕМ БЛИЖАЙШУЮ ТРЕНИРОВКУ:
-  // Берем первую запись из списка (сервер сортирует их по дате)
-  const nextBooking = Array.isArray(myBookings) && myBookings.length > 0 
-    ? myBookings[0] 
-    : null;
+  const nextBooking = bookings.upcoming.length > 0 ? bookings.upcoming[0] : null;
 
-  // Форматируем текст для плашки (например, "Пн, 10:00" или "10.10 в 16:30")
   const nextBookingText = nextBooking 
-    ? `${getShortDay(nextBooking.dayOfWeek) || ''} ${nextBooking.time ? nextBooking.time.split(' - ')[0] : ''}`.trim()
+    ? `${getShortDay(nextBooking.dayOfWeek || nextBooking.DayOfWeek) || ''} ${nextBooking.time ? nextBooking.time.split(' - ')[0] : nextBooking.Time?.split(' - ')[0] || ''}`.trim()
     : 'Записей нет';
 
-
-  // Сохранение изменений в профиле (PUT запрос на бэкенд)
   const handleSave = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem('auth_token');
@@ -264,10 +244,7 @@ export default function ProfilePage() {
       });
 
       const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Ошибка сохранения профиля');
-      }
+      if (!response.ok) throw new Error(data.message || 'Ошибка сохранения профиля');
 
       setUser(data);
       localStorage.setItem('user', JSON.stringify(data));
@@ -278,7 +255,6 @@ export default function ProfilePage() {
     }
   };
 
-  // Отмена записи
   const cancelBooking = async (bookingId) => {
     if (!window.confirm('Вы действительно хотите отменить эту запись на занятие?')) return;
 
@@ -288,41 +264,38 @@ export default function ProfilePage() {
     try {
       const res = await fetch(`${API_URL}/bookings/${bookingId}`, {
         method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        headers: { 'Authorization': `Bearer ${token}` }
       });
 
       const text = await res.text();
       let data = {};
       try { data = text ? JSON.parse(text) : {}; } catch {}
 
-      if (!res.ok) {
-        throw new Error(data.message || 'Ошибка при отмене записи');
-      }
+      if (!res.ok) throw new Error(data.message || 'Ошибка при отмене записи');
 
       alert(data.message || 'Запись успешно отменена!');
 
-      // Удаляем из списка в UI
-      setMyBookings(prev => prev.filter(b => b.id !== bookingId));
+      // Удаляем из предстоящих
+      setBookings(prev => ({
+        ...prev,
+        upcoming: prev.upcoming.filter(b => (b.id || b.Id) !== bookingId)
+      }));
 
-      // Если занятие было возвращено на абонемент, обновляем абонементы в UI
       if (data.lessonReturned) {
-        setSubscriptions(prev => {
-          return prev.map(sub => {
-            // Если у абонемента есть место для возврата, пополняем
-            if (sub.remainingLessons < sub.totalLessons) {
-              return { ...sub, remainingLessons: sub.remainingLessons + 1 };
-            }
-            return sub;
-          });
-        });
+        setSubscriptions(prev => prev.map(sub => {
+          if (sub.remainingLessons < sub.totalLessons) {
+            return { ...sub, remainingLessons: sub.remainingLessons + 1 };
+          }
+          return sub;
+        }));
       }
-
     } catch (err) {
       alert(err.message || 'Не удалось отменить запись.');
     }
   };
+
+  const currentList = bookingTab === 'upcoming' ? bookings.upcoming : bookings.completed;
+  const totalBookingsCount = bookings.upcoming.length + bookings.completed.length;
 
   return (
     <div className="profile-container-light">
@@ -356,7 +329,7 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* Быстрая статистика по абонементам */}
+        {/* Статистика */}
         <div className="stats-cards-grid">
           <div className="stat-card">
             <div className="stat-icon-wrap bg-emerald-100 text-emerald-700">
@@ -391,7 +364,7 @@ export default function ProfilePage() {
                 {nextBookingText}
               </div>
               <div className="stat-label">
-                {nextBooking ? (nextBooking.groupName || 'Ближайшая тренировка') : 'Ближайшая тренировка'}
+                {nextBooking ? (nextBooking.groupName || nextBooking.GroupName || 'Ближайшая тренировка') : 'Ближайшая тренировка'}
               </div>
             </div>
           </div>
@@ -418,7 +391,7 @@ export default function ProfilePage() {
             className={`profile-tab-btn ${activeTab === 'bookings' ? 'active' : ''}`}
             onClick={() => setActiveTab('bookings')}
           >
-            Мои записи ({myBookings.length})
+            Мои записи ({totalBookingsCount})
           </button>
           <button 
             type="button"
@@ -560,7 +533,6 @@ export default function ProfilePage() {
 
                 <div className="sub-counter flex justify-between items-center text-sm">
                   <span>Осталось <strong>{activeSub.remainingLessons} занятий</strong> из {activeSub.totalLessons}</span>
-                  <br/>
                   <span className="text-xs text-slate-400">
                     Дата покупки: {new Date(activeSub.purchaseDate).toLocaleDateString('ru-RU')}
                   </span>
@@ -571,10 +543,7 @@ export default function ProfilePage() {
                 <ShoppingBag className="w-12 h-12 text-slate-300 mx-auto mb-3" />
                 <h3 className="text-base font-bold text-slate-700 mb-1">У вас пока нет активного абонемента</h3>
                 <p className="text-xs text-slate-500 mb-4">Приобретите подходящий тариф, чтобы начать посещать занятия</p>
-                <button 
-                  onClick={() => navigate('/services')} 
-                  className="btn-save-primary"
-                >
+                <button onClick={() => navigate('/services')} className="btn-save-primary">
                   Купить абонемент
                 </button>
               </div>
@@ -582,12 +551,31 @@ export default function ProfilePage() {
           </div>
         )}
 
-        {/* Вкладка 3: Мои записи */}
+        {/* Вкладка 3: Мои записи (Предстоящие / Завершённые) */}
         {activeTab === 'bookings' && (
           <div className="profile-main-card">
             <h2 className="profile-section-title">
-              <Clock className="w-5 h-5 text-emerald-600" /> Записанные тренировки в расписании
+              <Clock className="w-5 h-5 text-emerald-600" /> Мои записи на тренировки
             </h2>
+
+            {/* Под-вкладки */}
+            <div className="profile-booking-tabs">
+              <button
+                type="button"
+                className={bookingTab === 'upcoming' ? 'active' : ''}
+                onClick={() => setBookingTab('upcoming')}
+              >
+                Записанные тренировки ({bookings.upcoming.length})
+              </button>
+
+              <button
+                type="button"
+                className={bookingTab === 'completed' ? 'active' : ''}
+                onClick={() => setBookingTab('completed')}
+              >
+                Завершённые ({bookings.completed.length})
+              </button>
+            </div>
 
             {loadingBookings ? (
               <div className="flex items-center gap-2 text-slate-500 py-6 justify-center">
@@ -596,35 +584,50 @@ export default function ProfilePage() {
               </div>
             ) : bookingsError ? (
               <div className="text-red-500 text-center py-6">{bookingsError}</div>
-            ) : myBookings.length > 0 ? (
+            ) : currentList.length > 0 ? (
               <div className="visits-list">
-                {myBookings.map((booking) => (
-                  <div key={booking.id} className="visit-item flex justify-between items-center">
-                    <div className="visit-info">
-                      <span className="visit-date">{booking.groupName}</span>
-                      <span className="visit-coach">
-                        📅 {booking.dayOfWeek}, {booking.time} | Инструктор: {booking.trainerName}
-                      </span>
+                {currentList.map((booking) => {
+                  const bId = booking.id || booking.Id;
+                  const gName = booking.groupName || booking.GroupName;
+                  const bDate = booking.date || booking.Date;
+                  const bDay = booking.dayOfWeek || booking.DayOfWeek;
+                  const bTime = booking.time || booking.Time;
+                  const tName = booking.trainerName || booking.TrainerName;
+
+                  return (
+                    <div key={bId} className="visit-item flex justify-between items-center">
+                      <div className="visit-info">
+                        <span className="visit-date">{gName}</span>
+                        <span className="visit-coach">
+                          📅 {bDate}, {bDay}, {bTime} | Инструктор: {tName}
+                        </span>
+                      </div>
+
+                      {/* Кнопка отмены доступна только для предстоящих занятий */}
+                      {bookingTab === 'upcoming' && (
+                        <button 
+                          type="button"
+                          onClick={() => cancelBooking(bId)}
+                          className="btn-cancel-booking"
+                        >
+                          Отменить запись
+                        </button>
+                      )}
                     </div>
-                    <button 
-                      type="button"
-                      onClick={() => cancelBooking(booking.id)}
-                      className="btn-cancel-booking"
-                    >
-                      Отменить запись
-                    </button>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               <div className="text-center py-8 text-slate-500 text-sm">
-                У вас пока нет активных записей на занятия. Вы можете записаться на странице «Расписание».
+                {bookingTab === 'upcoming' 
+                  ? 'У вас пока нет активных записей на занятия. Вы можете записаться на странице «Расписание».'
+                  : 'Завершённых тренировок пока нет.'}
               </div>
             )}
           </div>
         )}
 
-        {/* Вкладка 4: История покупок из БД SQL Server */}
+        {/* Вкладка 4: История покупок */}
         {activeTab === 'history' && (
           <div className="profile-main-card">
             <h2 className="profile-section-title">
@@ -660,7 +663,7 @@ export default function ProfilePage() {
           </div>
         )}
 
-        {/* Вкладка: Чат с тренерами */}
+        {/* Вкладка 5: Чат */}
         {activeTab === 'chat' && (
           <div className="profile-main-card">
             <h2 className="profile-section-title">
@@ -669,7 +672,6 @@ export default function ProfilePage() {
 
             <div className="client-chat-layout" style={{ display: 'grid', gridTemplateColumns: '260px 1fr', gap: '20px', minHeight: '400px', marginTop: '20px' }}>
               
-              {/* Список тренеров слева */}
               <div className="trainers-list-sidebar" style={{ borderRight: '1px solid #e2e8f0', paddingRight: '16px' }}>
                 <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Выберите тренера:</p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -699,16 +701,13 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              {/* Область диалога справа */}
               <div className="chat-conversation-area" style={{ display: 'flex', flexDirection: 'column', height: '420px', background: '#f8fafc', borderRadius: '16px', border: '1px solid #e2e8f0', overflow: 'hidden' }}>
                 {activeTrainer ? (
                   <>
-                    {/* Шапка чата */}
                     <div style={{ padding: '14px 18px', background: '#ffffff', borderBottom: '1px solid #e2e8f0', fontWeight: '700', fontSize: '14px', color: '#0f172a' }}>
                       Диалог с тренером: {activeTrainer.name}
                     </div>
 
-                    {/* Сообщения */}
                     <div style={{ flex: 1, padding: '16px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                       {messages.length > 0 ? (
                         messages.map(m => {
@@ -739,7 +738,6 @@ export default function ProfilePage() {
                       )}
                     </div>
 
-                    {/* Инпут отправки */}
                     <form onSubmit={handleSendMessage} style={{ display: 'flex', padding: '12px', background: '#ffffff', borderTop: '1px solid #e2e8f0', gap: '8px' }}>
                       <input
                         type="text"
