@@ -507,3 +507,362 @@
   cursor: not-allowed;
   transform: none;
 }
+/* Отдельный стиль выделенного чата */
+.client-chat-layout {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  min-height: 460px;
+  margin-top: 18px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  background: white;
+}
+
+.trainers-list-sidebar {
+  padding: 16px;
+  border-right: 1px solid #e2e8f0;
+  background: #fff;
+}
+
+.sidebar-subtitle {
+  margin: 0 0 12px;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.trainers-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.trainer-chat-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px;
+  border: 1px solid #e2e8f0;
+  border-radius: 13px;
+  background: #f8fafc;
+  cursor: pointer;
+  transition: .18s ease;
+}
+
+.trainer-chat-card:hover { background: #f1f5f9; }
+.trainer-chat-card.selected { border-color: #b2db6b; background: #eef8ea; }
+.trainer-avatar-emoji { font-size: 24px; }
+.trainer-chat-info { min-width: 0; }
+.trainer-chat-name { color: #0f172a; font-size: 13px; font-weight: 700; }
+.trainer-chat-spec { color: #64748b; font-size: 11px; }
+
+.chat-conversation-area {
+  display: flex;
+  min-width: 0;
+  min-height: 460px;
+  flex-direction: column;
+  overflow: hidden;
+  background: #f8fafc;
+}
+
+.chat-header-info {
+  display: flex;
+  align-items: center;
+  padding: 14px 18px;
+  border-bottom: 1px solid #e2e8f0;
+  background: #fff;
+  color: #0f172a;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.status-indicator {
+  width: 8px;
+  height: 8px;
+  margin-right: 9px;
+  border-radius: 50%;
+  background: #74b83b;
+}
+
+.chat-messages-container {
+  display: flex;
+  flex: 1;
+  min-height: 250px;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  padding: 18px;
+}
+
+.chat-loading-state,
+.chat-empty-state {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px;
+  color: #94a3b8;
+  font-size: 13px;
+  text-align: center;
+}
+
+.message-row { display: flex; width: 100%; }
+.my-message { justify-content: flex-end; }
+.their-message { justify-content: flex-start; }
+
+.message-bubble {
+  position: relative;
+  max-width: min(78%, 480px);
+  padding: 10px 13px;
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  color: #1e293b;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.my-message .message-bubble {
+  border-color: #74b83b;
+  border-bottom-right-radius: 4px;
+  background: #74b83b;
+  color: #fff;
+}
+
+.their-message .message-bubble { border-bottom-left-radius: 4px; }
+.message-text { margin: 0; white-space: pre-wrap; }
+
+.message-footer-info {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 3px;
+  margin-top: 5px;
+  font-size: 10px;
+  opacity: .75;
+}
+
+.chat-input-row {
+  display: flex;
+  gap: 9px;
+  padding: 12px;
+  border-top: 1px solid #e2e8f0;
+  background: #fff;
+}
+
+.input-group-relative { position: relative; display: flex; flex: 1; min-width: 0; }
+
+/* Поле ввода сообщения в чате */
+.chat-text-input {
+  width: 100%;
+  min-width: 0;
+  /* Увеличен левый отступ (было 42px -> стало 48px), чтобы текст не налезал на смайлик */
+  padding: 12px 14px 12px 48px !important;
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  outline: none;
+  background: #f8fafc;
+  color: #0f172a;
+  font-family: inherit;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.chat-text-input:focus {
+  border-color: #74b83b;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(116, 184, 59, 0.15);
+}
+
+/* Кнопка открытия эмодзи внутри поля */
+.emoji-trigger-btn {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 14px; /* Четкий отступ от левого края */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+/* Меню эмодзи при открытии (сдвинуто чуть выше, чтобы не перекрывать поле) */
+.emoji-menu-popover {
+  position: absolute;
+  z-index: 50;
+  bottom: 56px;
+  left: 10px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding: 1
+2px;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
+}
+
+
+.btn-send {
+  display: grid;
+  width: 42px;
+  flex: 0 0 42px;
+  place-items: center;
+  border: 0;
+  border-radius: 12px;
+  background: #74b83b;
+  color: white;
+  cursor: pointer;
+}
+
+.btn-send:hover { background: #559c25; }
+
+.emoji-menu-popover {
+  position: absolute;
+  z-index: 50;
+  bottom: 56px;
+  left: 10px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding: 1
+2px;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
+}
+
+.emoji-item { cursor: pointer; font-size: 19px; }
+.emoji-item:hover { transform: scale(1.2); }
+
+.btn-open-reactions {
+  position: absolute;
+  top: 50%;
+  right: -27px;
+  display: none;
+  width: 23px;
+  height: 23px;
+  border: 1px solid #cbd5e1;
+  border-radius: 50%;
+  background: #fff;
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+.message-bubble:hover .btn-open-reactions { display: block; }
+.my-message .btn-open-reactions { right: auto; left: -27px; }
+
+.reactions-menu {
+  position: absolute;
+  z-index: 6;
+  right: 0;
+  bottom: calc(100% + 8px);
+  display: flex;
+  gap: 5px;
+  padding: 6px 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 8px 20px rgba(15,23,42,.15);
+}
+
+.reactions-menu button { padding: 3px; border: 0; background: transparent; font-size: 18px; cursor: pointer; }
+.message-reaction-badge { position: absolute; right: 10px; bottom: -11px; padding: 1px 5px; border: 1px solid #e2e8f0; border-radius: 10px; background: #fff; font-size: 12px; }
+
+@media (max-width: 640px) {
+  .client-chat-layout { grid-template-columns: 1fr; }
+  .trainers-list-sidebar { border-right: 0; border-bottom: 1px solid #e2e8f0; }
+  .trainers-stack { flex-direction: row; overflow-x: auto; }
+  .trainer-chat-card { min-width: 175px; }
+}
+/* Стили для вкладок внутри «Мои записи» */
+.profile-booking-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 14px;
+}
+
+.profile-booking-tabs button {
+  border: 1px solid #cbd5e1;
+  border-radius: 9999px;
+  padding: 8px 16px;
+  background: #f8fafc;
+  color: #475569;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.profile-booking-tabs button:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.profile-booking-tabs button.active {
+  color: #ffffff;
+  background: #74b83b;
+  border-color: #74b83b;
+  box-shadow: 0 4px 12px rgba(116, 184, 59, 0.25);
+}
+
+/* 1. Ограничиваем общую высоту чата (было min-height: 460px / 550px) */
+.client-chat-layout {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  height: 400px; /* Фиксированная комфортная высота всего блока чата */
+  margin-top: 18px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  background: white;
+}
+
+/* 2. Настраиваем боковую панель тренеров, чтобы она не вылезала за пределы 400px */
+.trainers-list-sidebar {
+  padding: 16px;
+  border-right: 1px solid #e2e8f0;
+  background: #fff;
+  height: 100%;
+  overflow-y: auto; /* Включает скролл списка тренеров, если их станет много */
+}
+
+.trainers-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* 3. Область диалога теперь занимает ровно 100% от высоты родителя (400px) */
+.chat-conversation-area {
+  display: flex;
+  min-width: 0;
+  height: 100%; /* Строго по высоте контейнера */
+  flex-direction: column;
+  overflow: hidden;
+  background: #f8fafc;
+}
+
+/* 4. Контейнер сообщений автоматически скроллится при заполнении */
+.chat-messages-container {
+  display: flex;
+  flex: 1; /* Занимает всё свободное место между шапкой и вводом текста */
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto; /* Включает внутренний скролл для переписки */
+  padding: 18px;
+  background: #f8fafc;
+}

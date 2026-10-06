@@ -86,7 +86,7 @@ namespace Frogling.Api.Controllers
                 scheduleItem.GroupName,
                 date = scheduleItem.StartAt.ToString("dd.MM.yyyy"),
                 startTime = scheduleItem.StartAt.ToString("HH:mm"),
-                endTime = scheduleItem.EndAt.ToString("HH:mm"),
+                endTime = scheduleItem.StartAt.AddMinutes(scheduleItem.DurationMinutes).ToString("HH:mm"),
                 attendees = attendees
             };
 

@@ -8,7 +8,8 @@ namespace Frogling.Api.Models
     {
         public int Id { get; set; }
 
-        public Guid SenderId { get; set; } // Отправитель (тренер или родитель)
+        public Guid SenderId { get; set; } // Отправитель
+
 
         public Guid ReceiverId { get; set; } // Получатель
 
@@ -18,7 +19,8 @@ namespace Frogling.Api.Models
         public DateTime SentAt { get; set; } = DateTime.UtcNow;
 
         public bool IsRead { get; set; } = false;
-        public string Emoji { get; set; }
+
+        public string? Emoji { get; set; } // <-- ВАЖНО: добавлен знак ? (nullable)
     }
 
     // DTO для отправки нового сообщения
@@ -29,6 +31,7 @@ namespace Frogling.Api.Models
 
         [Required]
         public string Text { get; set; } = string.Empty;
-        public string Emoji { get; set; }
+
+        public string? Emoji { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using Frogling.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Frogling.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20261001134328_AddChatMessageEmoji")]
+    partial class AddChatMessageEmoji
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -70,6 +73,7 @@ namespace Frogling.Api.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Emoji")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsRead")
@@ -140,7 +144,7 @@ namespace Frogling.Api.Migrations
                             Description = "Получите 10% скидку на покупку любого абонемента сразу после успешного пробного занятия. Отличный старт для новых приключений!",
                             DiscountAmount = 0m,
                             DiscountPercentage = 10,
-                            ExpiryDate = new DateTime(2026, 10, 31, 14, 15, 8, 640, DateTimeKind.Utc).AddTicks(8135),
+                            ExpiryDate = new DateTime(2026, 10, 31, 13, 43, 27, 984, DateTimeKind.Utc).AddTicks(6086),
                             IsActive = true,
                             Title = "Первые шаги"
                         },
@@ -151,7 +155,7 @@ namespace Frogling.Api.Migrations
                             Description = "Если у вас двое и более детей, получите дополнительную скидку 10% на абонемент для второго и каждого следующего ребёнка!",
                             DiscountAmount = 0m,
                             DiscountPercentage = 10,
-                            ExpiryDate = new DateTime(2027, 10, 1, 14, 15, 8, 640, DateTimeKind.Utc).AddTicks(8148),
+                            ExpiryDate = new DateTime(2027, 10, 1, 13, 43, 27, 984, DateTimeKind.Utc).AddTicks(6100),
                             IsActive = true,
                             Title = "Семейная выгода"
                         },
@@ -162,7 +166,7 @@ namespace Frogling.Api.Migrations
                             Description = "Поделитесь своими впечатлениями о нас в любой социальной сети и получите 5% скидку на следующий абонемент.",
                             DiscountAmount = 0m,
                             DiscountPercentage = 5,
-                            ExpiryDate = new DateTime(2026, 10, 31, 14, 15, 8, 640, DateTimeKind.Utc).AddTicks(8158),
+                            ExpiryDate = new DateTime(2026, 10, 31, 13, 43, 27, 984, DateTimeKind.Utc).AddTicks(6109),
                             IsActive = true,
                             Title = "Бонус за отзыв"
                         },
@@ -173,7 +177,7 @@ namespace Frogling.Api.Migrations
                             Description = "Пригласите друга в наш бассейн, и после его первого оплаченного занятия вы получите одно занятие бесплатно!",
                             DiscountAmount = 1600m,
                             DiscountPercentage = 0,
-                            ExpiryDate = new DateTime(2027, 10, 1, 14, 15, 8, 640, DateTimeKind.Utc).AddTicks(8167),
+                            ExpiryDate = new DateTime(2027, 10, 1, 13, 43, 27, 984, DateTimeKind.Utc).AddTicks(6116),
                             IsActive = true,
                             Title = "Двойная выгода: приведи друга!"
                         },
@@ -184,7 +188,7 @@ namespace Frogling.Api.Migrations
                             Description = "Мы дарим бесплатное занятие вашему малышу в его День рождения, а также в течение двух дней до или после него! Празднуем вместе!",
                             DiscountAmount = 1600m,
                             DiscountPercentage = 0,
-                            ExpiryDate = new DateTime(2026, 10, 8, 14, 15, 8, 640, DateTimeKind.Utc).AddTicks(8170),
+                            ExpiryDate = new DateTime(2026, 10, 8, 13, 43, 27, 984, DateTimeKind.Utc).AddTicks(6119),
                             IsActive = true,
                             Title = "Подарок ко дню рождения малыша"
                         },
@@ -195,7 +199,7 @@ namespace Frogling.Api.Migrations
                             Description = "Для детей участников СВО предоставляется 20% скидка на любой вид абонементов. Мы ценим ваш вклад!",
                             DiscountAmount = 0m,
                             DiscountPercentage = 20,
-                            ExpiryDate = new DateTime(2026, 10, 31, 14, 15, 8, 640, DateTimeKind.Utc).AddTicks(8172),
+                            ExpiryDate = new DateTime(2026, 10, 31, 13, 43, 27, 984, DateTimeKind.Utc).AddTicks(6122),
                             IsActive = true,
                             Title = "Поддержка героев"
                         },
@@ -206,7 +210,7 @@ namespace Frogling.Api.Migrations
                             Description = "Соберите две карточки лабиринта и получите бесплатное занятие! Отслеживайте прогресс и не платите за дополнительное занятие!",
                             DiscountAmount = 1600m,
                             DiscountPercentage = 0,
-                            ExpiryDate = new DateTime(2026, 10, 31, 14, 15, 8, 640, DateTimeKind.Utc).AddTicks(8174),
+                            ExpiryDate = new DateTime(2026, 10, 31, 13, 43, 27, 984, DateTimeKind.Utc).AddTicks(6124),
                             IsActive = true,
                             Title = "Найди сокровища: карточки лабиринта"
                         },
@@ -217,7 +221,7 @@ namespace Frogling.Api.Migrations
                             Description = "Продлите свой абонемент сразу после окончания предыдущего и получите 10% скидку на следующий абонемент! Ценим вашу лояльность!",
                             DiscountAmount = 0m,
                             DiscountPercentage = 10,
-                            ExpiryDate = new DateTime(2026, 10, 31, 14, 15, 8, 640, DateTimeKind.Utc).AddTicks(8177),
+                            ExpiryDate = new DateTime(2026, 10, 31, 13, 43, 27, 984, DateTimeKind.Utc).AddTicks(6126),
                             IsActive = true,
                             Title = "Верность: скидка за продление"
                         });
@@ -685,48 +689,48 @@ namespace Frogling.Api.Migrations
                         new
                         {
                             Id = new Guid("11111111-1111-1111-1111-111111111111"),
-                            CreatedAt = new DateTime(2026, 10, 1, 14, 15, 8, 640, DateTimeKind.Utc).AddTicks(7809),
+                            CreatedAt = new DateTime(2026, 10, 1, 13, 43, 27, 984, DateTimeKind.Utc).AddTicks(5733),
                             Email = "admin@frogling.ru",
                             FullName = "Главный Администратор",
-                            MedicalCheckDate = new DateTime(2026, 10, 1, 14, 15, 8, 640, DateTimeKind.Utc).AddTicks(7848),
+                            MedicalCheckDate = new DateTime(2026, 10, 1, 13, 43, 27, 984, DateTimeKind.Utc).AddTicks(5769),
                             ParentName = "",
-                            PasswordHash = "$2a$11$DKGUPCHqBrxUTEU3W3hpBOMGUrFIddDYKPVDfUgZL6/oDmPkxY/qG",
+                            PasswordHash = "$2a$11$Qfy3Xc.BUAwTI8i5Rza60.aFOqJRoivd9TdTC/0Op0L65udXC6Roi",
                             Phone = "",
                             Role = "Admin"
                         },
                         new
                         {
                             Id = new Guid("44444444-4444-4444-4444-444444444444"),
-                            CreatedAt = new DateTime(2026, 10, 1, 14, 15, 8, 640, DateTimeKind.Utc).AddTicks(7862),
+                            CreatedAt = new DateTime(2026, 10, 1, 13, 43, 27, 984, DateTimeKind.Utc).AddTicks(5777),
                             Email = "luba@frogling.ru",
                             FullName = "Любовь (Тренер)",
-                            MedicalCheckDate = new DateTime(2026, 10, 1, 14, 15, 8, 640, DateTimeKind.Utc).AddTicks(7862),
+                            MedicalCheckDate = new DateTime(2026, 10, 1, 13, 43, 27, 984, DateTimeKind.Utc).AddTicks(5777),
                             ParentName = "",
-                            PasswordHash = "$2a$11$ZCf.56lG6mEdY7n4gn/euurbG1W3v8H27IjzMbu0jNCVykoP2oLjS",
+                            PasswordHash = "$2a$11$FnGy4Ey3L6fYHEXylAyCkeyLieIcXJXiRikxTPWsGL3FBf/SVmeo6",
                             Phone = "",
                             Role = "Trainer"
                         },
                         new
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222222"),
-                            CreatedAt = new DateTime(2026, 10, 1, 14, 15, 8, 640, DateTimeKind.Utc).AddTicks(7870),
+                            CreatedAt = new DateTime(2026, 10, 1, 13, 43, 27, 984, DateTimeKind.Utc).AddTicks(5783),
                             Email = "vlad@frogling.ru",
                             FullName = "Владислав (Тренер)",
-                            MedicalCheckDate = new DateTime(2026, 10, 1, 14, 15, 8, 640, DateTimeKind.Utc).AddTicks(7870),
+                            MedicalCheckDate = new DateTime(2026, 10, 1, 13, 43, 27, 984, DateTimeKind.Utc).AddTicks(5783),
                             ParentName = "",
-                            PasswordHash = "$2a$11$ZCf.56lG6mEdY7n4gn/euurbG1W3v8H27IjzMbu0jNCVykoP2oLjS",
+                            PasswordHash = "$2a$11$FnGy4Ey3L6fYHEXylAyCkeyLieIcXJXiRikxTPWsGL3FBf/SVmeo6",
                             Phone = "",
                             Role = "Trainer"
                         },
                         new
                         {
                             Id = new Guid("33333333-3333-3333-3333-333333333333"),
-                            CreatedAt = new DateTime(2026, 10, 1, 14, 15, 8, 640, DateTimeKind.Utc).AddTicks(7875),
+                            CreatedAt = new DateTime(2026, 10, 1, 13, 43, 27, 984, DateTimeKind.Utc).AddTicks(5787),
                             Email = "lida@frogling.ru",
                             FullName = "Лидия (Тренер)",
-                            MedicalCheckDate = new DateTime(2026, 10, 1, 14, 15, 8, 640, DateTimeKind.Utc).AddTicks(7874),
+                            MedicalCheckDate = new DateTime(2026, 10, 1, 13, 43, 27, 984, DateTimeKind.Utc).AddTicks(5787),
                             ParentName = "",
-                            PasswordHash = "$2a$11$ZCf.56lG6mEdY7n4gn/euurbG1W3v8H27IjzMbu0jNCVykoP2oLjS",
+                            PasswordHash = "$2a$11$FnGy4Ey3L6fYHEXylAyCkeyLieIcXJXiRikxTPWsGL3FBf/SVmeo6",
                             Phone = "",
                             Role = "Trainer"
                         });

@@ -6,6 +6,7 @@ import {
   ShoppingBag, AlertCircle, Loader2, Droplet, MessageSquare
 } from 'lucide-react';
 import './ProfilePage.css';
+import ChatSection from '../Chat/ChatSection'; // Импортируем отдельный компонент чата
 
 const API_URL = 'https://localhost:7026/api';
 
@@ -35,9 +36,6 @@ export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState('info');
 
   const [trainers, setTrainers] = useState([]);
-  const [activeTrainer, setActiveTrainer] = useState(null);
-  const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState('');
   const [currentUserId, setCurrentUserId] = useState(null);
 
   useEffect(() => {
@@ -52,7 +50,7 @@ export default function ProfilePage() {
 
     if (!token) return;
 
-    fetch(`${API_URL}/trainers`, {
+    fetch(`${API_URL}/trainer`, { // исправлен роут на /trainer
       headers: { 'Authorization': `Bearer ${token}` }
     })
     .then(res => res.json())
@@ -67,60 +65,6 @@ export default function ProfilePage() {
       ]);
     });
   }, []);
-
-  useEffect(() => {
-    if (!activeTrainer || !activeTrainer.userId) return;
-    const token = localStorage.getItem('auth_token');
-
-    const fetchMessages = () => {
-      fetch(`${API_URL}/chat/history/${activeTrainer.userId}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (Array.isArray(data)) setMessages(data);
-      });
-    };
-
-    fetchMessages();
-    const interval = setInterval(fetchMessages, 3000);
-    return () => clearInterval(interval);
-  }, [activeTrainer]);
-
-  const handleSendMessage = async () => {
-    if (!messageText.trim() || !activeChatUserId) {
-      alert("Выберите собеседника и введите текст сообщения.");
-      return;
-    }
-
-    const token = localStorage.getItem('auth_token');
-
-    try {
-      const res = await fetch(`${API_URL}/chat/send`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          receiverId: activeChatUserId, // Имя совпадает с ReceiverId
-          text: messageText.trim()       // Имя совпадает с Text
-        })
-      });
-
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.message || 'Ошибка при отправке сообщения');
-      }
-
-      const newMessage = await res.json();
-      setMessageText('');
-      setChatMessages((prev) => [...prev, newMessage]); // Добавляем новое сообщение в чат
-    } catch (err) {
-      alert(err.message);
-    }
-  };
-
 
   useEffect(() => {
     const fetchAllData = async () => {
@@ -182,7 +126,6 @@ export default function ProfilePage() {
         });
         if (bookingsRes.ok) {
           const data = await bookingsRes.json();
-          // Принимаем объект { upcoming: [...], completed: [...] }
           setBookings({
             upcoming: data.upcoming || data.Upcoming || [],
             completed: data.completed || data.Completed || []
@@ -215,7 +158,7 @@ export default function ProfilePage() {
   const nextBooking = bookings.upcoming.length > 0 ? bookings.upcoming[0] : null;
 
   const nextBookingText = nextBooking 
-    ? `${getShortDay(nextBooking.dayOfWeek || nextBooking.DayOfWeek) || ''} ${nextBooking.time ? nextBooking.time.split(' - ')[0] : nextBooking.Time?.split(' - ')[0] || ''}`.trim()
+    ? ` ${getShortDay(nextBooking.dayOfWeek || nextBooking.DayOfWeek) || ''} ${nextBooking.time ? nextBooking.time.split(' - ')[0] : nextBooking.Time?.split(' - ')[0] || ''}\n${nextBooking.date || ''}`.trim() 
     : 'Записей нет';
 
   const handleSave = async (e) => {
@@ -275,7 +218,6 @@ export default function ProfilePage() {
 
       alert(data.message || 'Запись успешно отменена!');
 
-      // Удаляем из предстоящих
       setBookings(prev => ({
         ...prev,
         upcoming: prev.upcoming.filter(b => (b.id || b.Id) !== bookingId)
@@ -296,6 +238,16 @@ export default function ProfilePage() {
 
   const currentList = bookingTab === 'upcoming' ? bookings.upcoming : bookings.completed;
   const totalBookingsCount = bookings.upcoming.length + bookings.completed.length;
+
+  // Находим ВСЕ активные абонементы, срок которых еще не истек
+  const activeSubs = Array.isArray(subscriptions)
+    ? subscriptions.filter(s => s.isActive && new Date(s.expiryDate) > new Date())
+    : [];
+
+// Подсчет общей статистики по всем действующим абонементам:
+  const totalRemainingLessons = activeSubs.reduce((acc, s) => acc + (s.remainingLessons || 0), 0);
+  const totalAllLessons = activeSubs.reduce((acc, s) => acc + (s.totalLessons || 0), 0);
+  const totalAttendedLessons = totalAllLessons - totalRemainingLessons;
 
   return (
     <div className="profile-container-light">
@@ -331,36 +283,39 @@ export default function ProfilePage() {
 
         {/* Статистика */}
         <div className="stats-cards-grid">
+          {/* Карточка 1: Посещённых занятий */}
           <div className="stat-card">
             <div className="stat-icon-wrap bg-emerald-100 text-emerald-700">
               <Activity className="w-6 h-6" />
             </div>
             <div>
               <div className="stat-number">
-                {activeSub ? activeSub.totalLessons - activeSub.remainingLessons : 0}
+                {totalAttendedLessons > 0 ? totalAttendedLessons : 0}
               </div>
               <div className="stat-label">Посещённых занятий</div>
             </div>
           </div>
 
+          {/* Карточка 2: Остаток по абонементу */}
           <div className="stat-card">
             <div className="stat-icon-wrap bg-blue-100 text-blue-700">
               <CreditCard className="w-6 h-6" />
             </div>
             <div>
               <div className="stat-number">
-                {activeSub ? `${activeSub.remainingLessons} из ${activeSub.totalLessons}` : '0 из 0'}
+                {activeSubs.length > 0 ? `${totalRemainingLessons} из ${totalAllLessons}` : '0 из 0'}
               </div>
-              <div className="stat-label">Остаток по абонементу</div>
+              <div className="stat-label">Остаток по абонементам</div>
             </div>
           </div>
+
 
           <div className="stat-card">
             <div className="stat-icon-wrap bg-purple-100 text-purple-700">
               <Clock className="w-6 h-6" />
             </div>
             <div>
-              <div className="stat-number" style={{ fontSize: nextBooking ? '17px' : '20px' }}>
+              <div className="stat-number" style={{whiteSpace: 'pre-line', fontSize: nextBooking ? '17px' : '20px' }}>
                 {nextBookingText}
               </div>
               <div className="stat-label">
@@ -500,11 +455,11 @@ export default function ProfilePage() {
           </div>
         )}
 
-        {/* Вкладка 2: Активный абонемент */}
+        {/* Вкладка 2: Активные абонементы */}
         {activeTab === 'subscription' && (
           <div className="profile-main-card">
             <h2 className="profile-section-title">
-              <CreditCard className="w-5 h-5 text-emerald-600" /> Текущий абонемент в бассейне
+              <CreditCard className="w-5 h-5 text-emerald-600" /> Текущие абонементы в бассейне
             </h2>
 
             {loadingSubs ? (
@@ -512,37 +467,49 @@ export default function ProfilePage() {
                 <Loader2 className="w-5 h-5 animate-spin text-emerald-600" />
                 <span>Загрузка данных из базы...</span>
               </div>
-            ) : activeSub ? (
-              <div className="subscription-box">
-                <div className="sub-header">
-                  <div>
-                    <h3 className="sub-title">Абонемент «{activeSub.title}»</h3>
-                    <p className="sub-dates">
-                      Действует до {new Date(activeSub.expiryDate).toLocaleDateString('ru-RU')}
-                    </p>
-                  </div>
-                  <span className="sub-badge active">Активен</span>
-                </div>
+            ) : activeSubs.length > 0 ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                {activeSubs.map((sub) => {
+                  const percentage = sub.totalLessons > 0 
+                    ? Math.round((sub.remainingLessons / sub.totalLessons) * 100) 
+                    : 100;
 
-                <div className="sub-progress-bar">
-                  <div 
-                    className="sub-progress-fill" 
-                    style={{ width: `${(activeSub.remainingLessons / activeSub.totalLessons) * 100}%` }}
-                  ></div>
-                </div>
+                  return (
+                    <div className="subscription-box" key={sub.id}>
+                      <div className="sub-header">
+                        <div>
+                          <h3 className="sub-title">Абонемент «{sub.title}»</h3>
+                          <p className="sub-dates">
+                            Действует до {new Date(sub.expiryDate).toLocaleDateString('ru-RU')}
+                          </p>
+                        </div>
+                        <span className="sub-badge active">Активен</span>
+                      </div>
 
-                <div className="sub-counter flex justify-between items-center text-sm">
-                  <span>Осталось <strong>{activeSub.remainingLessons} занятий</strong> из {activeSub.totalLessons}</span>
-                  <span className="text-xs text-slate-400">
-                    Дата покупки: {new Date(activeSub.purchaseDate).toLocaleDateString('ru-RU')}
-                  </span>
-                </div>
+                      <div className="sub-progress-bar">
+                        <div 
+                          className="sub-progress-fill" 
+                          style={{ width: `${percentage}%` }}
+                        ></div>
+                      </div>
+
+                      <div className="sub-counter flex justify-between items-center text-sm" style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <span>Осталось <strong>{sub.remainingLessons} занятий</strong> из {sub.totalLessons}</span>
+                        <span className="text-xs text-slate-400">
+                          Дата покупки: {new Date(sub.purchaseDate).toLocaleDateString('ru-RU')}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             ) : (
-              <div className="text-center py-8 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
-                <ShoppingBag className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                <h3 className="text-base font-bold text-slate-700 mb-1">У вас пока нет активного абонемента</h3>
-                <p className="text-xs text-slate-500 mb-4">Приобретите подходящий тариф, чтобы начать посещать занятия</p>
+              <div className="text-center py-8 bg-slate-50 rounded-2xl border border-dashed border-slate-200" style={{ textAlign: 'center', padding: '32px' }}>
+                <ShoppingBag className="w-12 h-12 text-slate-300 mx-auto mb-3" style={{ margin: '0 auto 12px' }} />
+                <h3 className="text-base font-bold text-slate-700 mb-1">У вас пока нет активных абонементов</h3>
+                <p className="text-xs text-slate-500 mb-4" style={{ marginBottom: '16px', color: '#64748b', fontSize: '13px' }}>
+                  Приобретите подходящий тариф, чтобы начать посещать занятия
+                </p>
                 <button onClick={() => navigate('/services')} className="btn-save-primary">
                   Купить абонемент
                 </button>
@@ -551,15 +518,15 @@ export default function ProfilePage() {
           </div>
         )}
 
-        {/* Вкладка 3: Мои записи (Предстоящие / Завершённые) */}
+
+        {/* Вкладка 3: Мои записи */}
         {activeTab === 'bookings' && (
           <div className="profile-main-card">
             <h2 className="profile-section-title">
               <Clock className="w-5 h-5 text-emerald-600" /> Мои записи на тренировки
             </h2>
 
-            {/* Под-вкладки */}
-            <div className="profile-booking-tabs">
+           <div className="profile-booking-tabs">
               <button
                 type="button"
                 className={bookingTab === 'upcoming' ? 'active' : ''}
@@ -603,7 +570,6 @@ export default function ProfilePage() {
                         </span>
                       </div>
 
-                      {/* Кнопка отмены доступна только для предстоящих занятий */}
                       {bookingTab === 'upcoming' && (
                         <button 
                           type="button"
@@ -663,104 +629,9 @@ export default function ProfilePage() {
           </div>
         )}
 
-        {/* Вкладка 5: Чат */}
+        {/* Вкладка 5: Отдельный выделенный чат */}
         {activeTab === 'chat' && (
-          <div className="profile-main-card">
-            <h2 className="profile-section-title">
-              <MessageSquare className="w-5 h-5 text-emerald-600" /> Связь с тренерами
-            </h2>
-
-            <div className="client-chat-layout" style={{ display: 'grid', gridTemplateColumns: '260px 1fr', gap: '20px', minHeight: '400px', marginTop: '20px' }}>
-              
-              <div className="trainers-list-sidebar" style={{ borderRight: '1px solid #e2e8f0', paddingRight: '16px' }}>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Выберите тренера:</p>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  {trainers.map(t => (
-                    <div
-                      key={t.id}
-                      onClick={() => setActiveTrainer(t)}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '12px',
-                        padding: '12px',
-                        borderRadius: '14px',
-                        cursor: 'pointer',
-                        background: activeTrainer?.id === t.id ? '#eef8ea' : '#f8fafc',
-                        border: activeTrainer?.id === t.id ? '1px solid #b2db6b' : '1px solid #e2e8f0',
-                        transition: 'all 0.2s'
-                      }}
-                    >
-                      <span style={{ fontSize: '24px' }}>{t.photoUrl || '🐸'}</span>
-                      <div>
-                        <div style={{ fontWeight: '700', fontSize: '14px', color: '#0f172a' }}>{t.name}</div>
-                        <div style={{ fontSize: '11px', color: '#64748b' }}>{t.specialization}</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="chat-conversation-area" style={{ display: 'flex', flexDirection: 'column', height: '420px', background: '#f8fafc', borderRadius: '16px', border: '1px solid #e2e8f0', overflow: 'hidden' }}>
-                {activeTrainer ? (
-                  <>
-                    <div style={{ padding: '14px 18px', background: '#ffffff', borderBottom: '1px solid #e2e8f0', fontWeight: '700', fontSize: '14px', color: '#0f172a' }}>
-                      Диалог с тренером: {activeTrainer.name}
-                    </div>
-
-                    <div style={{ flex: 1, padding: '16px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                      {messages.length > 0 ? (
-                        messages.map(m => {
-                          const isMy = m.senderId === currentUserId;
-                          return (
-                            <div key={m.id} style={{ display: 'flex', justifyContent: isMy ? 'flex-end' : 'flex-start' }}>
-                              <div style={{
-                                maxWidth: '75%',
-                                padding: '10px 14px',
-                                borderRadius: '14px',
-                                background: isMy ? '#74b83b' : '#ffffff',
-                                color: isMy ? '#ffffff' : '#0f172a',
-                                border: isMy ? 'none' : '1px solid #e2e8f0',
-                                fontSize: '13px'
-                              }}>
-                                <p style={{ margin: 0 }}>{m.text}</p>
-                                <span style={{ fontSize: '10px', opacity: 0.7, display: 'block', textAlign: 'right', marginTop: '4px' }}>
-                                  {new Date(m.sentAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                                </span>
-                              </div>
-                            </div>
-                          );
-                        })
-                      ) : (
-                        <div style={{ textAlign: 'center', color: '#94a3b8', margin: 'auto', fontSize: '13px' }}>
-                          Нет сообщений. Напишите тренеру первым!
-                        </div>
-                      )}
-                    </div>
-
-                    <form onSubmit={handleSendMessage} style={{ display: 'flex', padding: '12px', background: '#ffffff', borderTop: '1px solid #e2e8f0', gap: '8px' }}>
-                      <input
-                        type="text"
-                        value={newMessage}
-                        onChange={e => setNewMessage(e.target.value)}
-                        placeholder="Введите сообщение..."
-                        style={{ flex: 1, padding: '10px 14px', border: '1px solid #cbd5e1', borderRadius: '10px', fontSize: '13px', outline: 'none' }}
-                        required
-                      />
-                      <button type="submit" style={{ background: '#74b83b', color: 'white', border: 'none', padding: '0 16px', borderRadius: '10px', fontWeight: '700', cursor: 'pointer' }}>
-                        Отправить
-                      </button>
-                    </form>
-                  </>
-                ) : (
-                  <div style={{ margin: 'auto', color: '#94a3b8', fontSize: '13px', textAlign: 'center', padding: '20px' }}>
-                    👈 Выберите тренера из списка слева, чтобы начать диалог.
-                  </div>
-                )}
-              </div>
-
-            </div>
-          </div>
+          <ChatSection trainers={trainers} currentUserId={currentUserId} />
         )}
 
       </div>

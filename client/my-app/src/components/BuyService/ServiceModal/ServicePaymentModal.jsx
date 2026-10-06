@@ -14,6 +14,7 @@ export default function ServicePaymentModal({ service, onClose, onConfirmPayment
     setLoading(false);
     onConfirmPayment(service, selectedMethod);
   };
+  
 
   return (
     <div className="modal-admin-overlay" onClick={onClose}>

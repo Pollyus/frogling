@@ -39,19 +39,30 @@ namespace Frogling.Api.Controllers
             return Ok(users);
         }
 
+
         // PUT: api/admin/users/{id}/medical-check
         [HttpPut("users/{id:guid}/medical-check")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateMedicalCheck(Guid id, [FromBody] UpdateMedicalCheckDto dto)
         {
             var user = await _context.Users.FindAsync(id);
             if (user == null)
                 return NotFound(new { message = "Пользователь не найден." });
 
+            // Устанавливаем дату, переводя её в UTC (важно для БД)
             user.MedicalCheckDate = dto.MedicalCheckDate?.ToUniversalTime() ?? DateTime.UtcNow;
+
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Дата медосмотра успешно обновлена!", user.MedicalCheckDate });
+            // ВАЖНО: Мы возвращаем объект, чтобы фронтенду было что парсить
+            return Ok(new
+            {
+                success = true,
+                message = "Дата медосмотра успешно обновлена!",
+                newDate = user.MedicalCheckDate
+            });
         }
+
 
         // GET: api/admin/promotions
         [HttpGet("promotions")]
@@ -277,6 +288,39 @@ namespace Frogling.Api.Controllers
 
             return Ok(items);
         }
+
+        // PUT: api/admin/users/{id}
+        [HttpPut("users/{id:guid}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AdminUpdateUser(Guid id, [FromBody] AdminUpdateUserDto dto)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+                return NotFound(new { message = "Пользователь не найден." });
+
+            user.FullName = string.IsNullOrWhiteSpace(dto.FullName) ? user.FullName : dto.FullName.Trim();
+            user.Phone = dto.Phone?.Trim() ?? user.Phone;
+            user.ParentName = dto.ParentName?.Trim() ?? user.ParentName;
+
+            if (dto.MedicalCheckDate.HasValue)
+            {
+                user.MedicalCheckDate = dto.MedicalCheckDate.Value.ToUniversalTime();
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Данные клиента успешно обновлены!" });
+        }
+
+    }
+
+    // DTO для обновления данных клиента в админке
+    public class AdminUpdateUserDto
+    {
+        public string? FullName { get; set; }
+        public string? Phone { get; set; }
+        public string? ParentName { get; set; }
+        public DateTime? MedicalCheckDate { get; set; }
     }
 
     public class UpdateMedicalCheckDto

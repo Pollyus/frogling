@@ -5,7 +5,7 @@ import './AdminPanel.css';
 
 const API_URL = 'https://localhost:7026/api';
 
-export default function AdminPanel() {
+export default function AdminPanel({onClose}) {
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -41,17 +41,12 @@ export default function AdminPanel() {
     fetchUsers();
   }, [navigate]);
 
-  // 2. Функция сохранения изменений клиента
+  // 2. Функция сохранения изменений клиента (с безопасным чтением JSON)
   const handleSaveUser = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem('auth_token');
 
     try {
-      let formattedDate = null;
-      if (editingUser.medicalCheckDate) {
-        // Добавляем время, чтобы бэкенд точно понял UTC полночь
-        formattedDate = new Date(editingUser.medicalCheckDate).toISOString();
-      }
       const response = await fetch(`${API_URL}/admin/users/${editingUser.id}`, {
         method: 'PUT',
         headers: { 
@@ -66,13 +61,15 @@ export default function AdminPanel() {
         })
       });
 
-      const data = await response.json();
+      // Безопасное чтение ответа сервера (предотвращает Unexpected end of JSON)
+      const text = await response.text();
+      const data = text ? JSON.parse(text) : {};
 
       if (!response.ok) {
         throw new Error(data.message || 'Ошибка сохранения');
       }
 
-      alert('Данные клиента успешно сохранены!');
+      alert(data.message || 'Данные клиента успешно сохранены!');
       setEditingUser(null);
       fetchUsers(); // Перезагружаем список
     } catch (err) {
@@ -167,11 +164,7 @@ export default function AdminPanel() {
       {editingUser && (
         <div className="modal-admin-overlay" onClick={() => setEditingUser(null)}>
           <div className="modal-admin-card" onClick={e => e.stopPropagation()}>
-            <button 
-              type="button" 
-              className="absolute top-6 right-6 text-slate-400 hover:text-slate-600 bg-transparent border-0 cursor-pointer" 
-              onClick={() => setEditingUser(null)}
-            >
+            <button className="modal-close-btn" onClick={() => setEditingUser(null)} title="Закрыть">
               <X className="w-5 h-5" />
             </button>
             

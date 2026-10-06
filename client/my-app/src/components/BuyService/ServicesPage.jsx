@@ -134,41 +134,49 @@ export default function ServicesPage() {
     setSelectedSub(plan);
   };
 
-  const handlePurchase = async () => {
-    const token = localStorage.getItem('auth_token');
-    if (!token) {
-      alert('Для покупки абонемента необходимо войти в систему.');
-      navigate('/login');
-      return;
-    }
+    const handlePurchase = async () => {
+      const token = localStorage.getItem('auth_token');
+      if (!token) {
+        alert('Для покупки абонемента необходимо войти в систему.');
+        navigate('/login');
+        return;
+      }
 
-    setIsProcessing(true);
-    try {
-      const response = await fetch(`${API_URL}/subscriptions/buy`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
+      setIsProcessing(true);
+      try {
+        // Формируем полный объект для отправки
+        const payload = {
           servicePlanId: selectedSub.id,
+          title: selectedSub.title,
+          price: selectedSub.price,
+          totalLessons: selectedSub.lessonsCount || selectedSub.totalLessons || 0,
+          daysValid: selectedSub.durationDays || 30,
           promotionId: selectedPromoId ? parseInt(selectedPromoId) : null
-        }),
-      });
+        };
 
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.message || 'Не удалось оформить покупку');
+        const response = await fetch(`${API_URL}/subscriptions/buy`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(payload),
+        });
 
-      alert(data.message || 'Абонемент успешно активирован!');
-      setSelectedSub(null);
-      setSelectedPromoId('');
-      navigate('/profile');
-    } catch (err) {
-      alert(err.message || 'Ошибка при оплате.');
-    } finally {
-      setIsProcessing(false);
-    }
-  };
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message || 'Не удалось оформить покупку');
+
+        alert(data.message || 'Абонемент успешно активирован!');
+        setSelectedSub(null);
+        setSelectedPromoId('');
+        navigate('/profile');
+      } catch (err) {
+        alert(err.message || 'Ошибка при оплате.');
+      } finally {
+        setIsProcessing(false);
+      }
+    };
+
 
   const calculateFinalPrice = () => {
     if (!selectedSub) return 0;

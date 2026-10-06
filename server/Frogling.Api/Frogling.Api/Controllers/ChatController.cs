@@ -20,25 +20,33 @@ namespace Frogling.Api.Controllers
             _context = context;
         }
 
-        private Guid GetCurrentUserId()
+        private Guid? GetCurrentUserId()
         {
             var val = User.FindFirstValue(ClaimTypes.NameIdentifier)
                       ?? User.FindFirstValue(JwtRegisteredClaimNames.Sub)
                       ?? User.FindFirstValue("sub");
 
-            return Guid.Parse(val!);
+            if (Guid.TryParse(val, out var userId)) return userId;
+            return null;
         }
 
         // GET: api/chat/history/{withUserId}
-        // Получить историю сообщений с конкретным пользователем
-        [HttpGet("history/{withUserId:guid}")]
-        public async Task<IActionResult> GetChatHistory(Guid withUserId)
+        [HttpGet("history/{withUserId}")]
+        public async Task<IActionResult> GetChatHistory(string withUserId)
         {
             var currentUserId = GetCurrentUserId();
+            if (currentUserId == null) return Unauthorized();
+
+            // Защита от 404: если ID невалидный или пустой, просто возвращаем пустой список
+            if (string.IsNullOrEmpty(withUserId) || withUserId == "undefined" || withUserId == "null")
+                return Ok(new List<ChatMessage>());
+
+            if (!Guid.TryParse(withUserId, out var withUserIdGuid))
+                return BadRequest(new { message = "Некорректный ID пользователя." });
 
             var messages = await _context.ChatMessages
-                .Where(m => (m.SenderId == currentUserId && m.ReceiverId == withUserId) ||
-                            (m.SenderId == withUserId && m.ReceiverId == currentUserId))
+                .Where(m => (m.SenderId == currentUserId && m.ReceiverId == withUserIdGuid) ||
+                            (m.SenderId == withUserIdGuid && m.ReceiverId == currentUserId))
                 .OrderBy(m => m.SentAt)
                 .ToListAsync();
 
@@ -46,21 +54,27 @@ namespace Frogling.Api.Controllers
         }
 
         // POST: api/chat/send
-        // Отправить сообщение родителю или тренеру
         [HttpPost("send")]
         public async Task<IActionResult> SendMessage([FromBody] SendMessageDto dto)
         {
-            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(dto.Text))
-                return BadRequest(new { message = "Сообщение не может быть пустым." });
+            if (dto == null || string.IsNullOrWhiteSpace(dto.Text))
+                return BadRequest(new { message = "Введите текст сообщения." });
 
-            var currentUserId = GetCurrentUserId();
+            if (dto.ReceiverId == Guid.Empty)
+                return BadRequest(new { message = "Не указан получатель сообщения." });
+
+            var senderId = GetCurrentUserId();
+            if (senderId == null)
+                return Unauthorized(new { message = "Пользователь не авторизован." });
 
             var message = new ChatMessage
             {
-                SenderId = currentUserId,
+                SenderId = senderId.Value,
                 ReceiverId = dto.ReceiverId,
                 Text = dto.Text.Trim(),
-                SentAt = DateTime.UtcNow
+                SentAt = DateTime.UtcNow,
+                IsRead = false,
+                Emoji = null // Явно передаем null
             };
 
             _context.ChatMessages.Add(message);
@@ -69,24 +83,35 @@ namespace Frogling.Api.Controllers
             return Ok(message);
         }
 
+
         // PATCH: api/chat/react/{messageId}
         [HttpPatch("react/{messageId:int}")]
-        public async Task<IActionResult> ReactToMessage(int messageId, [FromBody] string emoji)
+        public async Task<IActionResult> ReactToMessage(int messageId, [FromBody] ReactChatDto dto)
         {
             var currentUserId = GetCurrentUserId();
             var message = await _context.ChatMessages.FindAsync(messageId);
 
             if (message == null) return NotFound();
 
-            // Проверяем, что пользователь участвует в этом чате
             if (message.SenderId != currentUserId && message.ReceiverId != currentUserId)
                 return Forbid();
 
-            message.Emoji = emoji; // Устанавливаем смайлик
+            message.Emoji = dto?.Emoji;
             await _context.SaveChangesAsync();
 
-            return Ok(new { messageId, emoji });
+            return Ok(new { messageId, emoji = message.Emoji });
         }
+    }
 
+    // ВАЖНО: Добавьте эти классы прямо здесь или в папку Models
+    public class SendChatDto
+    {
+        public Guid ReceiverId { get; set; }
+        public string Text { get; set; } = string.Empty;
+    }
+
+    public class ReactChatDto
+    {
+        public string? Emoji { get; set; }
     }
 }

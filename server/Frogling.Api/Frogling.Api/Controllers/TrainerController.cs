@@ -27,7 +27,9 @@ namespace Frogling.Api.Controllers
                 {
                     t.Id,
                     t.Name,
-                    t.PhotoUrl
+                    t.PhotoUrl,
+                    t.Specialization,
+                    userId = t.UserId // ВАЖНО: теперь фронтенд видит ID аккаунта тренера для чата!
                 })
                 .ToListAsync();
 
@@ -44,14 +46,12 @@ namespace Frogling.Api.Controllers
         }
 
         // GET: api/trainer/schedule
-        // Получить расписание вошедшего тренера и список детей с контактами родителей
         [HttpGet("schedule")]
         public async Task<IActionResult> GetTrainerSchedule()
         {
             var userId = GetCurrentUserId();
             if (userId == null) return Unauthorized();
 
-            // Находим профиль тренера, связанный с залогиненным пользователем
             var trainer = await _context.Trainers.FirstOrDefaultAsync(t => t.UserId == userId.Value);
             if (trainer == null)
                 return NotFound(new { message = "Профиль тренера не найден в системе." });
@@ -64,9 +64,8 @@ namespace Frogling.Api.Controllers
                     s.Id,
                     GroupName = s.GroupName,
                     StartAt = s.StartAt,
-                    EndAt = s.EndAt,
+                    EndAt = s.StartAt.AddMinutes(s.DurationMinutes), // Вычисляем безопасно
                     AvailableSlots = s.AvailableSlots,
-                    // Список записавшихся детей и родителей
                     Students = _context.Bookings
                         .Where(b => b.ScheduleItemId == s.Id)
                         .Select(b => new
@@ -75,7 +74,7 @@ namespace Frogling.Api.Controllers
                             StudentName = b.User!.FullName,
                             ParentName = b.User.ParentName,
                             ParentPhone = b.User.Phone,
-                            ParentUserId = b.User.Id // ID родителя для открытия чата
+                            ParentUserId = b.User.Id
                         }).ToList()
                 })
                 .ToListAsync();
@@ -83,7 +82,7 @@ namespace Frogling.Api.Controllers
             return Ok(schedule);
         }
 
-        // GET: api/trainer/profile (Получить данные текущего тренера)
+        // GET: api/trainer/profile
         [HttpGet("profile")]
         public async Task<IActionResult> GetTrainerProfile()
         {
@@ -96,7 +95,7 @@ namespace Frogling.Api.Controllers
             return Ok(trainer);
         }
 
-        // PUT: api/trainer/profile (Обновить данные тренера)
+        // PUT: api/trainer/profile
         [HttpPut("profile")]
         public async Task<IActionResult> UpdateTrainerProfile([FromBody] UpdateTrainerProfileDto dto)
         {
@@ -119,8 +118,8 @@ namespace Frogling.Api.Controllers
 
             return Ok(new { message = "Профиль успешно сохранён!", trainer });
         }
-
     }
+
     public class UpdateTrainerProfileDto
     {
         public string? Name { get; set; }
